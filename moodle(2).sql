@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 20, 2025 at 11:33 AM
+-- Generation Time: Jan 22, 2025 at 01:23 PM
 -- Server version: 11.6.2-MariaDB
 -- PHP Version: 8.2.12
 
@@ -1206,7 +1206,8 @@ INSERT INTO `mdl_block` (`id`, `name`, `cron`, `lastcron`, `visible`) VALUES
 (40, 'tag_flickr', 0, 0, 1),
 (41, 'tag_youtube', 0, 0, 0),
 (42, 'tags', 0, 0, 1),
-(43, 'timeline', 0, 0, 1);
+(43, 'timeline', 0, 0, 1),
+(44, 'quickmail', 0, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -1248,7 +1249,11 @@ INSERT INTO `mdl_block_instances` (`id`, `blockname`, `parentcontextid`, `showin
 (12, 'calendar_month', 14, 0, 0, 'my-index', '5', 'content', 1, '', 1736765617, 1736765617),
 (13, 'navigation', 1, 1, 1, '*', NULL, 'side-pre', 0, '', 1736766528, 1736766528),
 (14, 'settings', 1, 1, 1, '*', NULL, 'side-pre', 0, '', 1736766528, 1736766528),
-(15, 'settings', 5, 0, 0, 'my-index', '4', 'side-pre', 1, '', 1737357235, 1737357235);
+(15, 'settings', 5, 0, 0, 'my-index', '4', 'side-pre', 1, '', 1737357235, 1737357235),
+(16, 'navigation', 31, 0, 0, 'mod-quiz-view', NULL, 'side-pre', 0, '', 1737546842, 1737546842),
+(17, 'activity_modules', 29, 0, 0, 'course-view-*', NULL, 'side-pre', 0, '', 1737546863, 1737546863),
+(18, 'quickmail', 29, 0, 0, 'course-view-*', NULL, 'side-pre', 1, '', 1737546897, 1737546897),
+(19, 'blog_menu', 29, 0, 0, 'course-view-*', NULL, 'side-pre', 2, '', 1737547436, 1737547436);
 
 -- --------------------------------------------------------
 
@@ -1266,6 +1271,293 @@ CREATE TABLE `mdl_block_positions` (
   `region` varchar(16) NOT NULL DEFAULT '',
   `weight` bigint(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Stores the position of a sticky block_instance on a another ' ROW_FORMAT=COMPRESSED;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `mdl_block_quickmail_alt_emails`
+--
+
+CREATE TABLE `mdl_block_quickmail_alt_emails` (
+  `id` bigint(10) NOT NULL,
+  `setup_user_id` bigint(10) NOT NULL,
+  `course_id` bigint(10) NOT NULL DEFAULT 0,
+  `user_id` bigint(10) NOT NULL DEFAULT 0,
+  `email` varchar(100) NOT NULL DEFAULT '',
+  `firstname` varchar(125) NOT NULL DEFAULT '',
+  `lastname` varchar(125) NOT NULL DEFAULT '',
+  `allowed_role_ids` varchar(100) NOT NULL DEFAULT '',
+  `is_validated` tinyint(1) NOT NULL DEFAULT 0,
+  `usermodified` bigint(10) NOT NULL DEFAULT 0,
+  `timecreated` bigint(10) NOT NULL DEFAULT 0,
+  `timemodified` bigint(10) NOT NULL DEFAULT 0,
+  `timedeleted` bigint(10) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Alternate email addresses that a user or course may send fro' ROW_FORMAT=COMPRESSED;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `mdl_block_quickmail_config`
+--
+
+CREATE TABLE `mdl_block_quickmail_config` (
+  `id` bigint(10) NOT NULL,
+  `coursesid` bigint(11) NOT NULL,
+  `name` varchar(25) NOT NULL DEFAULT '',
+  `value` varchar(125) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Stores config info for teachers, per instance basis.' ROW_FORMAT=COMPRESSED;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `mdl_block_quickmail_draft_recips`
+--
+
+CREATE TABLE `mdl_block_quickmail_draft_recips` (
+  `id` bigint(10) NOT NULL,
+  `message_id` bigint(10) NOT NULL,
+  `type` varchar(7) NOT NULL DEFAULT '',
+  `recipient_type` varchar(6) NOT NULL DEFAULT '',
+  `recipient_id` bigint(10) NOT NULL,
+  `recipient_filter` longtext DEFAULT NULL,
+  `timecreated` bigint(10) NOT NULL DEFAULT 0,
+  `timemodified` bigint(10) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='The recipient entity keys of a specific message' ROW_FORMAT=COMPRESSED;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `mdl_block_quickmail_event_notifs`
+--
+
+CREATE TABLE `mdl_block_quickmail_event_notifs` (
+  `id` bigint(10) NOT NULL,
+  `notification_id` bigint(10) NOT NULL,
+  `model` varchar(30) NOT NULL DEFAULT '',
+  `time_delay_amount` bigint(10) NOT NULL DEFAULT 0,
+  `time_delay_unit` varchar(10) DEFAULT NULL,
+  `mute_time_amount` bigint(10) NOT NULL DEFAULT 0,
+  `mute_time_unit` varchar(10) DEFAULT NULL,
+  `usermodified` bigint(10) NOT NULL DEFAULT 0,
+  `timecreated` bigint(10) NOT NULL DEFAULT 0,
+  `timemodified` bigint(10) NOT NULL DEFAULT 0,
+  `timedeleted` bigint(10) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Event based notification type instances extending a parent n' ROW_FORMAT=COMPRESSED;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `mdl_block_quickmail_event_recips`
+--
+
+CREATE TABLE `mdl_block_quickmail_event_recips` (
+  `id` bigint(10) NOT NULL,
+  `event_notification_id` bigint(10) NOT NULL,
+  `user_id` bigint(10) NOT NULL,
+  `notified_at` bigint(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='The recipient users of a specific event notification' ROW_FORMAT=COMPRESSED;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `mdl_block_quickmail_messages`
+--
+
+CREATE TABLE `mdl_block_quickmail_messages` (
+  `id` bigint(10) NOT NULL,
+  `course_id` bigint(10) NOT NULL,
+  `user_id` bigint(10) NOT NULL,
+  `message_type` varchar(8) NOT NULL DEFAULT '',
+  `notification_id` bigint(10) NOT NULL DEFAULT 0,
+  `alternate_email_id` bigint(10) NOT NULL DEFAULT 0,
+  `signature_id` bigint(10) NOT NULL DEFAULT 0,
+  `subject` longtext DEFAULT NULL,
+  `body` longtext DEFAULT NULL,
+  `editor_format` smallint(3) NOT NULL DEFAULT 1,
+  `sent_at` bigint(10) NOT NULL DEFAULT 0,
+  `to_send_at` bigint(10) NOT NULL DEFAULT 0,
+  `is_draft` tinyint(1) NOT NULL DEFAULT 0,
+  `send_receipt` tinyint(1) NOT NULL DEFAULT 0,
+  `send_to_mentors` tinyint(1) NOT NULL DEFAULT 0,
+  `is_sending` tinyint(1) NOT NULL DEFAULT 0,
+  `no_reply` tinyint(1) NOT NULL DEFAULT 0,
+  `usermodified` bigint(10) NOT NULL DEFAULT 0,
+  `timecreated` bigint(10) NOT NULL DEFAULT 0,
+  `timemodified` bigint(10) NOT NULL DEFAULT 0,
+  `timedeleted` bigint(10) NOT NULL DEFAULT 0,
+  `deleted` bigint(10) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='All message batches including saved drafts and sent messages' ROW_FORMAT=COMPRESSED;
+
+--
+-- Dumping data for table `mdl_block_quickmail_messages`
+--
+
+INSERT INTO `mdl_block_quickmail_messages` (`id`, `course_id`, `user_id`, `message_type`, `notification_id`, `alternate_email_id`, `signature_id`, `subject`, `body`, `editor_format`, `sent_at`, `to_send_at`, `is_draft`, `send_receipt`, `send_to_mentors`, `is_sending`, `no_reply`, `usermodified`, `timecreated`, `timemodified`, `timedeleted`, `deleted`) VALUES
+(1, 3, 2, 'email', 0, 0, 0, 'please click the link to  start the exam', '<p><img src=\"http://localhost/moodle/tokenpluginfile.php/ee9efcbcf9f52fbe3a7f71324983906d/29/block_quickmail/message_editor/1/blobid0.dat\" alt=\"\"><img src=\"http://localhost/moodle/tokenpluginfile.php/ee9efcbcf9f52fbe3a7f71324983906d/29/block_quickmail/message_editor/1/blobid0.dat\" alt=\"\">http://localhost/moodle/</p>', 1, 1737547077, 0, 0, 0, 0, 0, 0, 2, 1737547066, 1737547077, 0, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `mdl_block_quickmail_msg_ad_email`
+--
+
+CREATE TABLE `mdl_block_quickmail_msg_ad_email` (
+  `id` bigint(10) NOT NULL,
+  `message_id` bigint(10) NOT NULL,
+  `email` varchar(100) NOT NULL DEFAULT '',
+  `sent_at` bigint(10) NOT NULL DEFAULT 0,
+  `usermodified` bigint(10) NOT NULL DEFAULT 0,
+  `timecreated` bigint(10) NOT NULL DEFAULT 0,
+  `timemodified` bigint(10) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Additional emails that a specific message was sent to' ROW_FORMAT=COMPRESSED;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `mdl_block_quickmail_msg_attach`
+--
+
+CREATE TABLE `mdl_block_quickmail_msg_attach` (
+  `id` bigint(10) NOT NULL,
+  `message_id` bigint(10) NOT NULL,
+  `path` longtext NOT NULL,
+  `filename` longtext NOT NULL,
+  `usermodified` bigint(10) NOT NULL DEFAULT 0,
+  `timecreated` bigint(10) NOT NULL DEFAULT 0,
+  `timemodified` bigint(10) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='The files that are attached to a parent message' ROW_FORMAT=COMPRESSED;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `mdl_block_quickmail_msg_course`
+--
+
+CREATE TABLE `mdl_block_quickmail_msg_course` (
+  `id` bigint(10) NOT NULL,
+  `message_id` bigint(10) NOT NULL,
+  `course_id` bigint(10) NOT NULL,
+  `sent_at` bigint(10) NOT NULL DEFAULT 0,
+  `moodle_message_id` bigint(10) NOT NULL DEFAULT 0,
+  `usermodified` bigint(10) NOT NULL DEFAULT 0,
+  `timecreated` bigint(10) NOT NULL DEFAULT 0,
+  `timemodified` bigint(10) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='The course to send a message to all users' ROW_FORMAT=COMPRESSED;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `mdl_block_quickmail_msg_recips`
+--
+
+CREATE TABLE `mdl_block_quickmail_msg_recips` (
+  `id` bigint(10) NOT NULL,
+  `message_id` bigint(10) NOT NULL,
+  `user_id` bigint(10) NOT NULL,
+  `sent_at` bigint(10) NOT NULL DEFAULT 0,
+  `moodle_message_id` bigint(10) NOT NULL DEFAULT 0,
+  `usermodified` bigint(10) NOT NULL DEFAULT 0,
+  `timecreated` bigint(10) NOT NULL DEFAULT 0,
+  `timemodified` bigint(10) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='The recipient users of a specific message' ROW_FORMAT=COMPRESSED;
+
+--
+-- Dumping data for table `mdl_block_quickmail_msg_recips`
+--
+
+INSERT INTO `mdl_block_quickmail_msg_recips` (`id`, `message_id`, `user_id`, `sent_at`, `moodle_message_id`, `usermodified`, `timecreated`, `timemodified`) VALUES
+(1, 1, 3, 0, 0, 2, 1737547067, 1737547067),
+(2, 1, 4, 0, 0, 2, 1737547067, 1737547067),
+(3, 1, 6, 0, 0, 2, 1737547067, 1737547067),
+(4, 1, 5, 0, 0, 2, 1737547067, 1737547067),
+(5, 1, 7, 0, 0, 2, 1737547067, 1737547067);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `mdl_block_quickmail_notifs`
+--
+
+CREATE TABLE `mdl_block_quickmail_notifs` (
+  `id` bigint(10) NOT NULL,
+  `name` varchar(40) NOT NULL DEFAULT '',
+  `type` varchar(10) NOT NULL DEFAULT '',
+  `course_id` bigint(10) NOT NULL,
+  `user_id` bigint(10) NOT NULL,
+  `is_enabled` tinyint(1) NOT NULL DEFAULT 0,
+  `conditions` longtext DEFAULT NULL,
+  `message_type` varchar(8) NOT NULL DEFAULT '',
+  `alternate_email_id` bigint(10) NOT NULL DEFAULT 0,
+  `subject` longtext DEFAULT NULL,
+  `signature_id` bigint(10) NOT NULL DEFAULT 0,
+  `body` longtext DEFAULT NULL,
+  `editor_format` smallint(3) NOT NULL DEFAULT 1,
+  `send_receipt` tinyint(1) NOT NULL DEFAULT 0,
+  `send_to_mentors` tinyint(1) NOT NULL DEFAULT 0,
+  `no_reply` tinyint(1) NOT NULL DEFAULT 0,
+  `usermodified` bigint(10) NOT NULL DEFAULT 0,
+  `timecreated` bigint(10) NOT NULL DEFAULT 0,
+  `timemodified` bigint(10) NOT NULL DEFAULT 0,
+  `timedeleted` bigint(10) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Parent notifications of sub class notification types.' ROW_FORMAT=COMPRESSED;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `mdl_block_quickmail_rem_notifs`
+--
+
+CREATE TABLE `mdl_block_quickmail_rem_notifs` (
+  `id` bigint(10) NOT NULL,
+  `notification_id` bigint(10) NOT NULL,
+  `model` varchar(30) NOT NULL DEFAULT '',
+  `object_id` bigint(10) NOT NULL DEFAULT 0,
+  `max_per_interval` bigint(10) NOT NULL DEFAULT 0,
+  `schedule_id` bigint(10) NOT NULL DEFAULT 0,
+  `last_run_at` bigint(10) DEFAULT NULL,
+  `next_run_at` bigint(10) DEFAULT NULL,
+  `is_running` tinyint(1) NOT NULL DEFAULT 0,
+  `usermodified` bigint(10) NOT NULL DEFAULT 0,
+  `timecreated` bigint(10) NOT NULL DEFAULT 0,
+  `timemodified` bigint(10) NOT NULL DEFAULT 0,
+  `timedeleted` bigint(10) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Reminder based notification type instances extending a paren' ROW_FORMAT=COMPRESSED;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `mdl_block_quickmail_schedules`
+--
+
+CREATE TABLE `mdl_block_quickmail_schedules` (
+  `id` bigint(10) NOT NULL,
+  `unit` varchar(10) NOT NULL DEFAULT '',
+  `amount` bigint(10) NOT NULL DEFAULT 0,
+  `begin_at` bigint(10) NOT NULL,
+  `end_at` bigint(10) DEFAULT NULL,
+  `usermodified` bigint(10) NOT NULL DEFAULT 0,
+  `timecreated` bigint(10) NOT NULL DEFAULT 0,
+  `timemodified` bigint(10) NOT NULL DEFAULT 0,
+  `timedeleted` bigint(10) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Schedule records for schedulable persistents.' ROW_FORMAT=COMPRESSED;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `mdl_block_quickmail_signatures`
+--
+
+CREATE TABLE `mdl_block_quickmail_signatures` (
+  `id` bigint(10) NOT NULL,
+  `user_id` bigint(10) NOT NULL DEFAULT 0,
+  `title` varchar(125) NOT NULL DEFAULT '',
+  `signature` longtext NOT NULL,
+  `default_flag` tinyint(1) NOT NULL DEFAULT 0,
+  `usermodified` bigint(10) NOT NULL DEFAULT 0,
+  `timecreated` bigint(10) NOT NULL DEFAULT 0,
+  `timemodified` bigint(10) NOT NULL DEFAULT 0,
+  `timedeleted` bigint(10) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Stores signatures for users' ROW_FORMAT=COMPRESSED;
 
 -- --------------------------------------------------------
 
@@ -1288,8 +1580,8 @@ CREATE TABLE `mdl_block_recentlyaccesseditems` (
 INSERT INTO `mdl_block_recentlyaccesseditems` (`id`, `courseid`, `cmid`, `userid`, `timeaccess`) VALUES
 (1, 2, 2, 2, 1736766430),
 (2, 2, 2, 3, 1736766193),
-(3, 3, 4, 2, 1737368513),
-(4, 3, 4, 3, 1737367471),
+(3, 3, 4, 2, 1737547523),
+(4, 3, 4, 3, 1737539330),
 (5, 3, 3, 3, 1737364420),
 (6, 3, 3, 2, 1737364132),
 (7, 1, 5, 2, 1737364294);
@@ -1316,7 +1608,8 @@ CREATE TABLE `mdl_block_recent_activity` (
 
 INSERT INTO `mdl_block_recent_activity` (`id`, `courseid`, `cmid`, `timecreated`, `userid`, `action`, `modname`) VALUES
 (1, 2, 2, 1736764428, 2, 0, NULL),
-(2, 3, 4, 1737357880, 2, 0, NULL);
+(2, 3, 4, 1737357880, 2, 0, NULL),
+(3, 3, 4, 1737454095, 2, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -1441,8 +1734,8 @@ CREATE TABLE `mdl_cache_flags` (
 --
 
 INSERT INTO `mdl_cache_flags` (`id`, `flagtype`, `name`, `timemodified`, `value`, `expiry`) VALUES
-(1, 'userpreferenceschanged', '2', 1737365584, '1', 1737394384),
-(2, 'userpreferenceschanged', '3', 1737367461, '1', 1737396261),
+(1, 'userpreferenceschanged', '2', 1737547971, '1', 1737576771),
+(2, 'userpreferenceschanged', '3', 1737539289, '1', 1737568089),
 (3, 'accesslib/dirtyusers', '2', 1737357356, '1', 1737386156),
 (4, 'userpreferenceschanged', '4', 1736765221, '1', 1736794021),
 (5, 'userpreferenceschanged', '5', 1736765221, '1', 1736794021),
@@ -2186,7 +2479,18 @@ INSERT INTO `mdl_capabilities` (`id`, `name`, `captype`, `contextlevel`, `compon
 (710, 'atto/recordrtc:recordvideo', 'write', 70, 'atto_recordrtc', 0),
 (711, 'tiny/h5p:addembed', 'write', 70, 'tiny_h5p', 0),
 (712, 'tiny/recordrtc:recordaudio', 'write', 70, 'tiny_recordrtc', 0),
-(713, 'tiny/recordrtc:recordvideo', 'write', 70, 'tiny_recordrtc', 0);
+(713, 'tiny/recordrtc:recordvideo', 'write', 70, 'tiny_recordrtc', 0),
+(714, 'tool/bulkemail:sendbulkemails', 'write', 10, 'tool_bulkemail', 8),
+(715, 'block/quickmail:myaddinstance', 'write', 10, 'block_quickmail', 16),
+(716, 'block/quickmail:addinstance', 'write', 80, 'block_quickmail', 16),
+(717, 'block/quickmail:cansend', 'write', 50, 'block_quickmail', 16),
+(718, 'block/quickmail:canconfig', 'write', 50, 'block_quickmail', 0),
+(719, 'block/quickmail:allowalternate', 'write', 50, 'block_quickmail', 0),
+(720, 'block/quickmail:allowcoursealternate', 'write', 50, 'block_quickmail', 0),
+(721, 'block/quickmail:viewgroupusers', 'read', 50, 'block_quickmail', 0),
+(722, 'block/quickmail:createnotifications', 'write', 80, 'block_quickmail', 16),
+(723, 'qtype/coderunner:viewhiddentestcases', 'read', 50, 'qtype_coderunner', 0),
+(724, 'qtype/coderunner:sandboxwsaccess', 'write', 10, 'qtype_coderunner', 0);
 
 -- --------------------------------------------------------
 
@@ -2700,7 +3004,7 @@ INSERT INTO `mdl_config` (`id`, `name`, `value`) VALUES
 (2, 'rolesactive', '1'),
 (3, 'auth', 'email'),
 (4, 'enrol_plugins_enabled', 'manual,guest,self,cohort'),
-(5, 'theme', 'moove'),
+(5, 'theme', 'degrade'),
 (6, 'filter_multilang_converted', '1'),
 (7, 'siteidentifier', 'z2AdrqMjPqpMKWJIfizV56sAcba3YXURlocalhost'),
 (8, 'backup_version', '2008111700'),
@@ -2719,9 +3023,9 @@ INSERT INTO `mdl_config` (`id`, `name`, `value`) VALUES
 (21, 'mnet_all_hosts_id', '2'),
 (22, 'siteguest', '1'),
 (23, 'siteadmins', '2'),
-(24, 'themerev', '1737365882'),
-(25, 'jsrev', '1737365882'),
-(26, 'templaterev', '1737365882'),
+(24, 'themerev', '1737547365'),
+(25, 'jsrev', '1737547365'),
+(26, 'templaterev', '1737547365'),
 (27, 'gdversion', '2'),
 (28, 'licenses', 'unknown,allrightsreserved,public,cc-4.0,cc-nc-4.0,cc-nd-4.0,cc-nc-nd-4.0,cc-nc-sa-4.0,cc-sa-4.0'),
 (29, 'sitedefaultlicense', 'unknown'),
@@ -2856,7 +3160,7 @@ INSERT INTO `mdl_config` (`id`, `name`, `value`) VALUES
 (159, 'autolangusercreation', '1'),
 (160, 'langmenu', '1'),
 (161, 'langlist', ''),
-(162, 'langrev', '1737365882'),
+(162, 'langrev', '1737547365'),
 (163, 'langcache', '1'),
 (164, 'langstringcache', '1'),
 (165, 'locale', ''),
@@ -2961,14 +3265,14 @@ INSERT INTO `mdl_config` (`id`, `name`, `value`) VALUES
 (265, 'displayloginfailures', '0'),
 (266, 'notifyloginfailures', ''),
 (267, 'notifyloginthreshold', '10'),
-(268, 'themelist', ''),
+(268, 'themelist', 'boost'),
 (269, 'themedesignermode', '0'),
 (270, 'allowuserthemes', '0'),
 (271, 'allowcoursethemes', '0'),
 (272, 'allowcategorythemes', '0'),
 (273, 'allowcohortthemes', '0'),
 (274, 'allowthemechangeonurl', '0'),
-(275, 'allowuserblockhiding', '1'),
+(275, 'allowuserblockhiding', '0'),
 (276, 'langmenuinsecurelayout', '0'),
 (277, 'logininfoinsecurelayout', '0'),
 (278, 'custommenuitems', ''),
@@ -3133,11 +3437,11 @@ INSERT INTO `mdl_config` (`id`, `name`, `value`) VALUES
 (437, 'profilingimportprefix', '(I)'),
 (438, 'allowguestmymoodle', '0'),
 (439, 'release', '4.2.11 (Build: 20241007)'),
-(440, 'localcachedirpurged', '1737365882'),
-(441, 'scheduledtaskreset', '1737365882'),
+(440, 'localcachedirpurged', '1737547365'),
+(441, 'scheduledtaskreset', '1737547365'),
 (442, 'paygw_plugins_sortorder', 'paypal'),
-(443, 'allversionshash', 'a9be4f2d356041cd47792d95d7c6e14535f71bf5'),
-(444, 'allcomponenthash', '34a28f8f7f1aebc8980e325b17a118df38840ff2'),
+(443, 'allversionshash', '535c0c3a1caa611f973bd7cc8a0cfa60b4f7b1cd'),
+(444, 'allcomponenthash', 'ea3dcc84930a4780ee1bfae7a2fee06983942894'),
 (446, 'registrationpending', '0'),
 (447, 'branch', '402'),
 (448, 'enableaccessibilitytools', '1'),
@@ -3271,7 +3575,31 @@ INSERT INTO `mdl_config` (`id`, `name`, `value`) VALUES
 (576, 'timezone', 'Europe/Berlin'),
 (577, 'registerauth', ''),
 (578, 'supportemail', 'souravgope765@gmail.com'),
-(579, 'noreplyaddress', 'souravgope765@gmail.com');
+(579, 'noreplyaddress', 'souravgope765@gmail.com'),
+(583, 'frontpage_about_title', 'Our Global Community'),
+(584, 'frontpage_about_text_1', 'Courses'),
+(585, 'frontpage_about_text_2', 'Teachers'),
+(586, 'frontpage_about_text_3', 'Students'),
+(587, 'frontpage_about_text_4', 'Lessons'),
+(588, 'footer_links_title', 'Important Links'),
+(589, 'footer_social_title', 'Follow us on social media'),
+(590, 'contact_footer_title', 'Contact us'),
+(593, 'block_quickmail_allowstudents', '0'),
+(594, 'block_quickmail_roleselection', '3,4,5'),
+(595, 'block_quickmail_send_as_tasks', '1'),
+(596, 'block_quickmail_send_now_threshold', '50'),
+(597, 'block_quickmail_receipt', '0'),
+(598, 'block_quickmail_allow_mentor_copy', '0'),
+(599, 'block_quickmail_prepend_class', '0'),
+(600, 'block_quickmail_ferpa', 'strictferpa'),
+(601, 'block_quickmail_downloads', '1'),
+(602, 'block_quickmail_additionalemail', '0'),
+(603, 'block_quickmail_message_types_available', 'all'),
+(604, 'block_quickmail_notifications_enabled', '0'),
+(605, 'block_quickmail_migration_chunk_size', '1000'),
+(606, 'altsendfrom', '0'),
+(607, 'block_quickmail_frozen_readonly', '3,4,5'),
+(608, 'block_quickmail_frozen_readonly_pages', 'qm,sent,notifications,signatures');
 
 -- --------------------------------------------------------
 
@@ -5097,7 +5425,210 @@ INSERT INTO `mdl_config_log` (`id`, `userid`, `timemodified`, `plugin`, `name`, 
 (1799, 2, 1737366767, NULL, 'frontpage', '', '6'),
 (1800, 2, 1737366767, NULL, 'frontpageloggedin', '5', ''),
 (1801, 2, 1737367158, NULL, 'frontpageloggedin', '0', '5'),
-(1802, 2, 1737367199, NULL, 'defaulthomepage', '3', '0');
+(1802, 2, 1737367199, NULL, 'defaulthomepage', '3', '0'),
+(1803, 2, 1737451356, NULL, 'themedesignermode', '1', '0'),
+(1804, 2, 1737451356, 'theme_boost', 'backgroundimage', '/new2.jpg', ''),
+(1805, 2, 1737451356, 'theme_boost', 'loginbackgroundimage', '/new2.jpg', ''),
+(1806, 2, 1737451356, 'theme_boost', 'brandcolor', '#4000BE', ''),
+(1807, 2, 1737451356, 'theme_classic', 'navbardark', '1', '0'),
+(1808, 2, 1737451356, 'theme_moove', 'marketingcontent', '<p>Moove is a Moodle template based on Boost with modern and creative design.</p>', 'Moove is a Moodle template based on Boost with modern and creative design.'),
+(1809, 2, 1737451356, 'theme_moove', 'marketing1content', '<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.</p>', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.'),
+(1810, 2, 1737451356, 'theme_moove', 'marketing2content', '<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.</p>', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.'),
+(1811, 2, 1737451356, 'theme_moove', 'marketing3content', '<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.</p>', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.'),
+(1812, 2, 1737451356, 'theme_moove', 'marketing4content', '<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.</p>', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.'),
+(1813, 2, 1737451356, 'theme_moove', 'numbersfrontpagecontent', '<h2>Trusted by 25,000+ happy customers.</h2>\r\n<p>With lots of unique blocks, you can easily build <br class=\"d-none d-sm-block d-md-none d-xl-block\">a page without coding. Build your next website <br class=\"d-none d-sm-block d-md-none d-xl-block\">within few minutes.</p>', '<h2>Trusted by 25,000+ happy customers.</h2>\r\n                    <p>With lots of unique blocks, you can easily build <br class=\"d-none d-sm-block d-md-none d-xl-block\">\r\n                        a page without coding. Build your next website <br class=\"d-none d-sm-block d-md-none d-xl-block\">\r\n                        within few minutes.</p>'),
+(1814, 2, 1737451891, 'theme_boost', 'brandcolor', '#0415D2', '#4000BE'),
+(1815, 2, 1737451891, 'theme_classic', 'backgroundimage', '/new2.jpg', ''),
+(1816, 2, 1737451891, 'theme_classic', 'loginbackgroundimage', '/new2.jpg', ''),
+(1817, 2, 1737451891, 'theme_classic', 'brandcolor', '#034FB4', ''),
+(1818, 2, 1737451891, 'theme_moove', 'secondarymenucolor', '#4000C8', '#0f47ad'),
+(1819, 2, 1737451891, 'theme_moove', 'displaymarketingbox', '0', '1'),
+(1820, 2, 1737451891, 'theme_moove', 'marketingheading', 'SRI Recruitment Portal', 'Awesome App Features'),
+(1821, 2, 1737451891, 'theme_moove', 'marketingcontent', '<pre class=\"language-markup\"><code>&lt;!DOCTYPE html&gt;\r\n&lt;html lang=\"en\"&gt;\r\n&lt;head&gt;\r\n    &lt;meta charset=\"UTF-8\"&gt;\r\n    &lt;meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"&gt;\r\n    &lt;title&gt;Dynamic Quotes&lt;/title&gt;\r\n    &lt;style&gt;\r\n        body {\r\n            font-family: Arial, sans-serif;\r\n            display: flex;\r\n            justify-content: center;\r\n            align-items: center;\r\n            height: 100vh;\r\n            margin: 0;\r\n            background-color: #f4f4f4;\r\n        }\r\n        .quote-container {\r\n            text-align: center;\r\n            padding: 20px;\r\n            background-color: white;\r\n            border-radius: 10px;\r\n            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\r\n        }\r\n        .quote-text {\r\n            font-size: 24px;\r\n            font-style: italic;\r\n        }\r\n        .quote-author {\r\n            margin-top: 10px;\r\n            font-size: 18px;\r\n            font-weight: bold;\r\n        }\r\n        .quote-button {\r\n            margin-top: 20px;\r\n            padding: 10px 20px;\r\n            font-size: 16px;\r\n            cursor: pointer;\r\n            background-color: #008CBA;\r\n            color: white;\r\n            border: none;\r\n            border-radius: 5px;\r\n        }\r\n        .quote-button:hover {\r\n            background-color: #005f73;\r\n        }\r\n    &lt;/style&gt;\r\n&lt;/head&gt;\r\n&lt;body&gt;\r\n\r\n&lt;div class=\"quote-container\"&gt;\r\n    &lt;div id=\"quoteText\" class=\"quote-text\"&gt;Loading...&lt;/div&gt;\r\n    &lt;div id=\"quoteAuthor\" class=\"quote-author\"&gt;Author&lt;/div&gt;\r\n    &lt;button id=\"newQuoteButton\" class=\"quote-button\"&gt;Get New Quote&lt;/button&gt;\r\n&lt;/div&gt;\r\n\r\n&lt;script&gt;\r\n    document.addEventListener(\"DOMContentLoaded\", function() {\r\n        const quoteTextElement = document.getElementById(\'quoteText\');\r\n        const quoteAuthorElement = document.getElementById(\'quoteAuthor\');\r\n        const newQuoteButton = document.getElementById(\'newQuoteButton\');\r\n\r\n        // Function to fetch a random quote\r\n        async function fetchQuote() {\r\n            try {\r\n                const response = await fetch(\'https://api.quotable.io/random\');\r\n                const data = await response.json();\r\n                quoteTextElement.textContent = `\"${data.content}\"`;\r\n                quoteAuthorElement.textContent = `- ${data.author}`;\r\n            } catch (error) {\r\n                quoteTextElement.textContent = \"Oops! Couldn\'t fetch a quote.\";\r\n                quoteAuthorElement.textContent = \"\";\r\n            }\r\n        }\r\n\r\n        // Event listener for button to load a new quote\r\n        newQuoteButton.addEventListener(\'click\', fetchQuote);\r\n\r\n        // Fetch initial quote\r\n        fetchQuote();\r\n    });\r\n&lt;/script&gt;\r\n\r\n&lt;/body&gt;\r\n&lt;/html&gt;\r\n</code></pre>', '<p>Moove is a Moodle template based on Boost with modern and creative design.</p>'),
+(1822, 2, 1737451891, 'theme_moove', 'numbersfrontpage', '0', '1'),
+(1823, 2, 1737452155, NULL, 'themedesignermode', '0', '1'),
+(1824, 2, 1737452226, 'theme_classic', 'navbardark', '0', '1'),
+(1825, 2, 1737452253, NULL, 'allowuserblockhiding', '0', '1'),
+(1826, 2, 1737452344, 'theme_moove', 'displaymarketingbox', '1', '0'),
+(1827, 2, 1737452344, 'theme_moove', 'numbersfrontpage', '1', '0'),
+(1828, 2, 1737452541, 'theme_moove', 'marketingcontent', '<pre class=\"language-python\"><code>import random\r\nimport time\r\n\r\n# List of predefined quotes\r\nquotes = [\r\n    {\r\n        \"text\": \"The only way to do great work is to love what you do.\",\r\n        \"author\": \"Steve Jobs\"\r\n    },\r\n    {\r\n        \"text\": \"In the middle of difficulty lies opportunity.\",\r\n        \"author\": \"Albert Einstein\"\r\n    },\r\n    {\r\n        \"text\": \"Life is what happens when you\'re busy making other plans.\",\r\n        \"author\": \"John Lennon\"\r\n    },\r\n    {\r\n        \"text\": \"Success is not the key to happiness. Happiness is the key to success.\",\r\n        \"author\": \"Albert Schweitzer\"\r\n    },\r\n    {\r\n        \"text\": \"You must be the change you wish to see in the world.\",\r\n        \"author\": \"Mahatma Gandhi\"\r\n    },\r\n    {\r\n        \"text\": \"The best way to predict the future is to create it.\",\r\n        \"author\": \"Peter Drucker\"\r\n    }\r\n]\r\n\r\ndef get_random_quote():\r\n    # Randomly selects a quote from the list\r\n    quote = random.choice(quotes)\r\n    print(f\"\\n\\\"{quote[\'text\']}\\\"\\n - {quote[\'author\']}\")\r\n\r\ndef main():\r\n    print(\"Welcome to the Dynamic Quotes Generator!\\n\")\r\n    \r\n    while True:\r\n        get_random_quote()\r\n        \r\n        # Ask the user if they want another quote\r\n        user_input = input(\"\\nDo you want another quote? (yes/no): \").strip().lower()\r\n        \r\n        if user_input != \'yes\':\r\n            print(\"\\nThanks for using the Quote Generator! Goodbye!\")\r\n            break\r\n        \r\n        time.sleep(1)  # Adds a 1 second delay before showing the next quote\r\n\r\nif __name__ == \"__main__\":\r\n    main()\r\n</code></pre>', '<pre class=\"language-markup\"><code>&lt;!DOCTYPE html&gt;\r\n&lt;html lang=\"en\"&gt;\r\n&lt;head&gt;\r\n    &lt;meta charset=\"UTF-8\"&gt;\r\n    &lt;meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"&gt;\r\n    &lt;title&gt;Dynamic Quotes&lt;/title&gt;\r\n    &lt;style&gt;\r\n        body {\r\n            font-family: Arial, sans-serif;\r\n            display: flex;\r\n            justify-content: center;\r\n            align-items: center;\r\n            height: 100vh;\r\n            margin: 0;\r\n            background-color: #f4f4f4;\r\n        }\r\n        .quote-container {\r\n            text-align: center;\r\n            padding: 20px;\r\n            background-color: white;\r\n            border-radius: 10px;\r\n            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\r\n        }\r\n        .quote-text {\r\n            font-size: 24px;\r\n            font-style: italic;\r\n        }\r\n        .quote-author {\r\n            margin-top: 10px;\r\n            font-size: 18px;\r\n            font-weight: bold;\r\n        }\r\n        .quote-button {\r\n            margin-top: 20px;\r\n            padding: 10px 20px;\r\n            font-size: 16px;\r\n            cursor: pointer;\r\n            background-color: #008CBA;\r\n            color: white;\r\n            border: none;\r\n            border-radius: 5px;\r\n        }\r\n        .quote-button:hover {\r\n            background-color: #005f73;\r\n        }\r\n    &lt;/style&gt;\r\n&lt;/head&gt;\r\n&lt;body&gt;\r\n\r\n&lt;div class=\"quote-container\"&gt;\r\n    &lt;div id=\"quoteText\" class=\"quote-text\"&gt;Loading...&lt;/div&gt;\r\n    &lt;div id=\"quoteAuthor\" class=\"quote-author\"&gt;Author&lt;/div&gt;\r\n    &lt;button id=\"newQuoteButton\" class=\"quote-button\"&gt;Get New Quote&lt;/button&gt;\r\n&lt;/div&gt;\r\n\r\n&lt;script&gt;\r\n    document.addEventListener(\"DOMContentLoaded\", function() {\r\n        const quoteTextElement = document.getElementById(\'quoteText\');\r\n        const quoteAuthorElement = document.getElementById(\'quoteAuthor\');\r\n        const newQuoteButton = document.getElementById(\'newQuoteButton\');\r\n\r\n        // Function to fetch a random quote\r\n        async function fetchQuote() {\r\n            try {\r\n                const response = await fetch(\'https://api.quotable.io/random\');\r\n                const data = await response.json();\r\n                quoteTextElement.textContent = `\"${data.content}\"`;\r\n                quoteAuthorElement.textContent = `- ${data.author}`;\r\n            } catch (error) {\r\n                quoteTextElement.textContent = \"Oops! Couldn\'t fetch a quote.\";\r\n                quoteAuthorElement.textContent = \"\";\r\n            }\r\n        }\r\n\r\n        // Event listener for button to load a new quote\r\n        newQuoteButton.addEventListener(\'click\', fetchQuote);\r\n\r\n        // Fetch initial quote\r\n        fetchQuote();\r\n    });\r\n&lt;/script&gt;\r\n\r\n&lt;/body&gt;\r\n&lt;/html&gt;\r\n</code></pre>'),
+(1829, 2, 1737452852, 'theme_moove', 'marketingcontent', '<pre class=\"language-markup\"><code>&lt;script&gt;\r\ndocument.write(\"lol\");\r\n&lt;/script&gt;</code></pre>\r\n<p>\r\n<script>\r\ndocument.write(\"lol\");\r\n</script>\r\n</p>', '<pre class=\"language-python\"><code>import random\r\nimport time\r\n\r\n# List of predefined quotes\r\nquotes = [\r\n    {\r\n        \"text\": \"The only way to do great work is to love what you do.\",\r\n        \"author\": \"Steve Jobs\"\r\n    },\r\n    {\r\n        \"text\": \"In the middle of difficulty lies opportunity.\",\r\n        \"author\": \"Albert Einstein\"\r\n    },\r\n    {\r\n        \"text\": \"Life is what happens when you\'re busy making other plans.\",\r\n        \"author\": \"John Lennon\"\r\n    },\r\n    {\r\n        \"text\": \"Success is not the key to happiness. Happiness is the key to success.\",\r\n        \"author\": \"Albert Schweitzer\"\r\n    },\r\n    {\r\n        \"text\": \"You must be the change you wish to see in the world.\",\r\n        \"author\": \"Mahatma Gandhi\"\r\n    },\r\n    {\r\n        \"text\": \"The best way to predict the future is to create it.\",\r\n        \"author\": \"Peter Drucker\"\r\n    }\r\n]\r\n\r\ndef get_random_quote():\r\n    # Randomly selects a quote from the list\r\n    quote = random.choice(quotes)\r\n    print(f\"\\n\\\"{quote[\'text\']}\\\"\\n - {quote[\'author\']}\")\r\n\r\ndef main():\r\n    print(\"Welcome to the Dynamic Quotes Generator!\\n\")\r\n    \r\n    while True:\r\n        get_random_quote()\r\n        \r\n        # Ask the user if they want another quote\r\n        user_input = input(\"\\nDo you want another quote? (yes/no): \").strip().lower()\r\n        \r\n        if user_input != \'yes\':\r\n            print(\"\\nThanks for using the Quote Generator! Goodbye!\")\r\n            break\r\n        \r\n        time.sleep(1)  # Adds a 1 second delay before showing the next quote\r\n\r\nif __name__ == \"__main__\":\r\n    main()\r\n</code></pre>'),
+(1830, 2, 1737453032, 'theme_moove', 'marketingcontent', '', '<pre class=\"language-markup\"><code>&lt;script&gt;\r\ndocument.write(\"lol\");\r\n&lt;/script&gt;</code></pre>\r\n<p>\r\n<script>\r\ndocument.write(\"lol\");\r\n</script>\r\n</p>'),
+(1831, 2, 1737453168, 'theme_moove', 'marketingcontent', '<p><em>\"The only way to do great work is to love what you do.\"</em></p>', ''),
+(1832, 2, 1737454694, 'theme_moove', 'marketing1icon', '/SRI-Logo.png', ''),
+(1833, 2, 1737454760, 'theme_moove', 'marketing1icon', '', '/SRI-Logo.png'),
+(1834, 2, 1737454760, 'theme_moove', 'marketing1heading', '', 'Lorem'),
+(1835, 2, 1737454760, 'theme_moove', 'marketing1content', '', '<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.</p>'),
+(1836, 2, 1737454917, 'theme_classic', 'scsspre', '#feature {\r\n  display: none;\r\n}', ''),
+(1837, 2, 1737454990, 'theme_boost', 'scss', '#feature {\r\n  display: none;\r\n}', ''),
+(1838, 2, 1737454990, 'theme_moove', 'scss', '#feature {\r\n  display: none;\r\n}', ''),
+(1839, 2, 1737455148, 'theme_moove', 'numbersfrontpagecontent', '<h2>SRI Recruitment Portal</h2>\r\n<p>\"The only way to do great work is to love what you do.\"</p>', '<h2>Trusted by 25,000+ happy customers.</h2>\r\n<p>With lots of unique blocks, you can easily build <br class=\"d-none d-sm-block d-md-none d-xl-block\">a page without coding. Build your next website <br class=\"d-none d-sm-block d-md-none d-xl-block\">within few minutes.</p>'),
+(1840, 2, 1737455381, NULL, 'themelist', 'boost', ''),
+(1841, 2, 1737456519, 'theme_trema', 'unaddableblocks', 'navigation,settings,course_list,section_links', NULL),
+(1842, 2, 1737456519, 'theme_trema', 'backgroundimage', '', NULL),
+(1843, 2, 1737456519, 'theme_trema', 'linkdecoration', 'underline', NULL),
+(1844, 2, 1737456519, 'theme_trema', 'navfilter', '1', NULL),
+(1845, 2, 1737456519, 'theme_trema', 'hideprimarynavigationitems', '', NULL),
+(1846, 2, 1737456519, 'theme_trema', 'custommenualignment', 'left', NULL),
+(1847, 2, 1737456519, 'theme_trema', 'showumlogoutlink', '1', NULL),
+(1848, 2, 1737456519, 'theme_trema', 'favicon', '', NULL),
+(1849, 2, 1737456519, 'theme_trema', 'enableadmindashboard', '1', NULL),
+(1850, 2, 1737456519, 'theme_trema', 'enabletremalines', '1', NULL),
+(1851, 2, 1737456519, 'theme_trema', 'softness', '1', NULL),
+(1852, 2, 1737456519, 'theme_trema', 'preset', 'default.scss', NULL),
+(1853, 2, 1737456519, 'theme_trema', 'presetfiles', '', NULL),
+(1854, 2, 1737456519, 'theme_trema', 'scsspre', '', NULL),
+(1855, 2, 1737456519, 'theme_trema', 'scss', '', NULL),
+(1856, 2, 1737456519, 'theme_trema', 'primarycolor', '#1c6ca3', NULL),
+(1857, 2, 1737456519, 'theme_trema', 'secondarycolor', '#343a40', NULL),
+(1858, 2, 1737456519, 'theme_trema', 'bodybackgroundcolor', '#f1f1f1', NULL),
+(1859, 2, 1737456519, 'theme_trema', 'headerbgcolor', '$white', NULL),
+(1860, 2, 1737456519, 'theme_trema', 'loginbtnbgcolor', 'primarycolor', NULL),
+(1861, 2, 1737456519, 'theme_trema', 'drawerbgcolor', '$gray-200', NULL),
+(1862, 2, 1737456519, 'theme_trema', 'footerbgcolor', '$gray-800', NULL),
+(1863, 2, 1737456519, 'theme_trema', 'sitefont', 'Lato, sans-serif', NULL),
+(1864, 2, 1737456519, 'theme_trema', 'bannertitlesfont', 'Lato, sans-serif', NULL),
+(1865, 2, 1737456519, 'theme_trema', 'h1font', 'Lato, sans-serif', NULL),
+(1866, 2, 1737456519, 'theme_trema', 'hxfont', 'Lato, sans-serif', NULL),
+(1867, 2, 1737456519, 'theme_trema', 'texttransform', 'none', NULL),
+(1868, 2, 1737456519, 'theme_trema', 'bannertitletransform', 'none', NULL),
+(1869, 2, 1737456519, 'theme_trema', 'bannertitlespacing', 'normal', NULL),
+(1870, 2, 1737456519, 'theme_trema', 'numberofimages', '1', NULL),
+(1871, 2, 1737456519, 'theme_trema', 'frontpageenabledarkoverlay', '1', NULL),
+(1872, 2, 1737456519, 'theme_trema', 'frontpagebannercontentalign', 'center', NULL),
+(1873, 2, 1737456519, 'theme_trema', 'bannerheight', '100vh', NULL),
+(1874, 2, 1737456519, 'theme_trema', 'frontpagebanner', '', NULL),
+(1875, 2, 1737456519, 'theme_trema', 'frontpagetitle', 'Banner title', NULL),
+(1876, 2, 1737456519, 'theme_trema', 'frontpagesubtitle', 'This is a banner subtitle,<br>with multiple lines of text.', NULL),
+(1877, 2, 1737456519, 'theme_trema', 'frontpagebuttontext', 'Learn more', NULL),
+(1878, 2, 1737456519, 'theme_trema', 'frontpagebuttonhref', '#topofcontent', NULL);
+INSERT INTO `mdl_config_log` (`id`, `userid`, `timemodified`, `plugin`, `name`, `value`, `oldvalue`) VALUES
+(1879, 2, 1737456520, 'theme_trema', 'frontpagebuttonclass', 'btn-primary', NULL),
+(1880, 2, 1737456520, 'theme_trema', 'defaultfrontpagebody', '', NULL),
+(1881, 2, 1737456520, 'theme_trema', 'showfrontpagelinkstopages', '1', NULL),
+(1882, 2, 1737456520, 'theme_trema', 'frontpageenablecards', '1', NULL),
+(1883, 2, 1737456520, 'theme_trema', 'cardcontacts', '1', NULL),
+(1884, 2, 1737456520, 'theme_trema', 'showcategories', '', NULL),
+(1885, 2, 1737456520, 'theme_trema', 'summarytype', 'modal', NULL),
+(1886, 2, 1737456520, 'theme_trema', 'showehiddencategorycourses', '1', NULL),
+(1887, 2, 1737456520, 'theme_trema', 'courseenrolmentpageformat', 'fullwidth', NULL),
+(1888, 2, 1737456520, 'theme_trema', 'shownactivitynavigation', '', NULL),
+(1889, 2, 1737456520, 'theme_trema', 'showactivityicons', '1', NULL),
+(1890, 2, 1737456520, 'theme_trema', 'enabletremafooter', '1', NULL),
+(1891, 2, 1737456520, 'theme_trema', 'footeropacity', '1', NULL),
+(1892, 2, 1737456520, 'theme_trema', 'defaultfooter', '<div class=\"row\">\r\n<div class=\"col-md-4 col-sm-6 col-12\">\r\n<h3 class=\"h5 mb-4\">Trema Campus</h3>\r\n<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>\r\n</div>\r\n<div class=\"col-md-3 col-sm-12 ml-auto\">\r\n<h3 class=\"h5 mb-4\">Contact Us</h3>\r\n<ul class=\"labeled-icons\">\r\n<li class=\"mb-2\"><i class=\"fa fa-info-circle fa-fw\"></i> <a href=\"#\">FAQ</a></li>\r\n<li class=\"mb-2\"><i class=\"fa fa-mortar-board\"></i> <a href=\"#\">Registrar\'s office</a></li>\r\n<li class=\"mb-2\"><i class=\"fa fa-question-circle fa-fw\"></i> <a href=\"#\">Student support</a></li>\r\n<li class=\"mb-2\"><i class=\"fa fa-phone fa-fw\"></i> <a href=\"tel:999-555-1212\">999-555-1212</a></li>\r\n<li class=\"mb-2\"><i class=\"fa fa-clock fa-fw\"></i> Monday-Friday 8 AM to 4 PM</li>\r\n</ul>\r\n</div>\r\n<div class=\"col-md-3 col-sm-6 col-12\">\r\n<h3 class=\"h5 mb-4\">Stay in touch</h3>\r\n<ul class=\"labeled-icons\">\r\n<li class=\"mb-2\"><i class=\"fa fa-envelope fa-fw\" aria-hidden=\"true\"></i> <a href=\"#\">Sign up for our newsletter</a></li>\r\n<li class=\"mb-2\"><i class=\"fa fa-facebook fa-fw\" aria-hidden=\"true\"></i> <a href=\"https://facebook.com\">Facebook</a></li>\r\n<li class=\"mb-2\"><i class=\"fa fa-twitter fa-fw\" aria-hidden=\"true\"></i> <a href=\"https://twitter.com\">Twitter</a></li>\r\n<li class=\"mb-2\"><i class=\"fa fa-linkedin fa-fw\" aria-hidden=\"true\"></i> <a href=\"https://linkedin.com\">LinkedIn</a></li>\r\n<li class=\"mb-2\"><i class=\"fa fa-youtube fa-fw\" aria-hidden=\"true\"></i> <a href=\"https://youtube.com\">YouTube</a></li>\r\n</ul>\r\n</div>\r\n</div>', NULL),
+(1893, 2, 1737456520, 'theme_trema', 'enablefooterinfo', '1', NULL),
+(1894, 2, 1737456520, 'theme_trema', 'showbranding', '1', NULL),
+(1895, 2, 1737456520, 'theme_trema', 'loginpagestyle', 'none', NULL),
+(1896, 2, 1737456520, 'theme_trema', 'loginboxcontentalign', 'center', NULL),
+(1897, 2, 1737456520, 'theme_trema', 'loginpagecreatefirst', '0', NULL),
+(1898, 2, 1737456520, 'theme_trema', 'loginshowloginform', '1', NULL),
+(1899, 2, 1737456520, 'theme_trema', 'showprofileemaildisplay', '1', NULL),
+(1900, 2, 1737456520, 'theme_trema', 'showprofilemoodlenetprofile', '1', NULL),
+(1901, 2, 1737456520, 'theme_trema', 'showprofilecity', '1', NULL),
+(1902, 2, 1737456520, 'theme_trema', 'showprofilecountry', '1', NULL),
+(1903, 2, 1737456520, 'theme_trema', 'showprofiletimezone', '1', NULL),
+(1904, 2, 1737456520, 'theme_trema', 'showprofiledescription', '1', NULL),
+(1905, 2, 1737456520, 'theme_trema', 'showprofilepictureofuser', '1', NULL),
+(1906, 2, 1737456520, 'theme_trema', 'showprofileadditionalnames', '1', NULL),
+(1907, 2, 1737456520, 'theme_trema', 'showprofileinterests', '1', NULL),
+(1908, 2, 1737456520, 'theme_trema', 'showprofileoptional', '1', NULL),
+(1909, 2, 1737456520, 'theme_trema', 'showprofileidnumber', '1', NULL),
+(1910, 2, 1737456520, 'theme_trema', 'showprofileinstitution', '1', NULL),
+(1911, 2, 1737456520, 'theme_trema', 'showprofiledepartment', '1', NULL),
+(1912, 2, 1737456521, 'theme_trema', 'showprofilephone1', '1', NULL),
+(1913, 2, 1737456521, 'theme_trema', 'showprofilephone2', '1', NULL),
+(1914, 2, 1737456521, 'theme_trema', 'showprofileaddress', '1', NULL),
+(1915, 2, 1737456531, 'theme_trema', 'frontpagecardstitle', 'Card title', NULL),
+(1916, 2, 1737456531, 'theme_trema', 'frontpagecardssubtitle', 'Card subtitle', NULL),
+(1917, 2, 1737456531, 'theme_trema', 'numberofcards', '4', NULL),
+(1918, 2, 1737456541, 'theme_trema', 'cardicon1', 'fa-paper-plane', NULL),
+(1919, 2, 1737456541, 'theme_trema', 'cardiconcolor1', '#000000', NULL),
+(1920, 2, 1737456541, 'theme_trema', 'cardtitle1', 'Card Title 1', NULL),
+(1921, 2, 1737456541, 'theme_trema', 'cardsubtitle1', 'The description of this card goes here. Several lines of text can be placed in this space.', NULL),
+(1922, 2, 1737456541, 'theme_trema', 'cardlink1', '', NULL),
+(1923, 2, 1737456541, 'theme_trema', 'cardicon2', 'fa-paper-plane', NULL),
+(1924, 2, 1737456541, 'theme_trema', 'cardiconcolor2', '#000000', NULL),
+(1925, 2, 1737456541, 'theme_trema', 'cardtitle2', 'Card Title 2', NULL),
+(1926, 2, 1737456541, 'theme_trema', 'cardsubtitle2', 'The description of this card goes here. Several lines of text can be placed in this space.', NULL),
+(1927, 2, 1737456541, 'theme_trema', 'cardlink2', '', NULL),
+(1928, 2, 1737456541, 'theme_trema', 'cardicon3', 'fa-paper-plane', NULL),
+(1929, 2, 1737456541, 'theme_trema', 'cardiconcolor3', '#000000', NULL),
+(1930, 2, 1737456541, 'theme_trema', 'cardtitle3', 'Card Title 3', NULL),
+(1931, 2, 1737456541, 'theme_trema', 'cardsubtitle3', 'The description of this card goes here. Several lines of text can be placed in this space.', NULL),
+(1932, 2, 1737456541, 'theme_trema', 'cardlink3', '', NULL),
+(1933, 2, 1737456541, 'theme_trema', 'cardicon4', 'fa-paper-plane', NULL),
+(1934, 2, 1737456541, 'theme_trema', 'cardiconcolor4', '#000000', NULL),
+(1935, 2, 1737456541, 'theme_trema', 'cardtitle4', 'Card Title 4', NULL),
+(1936, 2, 1737456541, 'theme_trema', 'cardsubtitle4', 'The description of this card goes here. Several lines of text can be placed in this space.', NULL),
+(1937, 2, 1737456541, 'theme_trema', 'cardlink4', '', NULL),
+(1938, 2, 1737456755, 'theme_degrade', 'background_color', 'default1', NULL),
+(1939, 2, 1737456755, 'theme_degrade', 'background_text_color', '#FFFFFF', NULL),
+(1940, 2, 1737456755, 'theme_degrade', 'top_scroll', '0', NULL),
+(1941, 2, 1737456979, 'theme_degrade', 'background_color', 'blue2', 'default1'),
+(1942, 2, 1737456979, 'theme_degrade', 'logo_color', '/SRI-Logo.png', ''),
+(1943, 2, 1737456979, 'theme_degrade', 'top_scroll_background_color', '#5c5d5f', '#5C5D5F'),
+(1944, 2, 1737456979, 'theme_degrade', 'top_scroll_text_color', '#ffffff', '#FFFFFF'),
+(1945, 2, 1737456979, 'theme_degrade', 'logo_write', '/SRI-Logo.png', ''),
+(1946, 2, 1737456979, 'theme_degrade', 'theme_color__color_primary', '#2b4e84', '#2B4E84'),
+(1947, 2, 1737456979, 'theme_degrade', 'theme_color__color_secondary', '#3e65a0', '#3E65A0'),
+(1948, 2, 1737456979, 'theme_degrade', 'theme_color__color_names', '#c0ccdc', '#C0CCDC'),
+(1949, 2, 1737456979, 'theme_degrade', 'theme_color__color_titles', '#e8f0fb', '#E8F0FB'),
+(1950, 2, 1737456980, 'theme_degrade', 'sitefonts', '<style>\r\n@import url(\'https://fonts.googleapis.com/css2?&family=Briem+Hand:wght@100..900&family=Epilogue:ital,wght@0,100..900;1,100..900&family=Inter+Tight:ital,wght@0,100..900;1,100..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Manrope:wght@200..800&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Oswald:wght@200..700&family=Oxygen:wght@300;400;700&family=Poetsen+One&family=Poppins:ital,wght@0,100;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&family=Raleway:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap\');\r\n</style>', '<style>\n@import url(\'https://fonts.googleapis.com/css2?&family=Briem+Hand:wght@100..900&family=Epilogue:ital,wght@0,100..900;1,100..900&family=Inter+Tight:ital,wght@0,100..900;1,100..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Manrope:wght@200..800&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Oswald:wght@200..700&family=Oxygen:wght@300;400;700&family=Poetsen+One&family=Poppins:ital,wght@0,100;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&family=Raleway:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap\');\n</style>'),
+(1951, 2, 1737456980, 'theme_degrade', 'settings_icons_image_1', '/audio_file.svg', ''),
+(1952, 2, 1737456980, 'theme_degrade', 'settings_icons_image_2', '/video_file.svg', ''),
+(1953, 2, 1737456980, 'theme_degrade', 'settings_icons_image_3', '/book.svg', ''),
+(1954, 2, 1737456980, 'theme_degrade', 'settings_icons_image_4', '/game.svg', ''),
+(1955, 2, 1737456980, 'theme_degrade', 'settings_icons_image_5', '/money.svg', ''),
+(1956, 2, 1737456980, 'theme_degrade', 'settings_icons_image_6', '/slide.svg', ''),
+(1957, 2, 1737456980, 'theme_degrade', 'settings_icons_image_7', '/support.svg', ''),
+(1958, 2, 1737456980, 'theme_degrade', 'settings_icons_image_8', '/download.svg', ''),
+(1959, 2, 1737456980, 'theme_degrade', 'frontpage_mycourses_instructor', '0', ''),
+(1960, 2, 1737456980, 'theme_degrade', 'mycourses_icon_1', '/message.svg', '133'),
+(1961, 2, 1737456980, 'theme_degrade', 'mycourses_icon_2', '/profile.svg', '135'),
+(1962, 2, 1737456980, 'theme_degrade', 'mycourses_color_2', '#ff1053', '#FF1053'),
+(1963, 2, 1737456980, 'theme_degrade', 'mycourses_icon_3', '/preferences.svg', '137'),
+(1964, 2, 1737456980, 'theme_degrade', 'mycourses_color_3', '#00a78e', '#00A78E'),
+(1965, 2, 1737456980, 'theme_degrade', 'mycourses_icon_4', '/grade.svg', '139'),
+(1966, 2, 1737456980, 'theme_degrade', 'mycourses_color_4', '#ecd06f', '#ECD06F'),
+(1967, 2, 1737456980, 'theme_degrade', 'login_theme', 'login_theme_block', 'theme_image_login'),
+(1968, 2, 1737457007, 'theme_degrade', 'home_type', '1', '0'),
+(1969, 2, 1737457105, 'theme_degrade', 'background_color', 'blue6', 'blue2'),
+(1970, 2, 1737457105, 'theme_degrade', 'pagefonts', '<style>\r\n@import url(\'https://fonts.googleapis.com/css2?family=Acme&family=Almendra:ital,wght@0,400;0,700;1,400;1,700&family=Bad+Script&family=Dancing+Script:wght@400..700&family=Great+Vibes&family=Marck+Script&family=Nanum+Pen+Script&family=Orbitron:wght@400..900&family=Ubuntu+Condensed&family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap\');\r\n</style>', '<style>\n@import url(\'https://fonts.googleapis.com/css2?family=Acme&family=Almendra:ital,wght@0,400;0,700;1,400;1,700&family=Bad+Script&family=Dancing+Script:wght@400..700&family=Great+Vibes&family=Marck+Script&family=Nanum+Pen+Script&family=Orbitron:wght@400..900&family=Ubuntu+Condensed&family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap\');\n</style>'),
+(1971, 2, 1737529551, 'theme_degrade', 'footer_type', '1', '0'),
+(1972, 2, 1737530084, 'theme_degrade', 'footer_type', '0', '1'),
+(1973, 2, 1737530210, 'theme_degrade', 'customcss', '#footer{\r\ndisplay: none;\r\n}', ''),
+(1974, 2, 1737530266, 'theme_degrade', 'customcss', '#footer{\r\ndisplay: none;\r\n}\r\n.tool_dataprivacy{\r\ndisplay: none;\r\n}', '#footer{\r\ndisplay: none;\r\n}'),
+(1975, 2, 1737530306, 'theme_degrade', 'home_type', '0', '1'),
+(1976, 2, 1737530332, 'theme_degrade', 'home_type', '1', '0'),
+(1977, 2, 1737546324, NULL, 'block_quickmail_allowstudents', '0', NULL),
+(1978, 2, 1737546324, NULL, 'block_quickmail_roleselection', '3,4,5', NULL),
+(1979, 2, 1737546324, NULL, 'block_quickmail_send_as_tasks', '1', NULL),
+(1980, 2, 1737546324, NULL, 'block_quickmail_send_now_threshold', '50', NULL),
+(1981, 2, 1737546324, NULL, 'block_quickmail_receipt', '0', NULL),
+(1982, 2, 1737546324, NULL, 'block_quickmail_allow_mentor_copy', '0', NULL),
+(1983, 2, 1737546324, NULL, 'block_quickmail_prepend_class', '0', NULL),
+(1984, 2, 1737546324, NULL, 'block_quickmail_ferpa', 'strictferpa', NULL),
+(1985, 2, 1737546324, NULL, 'block_quickmail_downloads', '1', NULL),
+(1986, 2, 1737546324, NULL, 'block_quickmail_additionalemail', '0', NULL),
+(1987, 2, 1737546324, NULL, 'block_quickmail_message_types_available', 'all', NULL),
+(1988, 2, 1737546324, NULL, 'block_quickmail_notifications_enabled', '0', NULL),
+(1989, 2, 1737546324, NULL, 'block_quickmail_migration_chunk_size', '1000', NULL),
+(1990, 2, 1737546324, NULL, 'altsendfrom', '0', NULL),
+(1991, 2, 1737546324, NULL, 'block_quickmail_frozen_readonly', '3,4,5', NULL),
+(1992, 2, 1737546324, NULL, 'block_quickmail_frozen_readonly_pages', 'qm,sent,notifications,signatures', NULL),
+(1993, 2, 1737547382, 'qtype_coderunner', 'default_penalty_regime', '10, 20, ...', NULL),
+(1994, 2, 1737547382, 'qtype_coderunner', 'jobesandbox_enabled', '1', NULL),
+(1995, 2, 1737547382, 'qtype_coderunner', 'ideonesandbox_enabled', '0', NULL),
+(1996, 2, 1737547382, 'qtype_coderunner', 'jobe_host', 'jobe2.cosc.canterbury.ac.nz', NULL),
+(1997, 2, 1737547382, 'qtype_coderunner', 'jobe_apikey', '2AAA7A5415B4A9B394B54BF1D2E9D', NULL),
+(1998, 2, 1737547382, 'qtype_coderunner', 'ideone_user', '', NULL),
+(1999, 2, 1737547382, 'qtype_coderunner', 'ideone_password', '', NULL),
+(2000, 2, 1737547382, 'qtype_coderunner', 'wsenabled', '0', NULL),
+(2001, 2, 1737547382, 'qtype_coderunner', 'wsjobeserver', '', NULL),
+(2002, 2, 1737547382, 'qtype_coderunner', 'wsloggingenabled', '1', NULL),
+(2003, 2, 1737547382, 'qtype_coderunner', 'wsmaxhourlyrate', '200', NULL),
+(2004, 2, 1737547382, 'qtype_coderunner', 'wsmaxcputime', '5', NULL);
 
 -- --------------------------------------------------------
 
@@ -5328,19 +5859,19 @@ INSERT INTO `mdl_config_plugins` (`id`, `plugin`, `name`, `value`) VALUES
 (209, 'theme_boost', 'unaddableblocks', 'navigation,settings,course_list,section_links'),
 (210, 'theme_boost', 'preset', 'default.scss'),
 (211, 'theme_boost', 'presetfiles', ''),
-(212, 'theme_boost', 'backgroundimage', ''),
-(213, 'theme_boost', 'loginbackgroundimage', ''),
-(214, 'theme_boost', 'brandcolor', ''),
+(212, 'theme_boost', 'backgroundimage', '/new2.jpg'),
+(213, 'theme_boost', 'loginbackgroundimage', '/new2.jpg'),
+(214, 'theme_boost', 'brandcolor', '#0415D2'),
 (215, 'theme_boost', 'scsspre', ''),
-(216, 'theme_boost', 'scss', ''),
+(216, 'theme_boost', 'scss', '#feature {\r\n  display: none;\r\n}'),
 (217, 'theme_classic', 'navbardark', '0'),
 (218, 'theme_classic', 'unaddableblocks', ''),
 (219, 'theme_classic', 'preset', 'default.scss'),
 (220, 'theme_classic', 'presetfiles', ''),
-(221, 'theme_classic', 'backgroundimage', ''),
-(222, 'theme_classic', 'loginbackgroundimage', ''),
-(223, 'theme_classic', 'brandcolor', ''),
-(224, 'theme_classic', 'scsspre', ''),
+(221, 'theme_classic', 'backgroundimage', '/new2.jpg'),
+(222, 'theme_classic', 'loginbackgroundimage', '/new2.jpg'),
+(223, 'theme_classic', 'brandcolor', '#034FB4'),
+(224, 'theme_classic', 'scsspre', '#feature {\r\n  display: none;\r\n}'),
 (225, 'theme_classic', 'scss', ''),
 (226, 'core_admin', 'logo', ''),
 (227, 'core_admin', 'logocompact', ''),
@@ -5996,11 +6527,11 @@ INSERT INTO `mdl_config_plugins` (`id`, `plugin`, `name`, `value`) VALUES
 (959, 'tool_dataprivacy', 'automaticdataexportapproval', '0'),
 (960, 'tool_dataprivacy', 'automaticdatadeletionapproval', '0'),
 (961, 'tool_dataprivacy', 'automaticdeletionrequests', '1'),
-(962, 'tool_dataprivacy', 'privacyrequestexpiry', '604800'),
+(962, 'tool_dataprivacy', 'privacyrequestexpiry', '604800');
+INSERT INTO `mdl_config_plugins` (`id`, `plugin`, `name`, `value`) VALUES
 (963, 'tool_dataprivacy', 'requireallenddatesforuserdeletion', '1'),
 (964, 'tool_dataprivacy', 'showdataretentionsummary', '1'),
-(965, 'tool_log', 'exportlog', '1');
-INSERT INTO `mdl_config_plugins` (`id`, `plugin`, `name`, `value`) VALUES
+(965, 'tool_log', 'exportlog', '1'),
 (966, 'analytics', 'logstore', 'logstore_standard'),
 (967, 'message_airnotifier', 'encryptnotifications', '0'),
 (968, 'message_airnotifier', 'encryptprocessing', '0'),
@@ -6945,21 +7476,21 @@ INSERT INTO `mdl_config_plugins` (`id`, `plugin`, `name`, `value`) VALUES
 (1907, 'tool_mobile', 'filetypeexclusionlist', ''),
 (1908, 'tool_mobile', 'customlangstrings', ''),
 (1909, 'tool_moodlenet', 'defaultmoodlenetname', 'MoodleNet Central'),
-(1910, 'tool_moodlenet', 'defaultmoodlenet', 'https://moodle.net'),
+(1910, 'tool_moodlenet', 'defaultmoodlenet', 'https://moodle.net');
+INSERT INTO `mdl_config_plugins` (`id`, `plugin`, `name`, `value`) VALUES
 (1911, 'enrol_ldap', 'objectclass', '(objectClass=*)'),
 (1912, 'theme_moove', 'version', '2023051000'),
 (1914, 'theme_moove', 'logo', '/SRI-Logo.png'),
-(1915, 'theme_moove', 'favicon', '');
-INSERT INTO `mdl_config_plugins` (`id`, `plugin`, `name`, `value`) VALUES
+(1915, 'theme_moove', 'favicon', ''),
 (1916, 'theme_moove', 'preset', 'default.scss'),
 (1917, 'theme_moove', 'presetfiles', ''),
 (1918, 'theme_moove', 'loginbgimg', '/new2.jpg'),
 (1919, 'theme_moove', 'brandcolor', '#0f47ad'),
-(1920, 'theme_moove', 'secondarymenucolor', '#0f47ad'),
+(1920, 'theme_moove', 'secondarymenucolor', '#4000C8'),
 (1921, 'theme_moove', 'fontsite', 'Roboto'),
 (1922, 'theme_moove', 'enablecourseindex', '1'),
 (1923, 'theme_moove', 'scsspre', ''),
-(1924, 'theme_moove', 'scss', ''),
+(1924, 'theme_moove', 'scss', '#feature {\r\n  display: none;\r\n}'),
 (1925, 'theme_moove', 'googleanalytics', ''),
 (1926, 'theme_moove', 'disableteacherspic', '1'),
 (1927, 'theme_moove', 'slidercount', '0'),
@@ -6976,21 +7507,299 @@ INSERT INTO `mdl_config_plugins` (`id`, `plugin`, `name`, `value`) VALUES
 (1938, 'theme_moove', 'instagram', ''),
 (1939, 'theme_moove', 'whatsapp', ''),
 (1940, 'theme_moove', 'telegram', ''),
-(1941, 'theme_moove', 'marketingheading', 'Awesome App Features'),
-(1942, 'theme_moove', 'marketingcontent', 'Moove is a Moodle template based on Boost with modern and creative design.'),
+(1941, 'theme_moove', 'marketingheading', 'SRI Recruitment Portal'),
+(1942, 'theme_moove', 'marketingcontent', '<p><em>\"The only way to do great work is to love what you do.\"</em></p>'),
 (1943, 'theme_moove', 'marketing1icon', ''),
-(1944, 'theme_moove', 'marketing1heading', 'Lorem'),
-(1945, 'theme_moove', 'marketing1content', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.'),
+(1944, 'theme_moove', 'marketing1heading', ''),
+(1945, 'theme_moove', 'marketing1content', ''),
 (1946, 'theme_moove', 'marketing2icon', ''),
 (1947, 'theme_moove', 'marketing2heading', 'Lorem'),
-(1948, 'theme_moove', 'marketing2content', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.'),
+(1948, 'theme_moove', 'marketing2content', '<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.</p>'),
 (1949, 'theme_moove', 'marketing3icon', ''),
 (1950, 'theme_moove', 'marketing3heading', 'Lorem'),
-(1951, 'theme_moove', 'marketing3content', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.'),
+(1951, 'theme_moove', 'marketing3content', '<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.</p>'),
 (1952, 'theme_moove', 'marketing4icon', ''),
 (1953, 'theme_moove', 'marketing4heading', 'Lorem'),
-(1954, 'theme_moove', 'marketing4content', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.'),
-(1955, 'theme_moove', 'numbersfrontpagecontent', '<h2>Trusted by 25,000+ happy customers.</h2>\r\n                    <p>With lots of unique blocks, you can easily build <br class=\"d-none d-sm-block d-md-none d-xl-block\">\r\n                        a page without coding. Build your next website <br class=\"d-none d-sm-block d-md-none d-xl-block\">\r\n                        within few minutes.</p>');
+(1954, 'theme_moove', 'marketing4content', '<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.</p>'),
+(1955, 'theme_moove', 'numbersfrontpagecontent', '<h2>SRI Recruitment Portal</h2>\r\n<p>\"The only way to do great work is to love what you do.\"</p>'),
+(1956, 'theme_trema', 'version', '2024111400'),
+(1958, 'theme_trema', 'frontpagetitledefault', 'Banner title'),
+(1959, 'theme_trema', 'frontpagesubtitledefault', 'This is a banner subtitle,<br>with multiple lines of text.'),
+(1960, 'theme_trema', 'frontpagebuttontextdefault', 'Learn more'),
+(1961, 'theme_trema', 'cardtitledefault', 'Card title'),
+(1962, 'theme_trema', 'unaddableblocks', 'navigation,settings,course_list,section_links'),
+(1963, 'theme_trema', 'backgroundimage', ''),
+(1964, 'theme_trema', 'linkdecoration', 'underline'),
+(1965, 'theme_trema', 'navfilter', '1'),
+(1966, 'theme_trema', 'hideprimarynavigationitems', ''),
+(1967, 'theme_trema', 'custommenualignment', 'left'),
+(1968, 'theme_trema', 'showumlogoutlink', '1'),
+(1969, 'theme_trema', 'favicon', ''),
+(1970, 'theme_trema', 'enableadmindashboard', '1'),
+(1971, 'theme_trema', 'enabletremalines', '1'),
+(1972, 'theme_trema', 'softness', '1'),
+(1973, 'theme_trema', 'preset', 'default.scss'),
+(1974, 'theme_trema', 'presetfiles', ''),
+(1975, 'theme_trema', 'scsspre', ''),
+(1976, 'theme_trema', 'scss', ''),
+(1977, 'theme_trema', 'primarycolor', '#1c6ca3'),
+(1978, 'theme_trema', 'secondarycolor', '#343a40'),
+(1979, 'theme_trema', 'bodybackgroundcolor', '#f1f1f1'),
+(1980, 'theme_trema', 'headerbgcolor', '$white'),
+(1981, 'theme_trema', 'loginbtnbgcolor', 'primarycolor'),
+(1982, 'theme_trema', 'drawerbgcolor', '$gray-200'),
+(1983, 'theme_trema', 'footerbgcolor', '$gray-800'),
+(1984, 'theme_trema', 'sitefont', 'Lato, sans-serif'),
+(1985, 'theme_trema', 'bannertitlesfont', 'Lato, sans-serif'),
+(1986, 'theme_trema', 'h1font', 'Lato, sans-serif'),
+(1987, 'theme_trema', 'hxfont', 'Lato, sans-serif'),
+(1988, 'theme_trema', 'texttransform', 'none'),
+(1989, 'theme_trema', 'bannertitletransform', 'none'),
+(1990, 'theme_trema', 'bannertitlespacing', 'normal'),
+(1991, 'theme_trema', 'numberofimages', '1'),
+(1992, 'theme_trema', 'frontpageenabledarkoverlay', '1'),
+(1993, 'theme_trema', 'frontpagebannercontentalign', 'center'),
+(1994, 'theme_trema', 'bannerheight', '100vh'),
+(1995, 'theme_trema', 'frontpagebanner', ''),
+(1996, 'theme_trema', 'frontpagetitle', 'Banner title'),
+(1997, 'theme_trema', 'frontpagesubtitle', 'This is a banner subtitle,<br>with multiple lines of text.'),
+(1998, 'theme_trema', 'frontpagebuttontext', 'Learn more'),
+(1999, 'theme_trema', 'frontpagebuttonhref', '#topofcontent'),
+(2000, 'theme_trema', 'frontpagebuttonclass', 'btn-primary'),
+(2001, 'theme_trema', 'defaultfrontpagebody', ''),
+(2002, 'theme_trema', 'showfrontpagelinkstopages', '1'),
+(2003, 'theme_trema', 'frontpageenablecards', '1'),
+(2004, 'theme_trema', 'cardcontacts', '1'),
+(2005, 'theme_trema', 'showcategories', ''),
+(2006, 'theme_trema', 'summarytype', 'modal'),
+(2007, 'theme_trema', 'showehiddencategorycourses', '1'),
+(2008, 'theme_trema', 'courseenrolmentpageformat', 'fullwidth'),
+(2009, 'theme_trema', 'shownactivitynavigation', ''),
+(2010, 'theme_trema', 'showactivityicons', '1'),
+(2011, 'theme_trema', 'enabletremafooter', '1'),
+(2012, 'theme_trema', 'footeropacity', '1'),
+(2013, 'theme_trema', 'defaultfooter', '<div class=\"row\">\r\n<div class=\"col-md-4 col-sm-6 col-12\">\r\n<h3 class=\"h5 mb-4\">Trema Campus</h3>\r\n<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>\r\n</div>\r\n<div class=\"col-md-3 col-sm-12 ml-auto\">\r\n<h3 class=\"h5 mb-4\">Contact Us</h3>\r\n<ul class=\"labeled-icons\">\r\n<li class=\"mb-2\"><i class=\"fa fa-info-circle fa-fw\"></i> <a href=\"#\">FAQ</a></li>\r\n<li class=\"mb-2\"><i class=\"fa fa-mortar-board\"></i> <a href=\"#\">Registrar\'s office</a></li>\r\n<li class=\"mb-2\"><i class=\"fa fa-question-circle fa-fw\"></i> <a href=\"#\">Student support</a></li>\r\n<li class=\"mb-2\"><i class=\"fa fa-phone fa-fw\"></i> <a href=\"tel:999-555-1212\">999-555-1212</a></li>\r\n<li class=\"mb-2\"><i class=\"fa fa-clock fa-fw\"></i> Monday-Friday 8 AM to 4 PM</li>\r\n</ul>\r\n</div>\r\n<div class=\"col-md-3 col-sm-6 col-12\">\r\n<h3 class=\"h5 mb-4\">Stay in touch</h3>\r\n<ul class=\"labeled-icons\">\r\n<li class=\"mb-2\"><i class=\"fa fa-envelope fa-fw\" aria-hidden=\"true\"></i> <a href=\"#\">Sign up for our newsletter</a></li>\r\n<li class=\"mb-2\"><i class=\"fa fa-facebook fa-fw\" aria-hidden=\"true\"></i> <a href=\"https://facebook.com\">Facebook</a></li>\r\n<li class=\"mb-2\"><i class=\"fa fa-twitter fa-fw\" aria-hidden=\"true\"></i> <a href=\"https://twitter.com\">Twitter</a></li>\r\n<li class=\"mb-2\"><i class=\"fa fa-linkedin fa-fw\" aria-hidden=\"true\"></i> <a href=\"https://linkedin.com\">LinkedIn</a></li>\r\n<li class=\"mb-2\"><i class=\"fa fa-youtube fa-fw\" aria-hidden=\"true\"></i> <a href=\"https://youtube.com\">YouTube</a></li>\r\n</ul>\r\n</div>\r\n</div>'),
+(2014, 'theme_trema', 'enablefooterinfo', '1'),
+(2015, 'theme_trema', 'showbranding', '1'),
+(2016, 'theme_trema', 'loginpagestyle', 'none'),
+(2017, 'theme_trema', 'loginboxcontentalign', 'center'),
+(2018, 'theme_trema', 'loginpagecreatefirst', '0'),
+(2019, 'theme_trema', 'loginshowloginform', '1'),
+(2020, 'theme_trema', 'showprofileemaildisplay', '1'),
+(2021, 'theme_trema', 'showprofilemoodlenetprofile', '1'),
+(2022, 'theme_trema', 'showprofilecity', '1'),
+(2023, 'theme_trema', 'showprofilecountry', '1'),
+(2024, 'theme_trema', 'showprofiletimezone', '1'),
+(2025, 'theme_trema', 'showprofiledescription', '1'),
+(2026, 'theme_trema', 'showprofilepictureofuser', '1'),
+(2027, 'theme_trema', 'showprofileadditionalnames', '1'),
+(2028, 'theme_trema', 'showprofileinterests', '1'),
+(2029, 'theme_trema', 'showprofileoptional', '1'),
+(2030, 'theme_trema', 'showprofileidnumber', '1'),
+(2031, 'theme_trema', 'showprofileinstitution', '1'),
+(2032, 'theme_trema', 'showprofiledepartment', '1'),
+(2033, 'theme_trema', 'showprofilephone1', '1'),
+(2034, 'theme_trema', 'showprofilephone2', '1'),
+(2035, 'theme_trema', 'showprofileaddress', '1'),
+(2036, 'theme_trema', 'frontpagecardstitle', 'Card title'),
+(2037, 'theme_trema', 'frontpagecardssubtitle', 'Card subtitle'),
+(2038, 'theme_trema', 'numberofcards', '4'),
+(2039, 'theme_trema', 'cardicon1', 'fa-paper-plane'),
+(2040, 'theme_trema', 'cardiconcolor1', '#000000'),
+(2041, 'theme_trema', 'cardtitle1', 'Card Title 1'),
+(2042, 'theme_trema', 'cardsubtitle1', 'The description of this card goes here. Several lines of text can be placed in this space.'),
+(2043, 'theme_trema', 'cardlink1', ''),
+(2044, 'theme_trema', 'cardicon2', 'fa-paper-plane'),
+(2045, 'theme_trema', 'cardiconcolor2', '#000000'),
+(2046, 'theme_trema', 'cardtitle2', 'Card Title 2'),
+(2047, 'theme_trema', 'cardsubtitle2', 'The description of this card goes here. Several lines of text can be placed in this space.'),
+(2048, 'theme_trema', 'cardlink2', ''),
+(2049, 'theme_trema', 'cardicon3', 'fa-paper-plane'),
+(2050, 'theme_trema', 'cardiconcolor3', '#000000'),
+(2051, 'theme_trema', 'cardtitle3', 'Card Title 3'),
+(2052, 'theme_trema', 'cardsubtitle3', 'The description of this card goes here. Several lines of text can be placed in this space.'),
+(2053, 'theme_trema', 'cardlink3', ''),
+(2054, 'theme_trema', 'cardicon4', 'fa-paper-plane'),
+(2055, 'theme_trema', 'cardiconcolor4', '#000000'),
+(2056, 'theme_trema', 'cardtitle4', 'Card Title 4'),
+(2057, 'theme_trema', 'cardsubtitle4', 'The description of this card goes here. Several lines of text can be placed in this space.'),
+(2058, 'theme_trema', 'cardlink4', ''),
+(2059, 'theme_degrade', 'version', '2025011900'),
+(2061, 'theme_degrade', 'theme_color', 'theme_color_blue'),
+(2062, 'theme_degrade', 'theme_color__color_primary', '#2b4e84'),
+(2063, 'theme_degrade', 'theme_color__color_secondary', '#3e65a0'),
+(2064, 'theme_degrade', 'theme_color__color_buttons', '#183054'),
+(2065, 'theme_degrade', 'theme_color__color_names', '#c0ccdc'),
+(2066, 'theme_degrade', 'theme_color__color_titles', '#e8f0fb'),
+(2067, 'theme_degrade', 'frontpage_about_title', ''),
+(2068, 'theme_degrade', 'frontpage_avaliablecourses_text', ''),
+(2069, 'theme_degrade', 'frontpage_avaliablecourses_instructor', '1'),
+(2070, 'theme_degrade', 'top_scroll_background_color', '#5c5d5f'),
+(2071, 'theme_degrade', 'top_scroll_text_color', '#ffffff'),
+(2072, 'theme_degrade', 'slideshow_numslides', '0'),
+(2073, 'theme_degrade', 'slideshow_info_1', ''),
+(2074, 'theme_degrade', 'slideshow_image_1', ''),
+(2075, 'theme_degrade', 'slideshow_text_1', ''),
+(2076, 'theme_degrade', 'slideshow_url_1', 'http://localhost/moodle'),
+(2077, 'theme_degrade', 'slideshow_info_2', ''),
+(2078, 'theme_degrade', 'slideshow_image_2', ''),
+(2079, 'theme_degrade', 'slideshow_text_2', ''),
+(2080, 'theme_degrade', 'slideshow_url_2', 'http://localhost/moodle'),
+(2081, 'theme_degrade', 'slideshow_info_3', ''),
+(2082, 'theme_degrade', 'slideshow_image_3', ''),
+(2083, 'theme_degrade', 'slideshow_text_3', ''),
+(2084, 'theme_degrade', 'slideshow_url_3', 'http://localhost/moodle'),
+(2085, 'theme_degrade', 'slideshow_info_4', ''),
+(2086, 'theme_degrade', 'slideshow_image_4', ''),
+(2087, 'theme_degrade', 'slideshow_text_4', ''),
+(2088, 'theme_degrade', 'slideshow_url_4', 'http://localhost/moodle'),
+(2089, 'theme_degrade', 'slideshow_info_5', ''),
+(2090, 'theme_degrade', 'slideshow_image_5', ''),
+(2091, 'theme_degrade', 'slideshow_text_5', ''),
+(2092, 'theme_degrade', 'slideshow_url_5', 'http://localhost/moodle'),
+(2093, 'theme_degrade', 'slideshow_info_6', ''),
+(2094, 'theme_degrade', 'slideshow_image_6', ''),
+(2095, 'theme_degrade', 'slideshow_text_6', ''),
+(2096, 'theme_degrade', 'slideshow_url_6', 'http://localhost/moodle'),
+(2097, 'theme_degrade', 'slideshow_info_7', ''),
+(2098, 'theme_degrade', 'slideshow_image_7', ''),
+(2099, 'theme_degrade', 'slideshow_text_7', ''),
+(2100, 'theme_degrade', 'slideshow_url_7', 'http://localhost/moodle'),
+(2101, 'theme_degrade', 'slideshow_info_8', ''),
+(2102, 'theme_degrade', 'slideshow_image_8', ''),
+(2103, 'theme_degrade', 'slideshow_text_8', ''),
+(2104, 'theme_degrade', 'slideshow_url_8', 'http://localhost/moodle'),
+(2105, 'theme_degrade', 'slideshow_info_9', ''),
+(2106, 'theme_degrade', 'slideshow_image_9', ''),
+(2107, 'theme_degrade', 'slideshow_text_9', ''),
+(2108, 'theme_degrade', 'slideshow_url_9', 'http://localhost/moodle'),
+(2109, 'theme_degrade', 'mycourses_numblocos', '4'),
+(2110, 'theme_degrade', 'mycourses_icon_1', '/message.svg'),
+(2111, 'theme_degrade', 'mycourses_title_1', 'Messages'),
+(2112, 'theme_degrade', 'mycourses_url_1', 'http://localhost/moodle/message/index.php'),
+(2113, 'theme_degrade', 'mycourses_color_1', '#2441e7'),
+(2114, 'theme_degrade', 'frontpage_about_text_1', ''),
+(2115, 'theme_degrade', 'mycourses_icon_2', '/profile.svg'),
+(2116, 'theme_degrade', 'mycourses_title_2', 'Profile'),
+(2117, 'theme_degrade', 'mycourses_url_2', 'http://localhost/moodle/user/profile.php'),
+(2118, 'theme_degrade', 'mycourses_color_2', '#ff1053'),
+(2119, 'theme_degrade', 'frontpage_about_text_2', ''),
+(2120, 'theme_degrade', 'mycourses_icon_3', '/preferences.svg'),
+(2121, 'theme_degrade', 'mycourses_title_3', 'Preferences'),
+(2122, 'theme_degrade', 'mycourses_url_3', 'http://localhost/moodle/user/preferences.php'),
+(2123, 'theme_degrade', 'mycourses_color_3', '#00a78e'),
+(2124, 'theme_degrade', 'frontpage_about_text_3', ''),
+(2125, 'theme_degrade', 'mycourses_icon_4', '/grade.svg'),
+(2126, 'theme_degrade', 'mycourses_title_4', 'Grades'),
+(2127, 'theme_degrade', 'mycourses_url_4', 'http://localhost/moodle/grade/report/overview/index.php'),
+(2128, 'theme_degrade', 'mycourses_color_4', '#ecd06f'),
+(2129, 'theme_degrade', 'frontpage_about_text_4', ''),
+(2130, 'theme_degrade', 'frontpage_about_enable', '0'),
+(2131, 'theme_degrade', 'frontpage_about_logo', ''),
+(2132, 'theme_degrade', 'frontpage_about_description', ''),
+(2133, 'theme_degrade', 'frontpage_about_number_1', '2'),
+(2134, 'theme_degrade', 'frontpage_about_number_2', '0'),
+(2135, 'theme_degrade', 'frontpage_about_number_3', '5'),
+(2136, 'theme_degrade', 'frontpage_about_number_4', '4'),
+(2137, 'theme_degrade', 'footer_links_title', ''),
+(2138, 'theme_degrade', 'footer_social_title', ''),
+(2139, 'theme_degrade', 'footer_type', '0'),
+(2140, 'theme_degrade', 'footer_description', 'Recruitment Portal'),
+(2141, 'theme_degrade', 'footer_links', ''),
+(2142, 'theme_degrade', 'social_youtube', ''),
+(2143, 'theme_degrade', 'social_linkedin', ''),
+(2144, 'theme_degrade', 'social_facebook', ''),
+(2145, 'theme_degrade', 'social_twitter', ''),
+(2146, 'theme_degrade', 'social_instagram', ''),
+(2147, 'theme_degrade', 'contact_footer_title', ''),
+(2148, 'theme_degrade', 'contact_address', ''),
+(2149, 'theme_degrade', 'contact_phone', ''),
+(2150, 'theme_degrade', 'contact_email', ''),
+(2151, 'theme_degrade', 'login_theme', 'login_theme_block'),
+(2152, 'theme_degrade', 'login_backgroundfoto', ''),
+(2153, 'theme_degrade', 'login_backgroundcolor', ''),
+(2154, 'theme_degrade', 'login_login_description', ''),
+(2155, 'theme_degrade', 'login_forgot_description', ''),
+(2156, 'theme_degrade', 'login_signup_description', ''),
+(2157, 'theme_degrade', 'home_type', '1'),
+(2158, 'theme_degrade', 'frontpage_mycourses_text', ''),
+(2159, 'theme_degrade', 'frontpage_mycourses_instructor', '0'),
+(2160, 'theme_degrade', 'logo_color', '/SRI-Logo.png'),
+(2161, 'theme_degrade', 'logo_write', '/SRI-Logo.png'),
+(2162, 'theme_degrade', 'fontfamily', 'Roboto'),
+(2163, 'theme_degrade', 'fontfamily_title', 'Montserrat'),
+(2164, 'theme_degrade', 'fontfamily_menus', 'Roboto'),
+(2165, 'theme_degrade', 'fontfamily_sitename', 'Oswald'),
+(2166, 'theme_degrade', 'customcss', '#footer{\r\ndisplay: none;\r\n}\r\n.tool_dataprivacy{\r\ndisplay: none;\r\n}'),
+(2167, 'theme_degrade', 'footer_show_copywriter', '1'),
+(2168, 'theme_degrade', 'pagefonts', '<style>\r\n@import url(\'https://fonts.googleapis.com/css2?family=Acme&family=Almendra:ital,wght@0,400;0,700;1,400;1,700&family=Bad+Script&family=Dancing+Script:wght@400..700&family=Great+Vibes&family=Marck+Script&family=Nanum+Pen+Script&family=Orbitron:wght@400..900&family=Ubuntu+Condensed&family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap\');\r\n</style>'),
+(2169, 'theme_degrade', 'sitefonts', '<style>\r\n@import url(\'https://fonts.googleapis.com/css2?&family=Briem+Hand:wght@100..900&family=Epilogue:ital,wght@0,100..900;1,100..900&family=Inter+Tight:ital,wght@0,100..900;1,100..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Manrope:wght@200..800&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Oswald:wght@200..700&family=Oxygen:wght@300;400;700&family=Poetsen+One&family=Poppins:ital,wght@0,100;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&family=Raleway:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap\');\r\n</style>'),
+(2170, 'theme_degrade', 'settings_icons_name_1', 'Audio'),
+(2171, 'theme_degrade', 'settings_icons_image_1', '/audio_file.svg'),
+(2172, 'theme_degrade', 'settings_icons_name_2', 'Video'),
+(2173, 'theme_degrade', 'settings_icons_image_2', '/video_file.svg'),
+(2174, 'theme_degrade', 'settings_icons_name_3', 'Book'),
+(2175, 'theme_degrade', 'settings_icons_image_3', '/book.svg'),
+(2176, 'theme_degrade', 'settings_icons_name_4', 'Game'),
+(2177, 'theme_degrade', 'settings_icons_image_4', '/game.svg'),
+(2178, 'theme_degrade', 'settings_icons_name_5', 'Financial'),
+(2179, 'theme_degrade', 'settings_icons_image_5', '/money.svg'),
+(2180, 'theme_degrade', 'settings_icons_name_6', 'Slides'),
+(2181, 'theme_degrade', 'settings_icons_image_6', '/slide.svg'),
+(2182, 'theme_degrade', 'settings_icons_name_7', 'Support'),
+(2183, 'theme_degrade', 'settings_icons_image_7', '/support.svg'),
+(2184, 'theme_degrade', 'settings_icons_name_8', 'Download'),
+(2185, 'theme_degrade', 'settings_icons_image_8', '/download.svg'),
+(2186, 'theme_degrade', 'settings_icons_name_9', ''),
+(2187, 'theme_degrade', 'settings_icons_image_9', ''),
+(2188, 'theme_degrade', 'settings_icons_name_10', ''),
+(2189, 'theme_degrade', 'settings_icons_image_10', ''),
+(2190, 'theme_degrade', 'settings_icons_name_11', ''),
+(2191, 'theme_degrade', 'settings_icons_image_11', ''),
+(2192, 'theme_degrade', 'settings_icons_name_12', ''),
+(2193, 'theme_degrade', 'settings_icons_image_12', ''),
+(2194, 'theme_degrade', 'settings_icons_name_13', ''),
+(2195, 'theme_degrade', 'settings_icons_image_13', ''),
+(2196, 'theme_degrade', 'settings_icons_name_14', ''),
+(2197, 'theme_degrade', 'settings_icons_image_14', ''),
+(2198, 'theme_degrade', 'settings_icons_name_15', ''),
+(2199, 'theme_degrade', 'settings_icons_image_15', ''),
+(2200, 'theme_degrade', 'settings_icons_name_16', ''),
+(2201, 'theme_degrade', 'settings_icons_image_16', ''),
+(2202, 'theme_degrade', 'settings_icons_name_17', ''),
+(2203, 'theme_degrade', 'settings_icons_image_17', ''),
+(2204, 'theme_degrade', 'settings_icons_name_18', ''),
+(2205, 'theme_degrade', 'settings_icons_image_18', ''),
+(2206, 'theme_degrade', 'settings_icons_name_19', ''),
+(2207, 'theme_degrade', 'settings_icons_image_19', ''),
+(2208, 'theme_degrade', 'settings_icons_name_20', ''),
+(2209, 'theme_degrade', 'settings_icons_image_20', ''),
+(2210, 'theme_degrade', 'settings_icons_num', '8'),
+(2211, 'theme_degrade', 'background_color', 'blue6'),
+(2212, 'theme_degrade', 'background_text_color', '#FFFFFF'),
+(2213, 'theme_degrade', 'top_scroll', '0'),
+(2214, 'theme_degrade', 'footer_htmleditor_en', '\n        \n        \n    \n    \n        \n        \n        \n    \n    \n        <link href=\"http://localhost/moodle/theme/degrade/_editor/_default/default-footer.css\" rel=\"stylesheet\">\n\n\n\n<style id=\"vvvebjs-styles\"></style>\n    \n\n    \n'),
+(2215, 'theme_degrade', 'home_htmleditor_en', '\n        \n        \n    \n    \n        <link href=\"http://localhost/moodle/theme/degrade/_editor/_default/default-home.css\" rel=\"stylesheet\" media=\"screen\">\n\n<div>\n    \n</div>\n\n\n<section class=\"py-5\" title=\"team-1\">\n    <div class=\"container\">\n        <div class=\"row justify-content-center mb-4\">\n            <div class=\"col-md-7 text-center\">\n                <h3 class=\"mb-3\" id=\"mce_0\"><p>About Us</p></h3>\n                <h5 class=\"text-muted\" id=\"mce_20\"><p>Strategic Research Insights (SRI) is a primary market research and secondary data analytics company specializing in the pharmaceutical industry. Located in Princeton, New Jersey, SRI team leaders come from backgrounds in marketing, market research, operational research, and statistics.&nbsp;</p></h5>\n            </div>\n        </div>\n        <div class=\"row\">\n\n            <div class=\"col-md-3 col-sm-6 mb-4\">\n\n                <div class=\"row\">\n                    <div class=\"col-md-12\">\n                        <img alt=\"image\" src=\"http://localhost/moodle/pluginfile.php/1/theme_degrade/editor_home/22743313/SRI-Logo.png\" class=\"img-fluid p-4 rounded-circle\">\n                    </div>\n                    <div class=\"col-md-12 text-center\">\n                        <div class=\"pt-2\">\n                            <h5 class=\"mt-4 mb-0\" id=\"mce_21\"><p id=\"mce_22\"><p>Venky Jagannathan</p></p></h5>\n                            <h6 class=\"text-muted mb-3\" id=\"mce_32\"><p>Principal</p></h6>\n                            <p class=\"text-muted\">We are a group of professionals dedicated to their work</p>\n\n                            <ul class=\"mb-0 list-inline mt-3\">\n                                <li class=\"list-inline-item\">\n                                    <a href=\"#\" class=\"social-link\">\n                                        <i class=\"fab fa fa-facebook-f\"></i>\n                                    </a>\n                                </li>\n                                <li class=\"list-inline-item\">\n                                    <a href=\"#\" class=\"social-link\">\n                                        <i class=\"fab fa fa-twitter\"></i>\n                                    </a>\n                                </li>\n                                <li class=\"list-inline-item\">\n                                    <a href=\"#\" class=\"social-link\">\n                                        <i class=\"fab fa fa-instagram\"></i>\n                                    </a>\n                                </li>\n                                <li class=\"list-inline-item\">\n                                    <a href=\"#\" class=\"social-link\">\n                                        <i class=\"fab fa fa-linkedin\"></i>\n                                    </a>\n                                </li>\n                            </ul>\n\n                        </div>\n                    </div>\n                </div>\n\n            </div>\n\n            <div class=\"col-md-3 col-sm-6 mb-4\">\n\n                <div class=\"row\">\n                    <div class=\"col-md-12\">\n                        <img alt=\"image\" src=\"http://localhost/moodle/pluginfile.php/1/theme_degrade/editor_home/22743313/SRI-Logo.png\" class=\"img-fluid p-4 rounded-circle\">\n                    </div>\n                    <div class=\"col-md-12 text-center\">\n                        <div class=\"pt-2\">\n                            <h5 class=\"mt-4 mb-0\" id=\"mce_23\"><p>Sudhakar Mandapatti</p></h5>\n                            <h6 class=\"text-muted mb-3\" id=\"mce_33\"><p>Principal</p></h6>\n                            <p class=\"text-muted\">We are a group of professionals dedicated to their work</p>\n\n                            <ul class=\"mb-0 list-inline mt-3\">\n                                <li class=\"list-inline-item\">\n                                    <a href=\"#\" class=\"social-link\">\n                                        <i class=\"fab fa fa-facebook-f\"></i>\n                                    </a>\n                                </li>\n                                <li class=\"list-inline-item\">\n                                    <a href=\"#\" class=\"social-link\">\n                                        <i class=\"fab fa fa-twitter\"></i>\n                                    </a>\n                                </li>\n                                <li class=\"list-inline-item\">\n                                    <a href=\"#\" class=\"social-link\">\n                                        <i class=\"fab fa fa-instagram\"></i>\n                                    </a>\n                                </li>\n                                <li class=\"list-inline-item\">\n                                    <a href=\"#\" class=\"social-link\">\n                                        <i class=\"fab fa fa-linkedin\"></i>\n                                    </a>\n                                </li>\n                            </ul>\n\n                        </div>\n                    </div>\n                </div>\n\n            </div>\n\n            <div class=\"col-md-3 col-sm-6 mb-4\">\n\n                <div class=\"row\">\n                    <div class=\"col-md-12\">\n                        <img alt=\"image\" src=\"http://localhost/moodle/pluginfile.php/1/theme_degrade/editor_home/22743313/SRI-Logo.png\" class=\"img-fluid p-4 rounded-circle\">\n                    </div>\n                    <div class=\"col-md-12 text-center\">\n                        <div class=\"pt-2\">\n                            <h5 class=\"mt-4 mb-0\" id=\"mce_24\"><p id=\"mce_26\"><p id=\"mce_27\"><p id=\"mce_28\"><p id=\"mce_29\"><p id=\"mce_30\"><p id=\"mce_31\"><p id=\"mce_40\"><p>Ch. Ravi Kumar</p></p></p></p></p></p></p></p></h5>\n                            <h6 class=\"text-muted mb-3\" id=\"mce_34\"><p id=\"mce_38\"><p>General Manager&nbsp;</p></p></h6>\n                            <p class=\"text-muted\">We are a group of professionals dedicated to their work</p>\n\n                            <ul class=\"mb-0 list-inline mt-3\">\n                                <li class=\"list-inline-item\">\n                                    <a href=\"#\" class=\"social-link\">\n                                        <i class=\"fab fa fa-facebook-f\"></i>\n                                    </a>\n                                </li>\n                                <li class=\"list-inline-item\">\n                                    <a href=\"#\" class=\"social-link\">\n                                        <i class=\"fab fa fa-twitter\"></i>\n                                    </a>\n                                </li>\n                                <li class=\"list-inline-item\">\n                                    <a href=\"#\" class=\"social-link\">\n                                        <i class=\"fab fa fa-instagram\"></i>\n                                    </a>\n                                </li>\n                                <li class=\"list-inline-item\">\n                                    <a href=\"#\" class=\"social-link\">\n                                        <i class=\"fab fa fa-linkedin\"></i>\n                                    </a>\n                                </li>\n                            </ul>\n\n                        </div>\n                    </div>\n                </div>\n\n            </div>\n\n            <div class=\"col-md-3 col-sm-6 mb-4\">\n\n                <div class=\"row\">\n                    <div class=\"col-md-12\">\n                        <img alt=\"image\" src=\"http://localhost/moodle/pluginfile.php/1/theme_degrade/editor_home/22743313/SRI-Logo.png\" class=\"img-fluid p-4 rounded-circle\">\n                    </div>\n                    <div class=\"col-md-12 text-center\">\n                        <div class=\"pt-2\">\n                            <h5 class=\"mt-4 mb-0\" id=\"mce_25\"><p>Karthik Mahankali</p></h5>\n                            <h6 class=\"text-muted mb-3\" id=\"mce_35\"><p id=\"mce_36\"><p id=\"mce_37\"><p>Manager PQ Team</p></p></p></h6>\n                            <p class=\"text-muted\" id=\"mce_39\"></p>\n\n                            <p class=\"text-muted\">We are a group of professionals dedicated to their work</p><ul class=\"mb-0 list-inline mt-3\">\n                                <li class=\"list-inline-item\">\n                                    <a href=\"#\" class=\"social-link\">\n                                        <i class=\"fab fa fa-facebook-f\"></i>\n                                    </a>\n                                </li>\n                                <li class=\"list-inline-item\">\n                                    <a href=\"#\" class=\"social-link\">\n                                        <i class=\"fab fa fa-twitter\"></i>\n                                    </a>\n                                </li>\n                                <li class=\"list-inline-item\">\n                                    <a href=\"#\" class=\"social-link\">\n                                        <i class=\"fab fa fa-instagram\"></i>\n                                    </a>\n                                </li>\n                                <li class=\"list-inline-item\">\n                                    <a href=\"#\" class=\"social-link\">\n                                        <i class=\"fab fa fa-linkedin\"></i>\n                                    </a>\n                                </li>\n                            </ul>\n\n                        </div>\n                    </div>\n                </div>\n\n            </div>\n        </div>\n    </div>\n</section>\n\n<style id=\"vvvebjs-styles\"></style>\n    \n'),
+(2216, 'tool_bulkemail', 'version', '2021012701'),
+(2217, 'block_quickmail', 'version', '2024101701'),
+(2218, 'message', 'airnotifier_provider_block_quickmail_quickmessage_locked', '0'),
+(2219, 'message', 'email_provider_block_quickmail_quickmessage_locked', '0'),
+(2220, 'message', 'popup_provider_block_quickmail_quickmessage_locked', '0'),
+(2221, 'message', 'message_provider_block_quickmail_quickmessage_enabled', 'email'),
+(2222, 'qtype_coderunner', 'version', '2022110900'),
+(2224, 'qbehaviour_adaptive_adapted_for_coderunner', 'version', '2024041800'),
+(2225, 'qtype_coderunner', 'default_penalty_regime', '10, 20, ...'),
+(2226, 'qtype_coderunner', 'jobesandbox_enabled', '1'),
+(2227, 'qtype_coderunner', 'ideonesandbox_enabled', '0'),
+(2228, 'qtype_coderunner', 'jobe_host', 'jobe2.cosc.canterbury.ac.nz'),
+(2229, 'qtype_coderunner', 'jobe_apikey', '2AAA7A5415B4A9B394B54BF1D2E9D'),
+(2230, 'qtype_coderunner', 'ideone_user', ''),
+(2231, 'qtype_coderunner', 'ideone_password', ''),
+(2232, 'qtype_coderunner', 'wsenabled', '0'),
+(2233, 'qtype_coderunner', 'wsjobeserver', ''),
+(2234, 'qtype_coderunner', 'wsloggingenabled', '1'),
+(2235, 'qtype_coderunner', 'wsmaxhourlyrate', '200'),
+(2236, 'qtype_coderunner', 'wsmaxcputime', '5');
 
 -- --------------------------------------------------------
 
@@ -7063,7 +7872,11 @@ INSERT INTO `mdl_context` (`id`, `contextlevel`, `instanceid`, `path`, `depth`, 
 (29, 50, 3, '/1/3/29', 3, 0),
 (30, 70, 3, '/1/3/29/30', 4, 0),
 (31, 70, 4, '/1/3/29/31', 4, 0),
-(32, 70, 5, '/1/2/32', 3, 0);
+(32, 70, 5, '/1/2/32', 3, 0),
+(33, 80, 16, '/1/3/29/31/33', 5, 0),
+(34, 80, 17, '/1/3/29/34', 4, 0),
+(35, 80, 18, '/1/3/29/35', 4, 0),
+(36, 80, 19, '/1/3/29/36', 4, 0);
 
 -- --------------------------------------------------------
 
@@ -7129,9 +7942,9 @@ CREATE TABLE `mdl_course` (
 --
 
 INSERT INTO `mdl_course` (`id`, `category`, `sortorder`, `fullname`, `shortname`, `idnumber`, `summary`, `summaryformat`, `format`, `showgrades`, `newsitems`, `startdate`, `enddate`, `relativedatesmode`, `marker`, `maxbytes`, `legacyfiles`, `showreports`, `visible`, `visibleold`, `downloadcontent`, `groupmode`, `groupmodeforce`, `defaultgroupingid`, `lang`, `calendartype`, `theme`, `timecreated`, `timemodified`, `requested`, `enablecompletion`, `completionnotify`, `cacherev`, `originalcourseid`, `showactivitydates`, `showcompletionconditions`, `pdfexportfont`) VALUES
-(1, 0, 1, 'Recruitment Portal', 'RP Panel', '', '', 0, 'site', 1, 3, 0, 0, 0, 0, 0, 0, 0, 1, 1, NULL, 0, 0, 0, '', '', '', 1736763449, 1737367158, 0, 0, 0, 1737365882, NULL, 0, NULL, NULL),
-(2, 1, 10002, 'mycourse', 'myc', '', '', 1, 'topics', 1, 5, 1736793000, 1768329000, 0, 0, 0, 0, 0, 1, 1, NULL, 0, 0, 0, '', '', '', 1736764392, 1737360955, 0, 1, 0, 1737365882, NULL, 1, 1, NULL),
-(3, 1, 10001, 'IIT Delhi recuritment', 'IDR', '', '<p>Instructions:<br><br>1. Please note that this exam uses proctor hence moving to another tab will cancel the exam</p>\r\n<p>2. Please note that camera and audio permissions might be asked</p>', 1, 'topics', 1, 5, 1737397800, 1768933800, 0, 0, 0, 0, 0, 1, 1, NULL, 0, 0, 0, '', '', '', 1737357355, 1737360907, 0, 1, 0, 1737365882, NULL, 1, 1, NULL);
+(1, 0, 1, 'Recruitment Portal', 'RP Panel', '', '', 0, 'site', 1, 3, 0, 0, 0, 0, 0, 0, 0, 1, 1, NULL, 0, 0, 0, '', '', '', 1736763449, 1737367158, 0, 0, 0, 1737547365, NULL, 0, NULL, NULL),
+(2, 1, 10002, 'mycourse', 'myc', '', '', 1, 'topics', 1, 5, 1736793000, 1768329000, 0, 0, 0, 0, 0, 1, 1, NULL, 0, 0, 0, '', '', '', 1736764392, 1737360955, 0, 1, 0, 1737547365, NULL, 1, 1, NULL),
+(3, 1, 10001, 'IIT Delhi recuritment', 'IDR', '', '<p>Instructions:<br><br>1. Please note that this exam uses proctor hence moving to another tab will cancel the exam</p>\r\n<p>2. Please note that camera and audio permissions might be asked</p>', 1, 'topics', 1, 5, 1737397800, 1768933800, 0, 0, 0, 0, 0, 1, 1, NULL, 0, 0, 0, '', '', '', 1737357355, 1737360907, 0, 1, 0, 1737547365, NULL, 1, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -7407,7 +8220,8 @@ INSERT INTO `mdl_course_sections` (`id`, `course`, `section`, `name`, `summary`,
 (2, 2, 1, 'IIT Delhi Exam ', '', 1, '2', 1, NULL, 1736766337),
 (6, 1, 1, NULL, '', 1, '', 1, NULL, 1736764598),
 (7, 3, 0, 'Recruitment Exam', '', 1, '3,4', 1, NULL, 1737364613),
-(12, 1, 0, NULL, '', 1, '5', 1, NULL, 1737364004);
+(12, 1, 0, NULL, '', 1, '5', 1, NULL, 1737364004),
+(13, 3, 1, NULL, '', 1, '', 1, NULL, 1737546729);
 
 -- --------------------------------------------------------
 
@@ -8789,7 +9603,11 @@ INSERT INTO `mdl_external_functions` (`id`, `name`, `classname`, `methodname`, `
 (697, 'theme_moove_fontsize', 'theme_moove\\api\\accessibility', 'fontsize', 'theme_moove/classes/api/accessibility.php', 'theme_moove', '', NULL),
 (698, 'theme_moove_sitecolor', 'theme_moove\\api\\accessibility', 'sitecolor', NULL, 'theme_moove', '', NULL),
 (699, 'theme_moove_savethemesettings', 'theme_moove\\api\\accessibility', 'savethemesettings', NULL, 'theme_moove', '', NULL),
-(700, 'theme_moove_getthemesettings', 'theme_moove\\api\\accessibility', 'getthemesettings', NULL, 'theme_moove', '', NULL);
+(700, 'theme_moove_getthemesettings', 'theme_moove\\api\\accessibility', 'getthemesettings', NULL, 'theme_moove', '', NULL),
+(701, 'theme_degrade_mycourses_html', '\\theme_degrade\\external\\mycourses', 'html', 'theme/degrade/classes/external/mycourses.php', 'theme_degrade', '', 'moodle_mobile_app'),
+(702, 'theme_degrade_userprerence_layout', '\\theme_degrade\\external\\userprerence', 'layout', 'theme/degrade/classes/external/userprerence.php', 'theme_degrade', '', NULL),
+(703, 'block_quickmail_qm_ajax', 'block_quickmail_external', 'qm_ajax', 'blocks/quickmail/externallib.php', 'block_quickmail', '', NULL),
+(704, 'qtype_coderunner_run_in_sandbox', 'qtype_coderunner\\external\\run_in_sandbox', 'execute', NULL, 'qtype_coderunner', 'qtype/coderunner:sandboxwsaccess', 'moodle_mobile_app');
 
 -- --------------------------------------------------------
 
@@ -8816,7 +9634,8 @@ CREATE TABLE `mdl_external_services` (
 --
 
 INSERT INTO `mdl_external_services` (`id`, `name`, `enabled`, `requiredcapability`, `restrictedusers`, `component`, `timecreated`, `timemodified`, `shortname`, `downloadfiles`, `uploadfiles`) VALUES
-(1, 'Moodle mobile web service', 0, NULL, 0, 'moodle', 1736763464, 1736763714, 'moodle_mobile_app', 1, 1);
+(1, 'Moodle mobile web service', 0, NULL, 0, 'moodle', 1736763464, 1736763714, 'moodle_mobile_app', 1, 1),
+(2, 'Quickmail Service', 1, NULL, 0, 'block_quickmail', 1737546294, NULL, NULL, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -9238,7 +10057,10 @@ INSERT INTO `mdl_external_services_functions` (`id`, `externalserviceid`, `funct
 (401, 1, 'tool_mobile_validate_subscription_key'),
 (402, 1, 'tool_mobile_get_tokens_for_qr_login'),
 (403, 1, 'tool_moodlenet_verify_webfinger'),
-(404, 1, 'tool_moodlenet_search_courses');
+(404, 1, 'tool_moodlenet_search_courses'),
+(405, 1, 'theme_degrade_mycourses_html'),
+(406, 2, 'block_quickmail_qm_ajax'),
+(407, 1, 'qtype_coderunner_run_in_sandbox');
 
 -- --------------------------------------------------------
 
@@ -9300,7 +10122,8 @@ CREATE TABLE `mdl_favourite` (
 --
 
 INSERT INTO `mdl_favourite` (`id`, `component`, `itemtype`, `itemid`, `contextid`, `userid`, `ordering`, `timecreated`, `timemodified`) VALUES
-(1, 'core_message', 'message_conversations', 2, 14, 3, NULL, 1737358827, 1737358827);
+(1, 'core_message', 'message_conversations', 2, 14, 3, NULL, 1737358827, 1737358827),
+(2, 'core_message', 'message_conversations', 3, 5, 2, NULL, 1737529265, 1737529265);
 
 -- --------------------------------------------------------
 
@@ -9492,10 +10315,10 @@ INSERT INTO `mdl_files` (`id`, `contenthash`, `pathnamehash`, `contextid`, `comp
 (19, 'cef443f2ec5a4b5f245c3dbfb926c9d2790af971', 'c9e309602830687b419565d53d90cc7da9b8f6f1', 1, 'core', 'preview', 0, '/thumb/', '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', NULL, 10752, 'image/png', 0, NULL, NULL, NULL, 1737357048, 1737357048, 0, NULL),
 (20, '90f778a788fd0745d87e128f7581ffc6c4850dec', '8eb85f199d0acb33249336938c09f9331c4d786c', 5, 'user', 'draft', 826911108, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":1:{s:6:\"source\";s:12:\"SRI-Logo.png\";}', 'sri portal', 'unknown', 1737357063, 1737357063, 0, NULL),
 (21, '4c8d6c080da534f2e80b4f47359cb8e181925aec', '25c56ce3f11ee67d44360630221cb87f4789ea1f', 1, 'core', 'preview', 0, '/thumb/', '90f778a788fd0745d87e128f7581ffc6c4850dec', NULL, 5496, 'image/png', 0, NULL, NULL, NULL, 1737357064, 1737357064, 0, NULL),
-(22, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '7d2d3bd28ea1be627ad966d2fc0a8bc480355609', 1, 'theme_moove', 'logo', 0, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737356900, 1737357069, 0, NULL),
+(22, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '7d2d3bd28ea1be627ad966d2fc0a8bc480355609', 1, 'theme_moove', 'logo', 0, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737356900, 1737530060, 0, NULL),
 (23, '90f778a788fd0745d87e128f7581ffc6c4850dec', 'e2ac64cefce86b567e234ce5ded820063c09e346', 1, 'theme_moove', 'logo', 0, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'SRI-Logo.png', 'sri portal', 'unknown', 1737357063, 1737357069, 0, NULL),
 (24, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', 'e3e41717f8e61ff8905651401cd22daa0a482a7f', 1, 'theme_moove', 'loginbgimg', 0, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'new2.jpg', 'sri portal', 'unknown', 1737357047, 1737357069, 0, NULL),
-(25, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '253db534e9a1a7082782e0cda8a86406a72a4f53', 1, 'theme_moove', 'loginbgimg', 0, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737357047, 1737357069, 0, NULL),
+(25, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '253db534e9a1a7082782e0cda8a86406a72a4f53', 1, 'theme_moove', 'loginbgimg', 0, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737357047, 1737530060, 0, NULL),
 (27, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '3744c6c6fa01f560ecfef5bf76e8ea8a934c5792', 5, 'user', 'draft', 210471556, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737358306, 1737358306, 0, NULL),
 (29, '5d21abf5e01ef9ee65c797b66f53851060bcef6d', '65343d3a612a404a3940a67b71c89f4107ce1213', 5, 'user', 'draft', 210471556, '/', 'dummy_questions.xml', 2, 8818, 'application/xml', 0, 'O:8:\"stdClass\":1:{s:6:\"source\";s:19:\"dummy_questions.xml\";}', 'sri portal', 'unknown', 1737358316, 1737358316, 0, NULL),
 (30, '018ddb5a2c4262fc8709c3f701bc8cddf84d2660', '690efc393c4aef3e73c97d7e3a8456bfd6e606c6', 5, 'user', 'draft', 654269116, '/', 'main-qimg-3c61a173921a2234f94eefac1f043ca3-c.jpg', 2, 247488, 'image/jpeg', 0, 'O:8:\"stdClass\":1:{s:6:\"source\";s:48:\"main-qimg-3c61a173921a2234f94eefac1f043ca3-c.jpg\";}', 'sri portal', 'unknown', 1737358593, 1737358593, 0, NULL),
@@ -9514,7 +10337,659 @@ INSERT INTO `mdl_files` (`id`, `contenthash`, `pathnamehash`, `contextid`, `comp
 (43, '90f778a788fd0745d87e128f7581ffc6c4850dec', '25fdf48c84d2220574f146192d1a2e054d972e52', 5, 'user', 'draft', 954309358, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:216:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjExOiJ0aGVtZV9tb292ZSI7czo2OiJpdGVtaWQiO2k6MDtzOjg6ImZpbGVhcmVhIjtzOjQ6ImxvZ28iO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737357063, 1737357069, 0, NULL),
 (44, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'a4fc5a167a5300782aa672e51f678e2c57910c6b', 5, 'user', 'draft', 954309358, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737366336, 1737366336, 0, NULL),
 (45, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', 'b45f3fa7a40cf06430cf5208e73c00fe5f456109', 5, 'user', 'draft', 269150615, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:8:\"new2.jpg\";s:8:\"original\";s:220:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjExOiJ0aGVtZV9tb292ZSI7czo2OiJpdGVtaWQiO2k6MDtzOjg6ImZpbGVhcmVhIjtzOjEwOiJsb2dpbmJnaW1nIjtzOjg6ImZpbGVwYXRoIjtzOjE6Ii8iO3M6ODoiZmlsZW5hbWUiO3M6ODoibmV3Mi5qcGciO30=\";}', 'sri portal', 'unknown', 1737357047, 1737357069, 0, NULL),
-(46, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '784f6ee73d21dec01e98c61c26a357c200e50ab2', 5, 'user', 'draft', 269150615, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737366336, 1737366336, 0, NULL);
+(46, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '784f6ee73d21dec01e98c61c26a357c200e50ab2', 5, 'user', 'draft', 269150615, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737366336, 1737366336, 0, NULL),
+(47, '90f778a788fd0745d87e128f7581ffc6c4850dec', '2a9753704fee0f254b92beecb9cbf82dca164512', 5, 'user', 'draft', 868764261, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:216:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjExOiJ0aGVtZV9tb292ZSI7czo2OiJpdGVtaWQiO2k6MDtzOjg6ImZpbGVhcmVhIjtzOjQ6ImxvZ28iO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737357063, 1737357069, 0, NULL),
+(48, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'e8ddee0afa31980ad7795e6b0392cb1c4896ef40', 5, 'user', 'draft', 868764261, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737451064, 1737451064, 0, NULL),
+(49, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', '846726be4bdae64a6c6e7079e3ba6c41ca1c68a5', 5, 'user', 'draft', 116235288, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:8:\"new2.jpg\";s:8:\"original\";s:220:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjExOiJ0aGVtZV9tb292ZSI7czo2OiJpdGVtaWQiO2k6MDtzOjg6ImZpbGVhcmVhIjtzOjEwOiJsb2dpbmJnaW1nIjtzOjg6ImZpbGVwYXRoIjtzOjE6Ii8iO3M6ODoiZmlsZW5hbWUiO3M6ODoibmV3Mi5qcGciO30=\";}', 'sri portal', 'unknown', 1737357047, 1737357069, 0, NULL),
+(50, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'b23fcc3392dbd4ac3143e7181b160144e74887ba', 5, 'user', 'draft', 116235288, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737451064, 1737451064, 0, NULL),
+(51, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', '256fb618df7063db0e9d0a0ca4c6e470afdf5e50', 5, 'user', 'draft', 736730928, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'O:8:\"stdClass\":1:{s:6:\"source\";s:8:\"new2.jpg\";}', 'sri portal', 'unknown', 1737451257, 1737451257, 0, NULL),
+(52, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '423a24ad1825815c110fca81e953d90c321b4cc3', 5, 'user', 'draft', 736730928, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737451257, 1737451257, 0, NULL),
+(53, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', '416e8dbfb091c1f7efd5e616d0e912df33369f56', 5, 'user', 'draft', 911158546, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'O:8:\"stdClass\":1:{s:6:\"source\";s:8:\"new2.jpg\";}', 'sri portal', 'unknown', 1737451274, 1737451274, 0, NULL),
+(54, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'abf18866915b17f50ca3bd4aaeb4311c03e25327', 5, 'user', 'draft', 911158546, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737451274, 1737451274, 0, NULL),
+(55, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', '314f793cd3fc8604581128f20d4791d24cba49eb', 1, 'theme_boost', 'backgroundimage', 0, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'new2.jpg', 'sri portal', 'unknown', 1737451257, 1737451356, 0, NULL),
+(56, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'f17dc2210a6d84b76a5822a233b874d23d385224', 1, 'theme_boost', 'backgroundimage', 0, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737451257, 1737530060, 0, NULL),
+(57, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', '7ca1d410cd7e80ecf139eb842b51ef5b2a3f5404', 1, 'theme_boost', 'loginbackgroundimage', 0, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'new2.jpg', 'sri portal', 'unknown', 1737451274, 1737451356, 0, NULL),
+(58, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'd58e5616de13740fdc8c967f50e53b24eca11458', 1, 'theme_boost', 'loginbackgroundimage', 0, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737451274, 1737530060, 0, NULL),
+(59, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', '8e7b41d901aec2b76184aa2be2741afc7c16d301', 5, 'user', 'draft', 440431426, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:8:\"new2.jpg\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjExOiJ0aGVtZV9ib29zdCI7czo2OiJpdGVtaWQiO2k6MDtzOjg6ImZpbGVhcmVhIjtzOjE1OiJiYWNrZ3JvdW5kaW1hZ2UiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJuZXcyLmpwZyI7fQ==\";}', 'sri portal', 'unknown', 1737451257, 1737451356, 0, NULL),
+(60, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'da5a12344ec88c2379ef4599d85904abb87fd840', 5, 'user', 'draft', 440431426, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737451469, 1737451469, 0, NULL),
+(61, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', '8e995ca93ca75aad7c543057854f063b1904f87f', 5, 'user', 'draft', 66510068, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:8:\"new2.jpg\";s:8:\"original\";s:232:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjExOiJ0aGVtZV9ib29zdCI7czo2OiJpdGVtaWQiO2k6MDtzOjg6ImZpbGVhcmVhIjtzOjIwOiJsb2dpbmJhY2tncm91bmRpbWFnZSI7czo4OiJmaWxlcGF0aCI7czoxOiIvIjtzOjg6ImZpbGVuYW1lIjtzOjg6Im5ldzIuanBnIjt9\";}', 'sri portal', 'unknown', 1737451274, 1737451356, 0, NULL),
+(62, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'd1cd10821ab76ebef385e53ca063cbc00ef61138', 5, 'user', 'draft', 66510068, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737451469, 1737451469, 0, NULL),
+(63, '90f778a788fd0745d87e128f7581ffc6c4850dec', '4ccb4ba43933ef471f368356ce1cefd771abd20e', 5, 'user', 'draft', 500452254, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:216:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjExOiJ0aGVtZV9tb292ZSI7czo2OiJpdGVtaWQiO2k6MDtzOjg6ImZpbGVhcmVhIjtzOjQ6ImxvZ28iO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737357063, 1737357069, 0, NULL),
+(64, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '3a95b7661c85014afc42ba9d6430628e9ae03d78', 5, 'user', 'draft', 500452254, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737451470, 1737451470, 0, NULL),
+(65, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', 'e06bd076b70e0a72901e3431fb84a73ceb1b3d58', 5, 'user', 'draft', 588689435, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:8:\"new2.jpg\";s:8:\"original\";s:220:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjExOiJ0aGVtZV9tb292ZSI7czo2OiJpdGVtaWQiO2k6MDtzOjg6ImZpbGVhcmVhIjtzOjEwOiJsb2dpbmJnaW1nIjtzOjg6ImZpbGVwYXRoIjtzOjE6Ii8iO3M6ODoiZmlsZW5hbWUiO3M6ODoibmV3Mi5qcGciO30=\";}', 'sri portal', 'unknown', 1737357047, 1737357069, 0, NULL),
+(66, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '930675cd6cb746fe96bd359bc9b49503f9decd5f', 5, 'user', 'draft', 588689435, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737451470, 1737451470, 0, NULL),
+(67, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', '167b4f4674cb01376c4ff77d3cf8b02a695501e2', 5, 'user', 'draft', 26240359, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'O:8:\"stdClass\":1:{s:6:\"source\";s:8:\"new2.jpg\";}', 'sri portal', 'unknown', 1737451499, 1737451499, 0, NULL),
+(68, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'cba9ff61ab13ebb148dd68f76400c3bb1b9e7783', 5, 'user', 'draft', 26240359, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737451499, 1737451499, 0, NULL),
+(69, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', 'cc7c27e86788d1c41cba5180f35db0636f4997ba', 5, 'user', 'draft', 219748685, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'O:8:\"stdClass\":1:{s:6:\"source\";s:8:\"new2.jpg\";}', 'sri portal', 'unknown', 1737451511, 1737451511, 0, NULL),
+(70, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'a355175039d67e1ba2b294c43df4c5372781f7f9', 5, 'user', 'draft', 219748685, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737451511, 1737451511, 0, NULL),
+(71, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', '28dcf564ea60837d437d15023720618449481160', 1, 'theme_classic', 'backgroundimage', 0, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'new2.jpg', 'sri portal', 'unknown', 1737451499, 1737451891, 0, NULL),
+(72, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '4d9a686f9d91c5fdcffb8f7fc5b7f43420044b47', 1, 'theme_classic', 'backgroundimage', 0, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737451499, 1737530060, 0, NULL),
+(73, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', 'f88e292982cee686d5ab7d0f4a6f9c6d681488d1', 1, 'theme_classic', 'loginbackgroundimage', 0, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'new2.jpg', 'sri portal', 'unknown', 1737451511, 1737451891, 0, NULL),
+(74, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '9b994dcc386fa9c41b117798bfdee22b4ff6cfcb', 1, 'theme_classic', 'loginbackgroundimage', 0, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737451511, 1737530060, 0, NULL),
+(75, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', 'c9b96b61268d61e9ce356abeba217edefc590481', 5, 'user', 'draft', 489394201, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:8:\"new2.jpg\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjExOiJ0aGVtZV9ib29zdCI7czo2OiJpdGVtaWQiO2k6MDtzOjg6ImZpbGVhcmVhIjtzOjE1OiJiYWNrZ3JvdW5kaW1hZ2UiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJuZXcyLmpwZyI7fQ==\";}', 'sri portal', 'unknown', 1737451257, 1737451356, 0, NULL),
+(76, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'c9ea0b2d91c89e5643c5bdc1edcf38522b7e0c43', 5, 'user', 'draft', 489394201, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737452003, 1737452003, 0, NULL),
+(77, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', '649693721a92d2a9161048f63745f1fad064ea1b', 5, 'user', 'draft', 902853417, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:8:\"new2.jpg\";s:8:\"original\";s:232:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjExOiJ0aGVtZV9ib29zdCI7czo2OiJpdGVtaWQiO2k6MDtzOjg6ImZpbGVhcmVhIjtzOjIwOiJsb2dpbmJhY2tncm91bmRpbWFnZSI7czo4OiJmaWxlcGF0aCI7czoxOiIvIjtzOjg6ImZpbGVuYW1lIjtzOjg6Im5ldzIuanBnIjt9\";}', 'sri portal', 'unknown', 1737451274, 1737451356, 0, NULL),
+(78, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '656fd284f68d93bad2109edb4a4e924424618575', 5, 'user', 'draft', 902853417, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737452003, 1737452003, 0, NULL),
+(79, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', 'eec0a7431ff6e1f56b51753d5e24adff9d487b14', 5, 'user', 'draft', 238666615, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:8:\"new2.jpg\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9jbGFzc2ljIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTU6ImJhY2tncm91bmRpbWFnZSI7czo4OiJmaWxlcGF0aCI7czoxOiIvIjtzOjg6ImZpbGVuYW1lIjtzOjg6Im5ldzIuanBnIjt9\";}', 'sri portal', 'unknown', 1737451499, 1737451891, 0, NULL),
+(80, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'fded7165a40e47f0e1c81f609d34ee50d3757a28', 5, 'user', 'draft', 238666615, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737452003, 1737452003, 0, NULL),
+(81, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', '3187699b8ceb27d60ebb26a9dce3cd4af955ab36', 5, 'user', 'draft', 671045220, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:8:\"new2.jpg\";s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9jbGFzc2ljIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjA6ImxvZ2luYmFja2dyb3VuZGltYWdlIjtzOjg6ImZpbGVwYXRoIjtzOjE6Ii8iO3M6ODoiZmlsZW5hbWUiO3M6ODoibmV3Mi5qcGciO30=\";}', 'sri portal', 'unknown', 1737451511, 1737451891, 0, NULL),
+(82, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '727f0c0c4396a37e3531767ae594212ad5fbcaa5', 5, 'user', 'draft', 671045220, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737452003, 1737452003, 0, NULL),
+(83, '90f778a788fd0745d87e128f7581ffc6c4850dec', 'a88435c5eeaf0cd7de5bce97129ac2904d3a0d73', 5, 'user', 'draft', 83139002, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:216:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjExOiJ0aGVtZV9tb292ZSI7czo2OiJpdGVtaWQiO2k6MDtzOjg6ImZpbGVhcmVhIjtzOjQ6ImxvZ28iO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737357063, 1737357069, 0, NULL),
+(84, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '64a3a6c73e3c8482e8f06994bc728268699027d1', 5, 'user', 'draft', 83139002, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737452003, 1737452003, 0, NULL),
+(85, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', '2dd8915baec9b773196f091704e0377e6e8286f2', 5, 'user', 'draft', 860340030, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:8:\"new2.jpg\";s:8:\"original\";s:220:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjExOiJ0aGVtZV9tb292ZSI7czo2OiJpdGVtaWQiO2k6MDtzOjg6ImZpbGVhcmVhIjtzOjEwOiJsb2dpbmJnaW1nIjtzOjg6ImZpbGVwYXRoIjtzOjE6Ii8iO3M6ODoiZmlsZW5hbWUiO3M6ODoibmV3Mi5qcGciO30=\";}', 'sri portal', 'unknown', 1737357047, 1737357069, 0, NULL),
+(86, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'ef74034c09466b39799747360bb3dd1487d8afa9', 5, 'user', 'draft', 860340030, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737452003, 1737452003, 0, NULL),
+(87, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', '4aa9d7f7095f1b0de554190e32e940238f8627fe', 5, 'user', 'draft', 38999926, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:8:\"new2.jpg\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjExOiJ0aGVtZV9ib29zdCI7czo2OiJpdGVtaWQiO2k6MDtzOjg6ImZpbGVhcmVhIjtzOjE1OiJiYWNrZ3JvdW5kaW1hZ2UiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJuZXcyLmpwZyI7fQ==\";}', 'sri portal', 'unknown', 1737451257, 1737451356, 0, NULL),
+(88, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '14cd32d3c6754907f58a63ffc0802a4f8346b5a6', 5, 'user', 'draft', 38999926, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737452140, 1737452140, 0, NULL),
+(89, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', '37e2c76ed42ad790e6316ef8694a892eac0cbef2', 5, 'user', 'draft', 444091291, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:8:\"new2.jpg\";s:8:\"original\";s:232:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjExOiJ0aGVtZV9ib29zdCI7czo2OiJpdGVtaWQiO2k6MDtzOjg6ImZpbGVhcmVhIjtzOjIwOiJsb2dpbmJhY2tncm91bmRpbWFnZSI7czo4OiJmaWxlcGF0aCI7czoxOiIvIjtzOjg6ImZpbGVuYW1lIjtzOjg6Im5ldzIuanBnIjt9\";}', 'sri portal', 'unknown', 1737451274, 1737451356, 0, NULL),
+(90, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'c32cac9db6f1611bf431c8da0583f48c6b316c23', 5, 'user', 'draft', 444091291, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737452140, 1737452140, 0, NULL),
+(91, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', '76b72ca7eefdb7766a6e9549ad1f3ac4d65529a9', 5, 'user', 'draft', 41348250, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:8:\"new2.jpg\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9jbGFzc2ljIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTU6ImJhY2tncm91bmRpbWFnZSI7czo4OiJmaWxlcGF0aCI7czoxOiIvIjtzOjg6ImZpbGVuYW1lIjtzOjg6Im5ldzIuanBnIjt9\";}', 'sri portal', 'unknown', 1737451499, 1737451891, 0, NULL),
+(92, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '997c37b38f7acfb25e848fbed47ff5f03646d26a', 5, 'user', 'draft', 41348250, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737452140, 1737452140, 0, NULL),
+(93, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', '9a990761ddda00089799d18bc8fe09b964c53b3f', 5, 'user', 'draft', 791460274, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:8:\"new2.jpg\";s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9jbGFzc2ljIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjA6ImxvZ2luYmFja2dyb3VuZGltYWdlIjtzOjg6ImZpbGVwYXRoIjtzOjE6Ii8iO3M6ODoiZmlsZW5hbWUiO3M6ODoibmV3Mi5qcGciO30=\";}', 'sri portal', 'unknown', 1737451511, 1737451891, 0, NULL),
+(94, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '2f872c8aec17047daa345280ffc559c997311011', 5, 'user', 'draft', 791460274, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737452140, 1737452140, 0, NULL),
+(95, '90f778a788fd0745d87e128f7581ffc6c4850dec', 'aad5f467faf2713d7c70b5faeba888e290b35a96', 5, 'user', 'draft', 730673924, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:216:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjExOiJ0aGVtZV9tb292ZSI7czo2OiJpdGVtaWQiO2k6MDtzOjg6ImZpbGVhcmVhIjtzOjQ6ImxvZ28iO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737357063, 1737357069, 0, NULL),
+(96, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '672e7ec17367b6a9c759775da4787487ec148d60', 5, 'user', 'draft', 730673924, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737452140, 1737452140, 0, NULL),
+(97, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', 'b432851ddbafae179e4c768b8203c9d19891a6a3', 5, 'user', 'draft', 634340412, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:8:\"new2.jpg\";s:8:\"original\";s:220:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjExOiJ0aGVtZV9tb292ZSI7czo2OiJpdGVtaWQiO2k6MDtzOjg6ImZpbGVhcmVhIjtzOjEwOiJsb2dpbmJnaW1nIjtzOjg6ImZpbGVwYXRoIjtzOjE6Ii8iO3M6ODoiZmlsZW5hbWUiO3M6ODoibmV3Mi5qcGciO30=\";}', 'sri portal', 'unknown', 1737357047, 1737357069, 0, NULL),
+(98, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '68e7b6e23ebb834036f504b53c8d8c1245ca5a30', 5, 'user', 'draft', 634340412, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737452140, 1737452140, 0, NULL),
+(99, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', '9997e404ddec6edd3852a289ad1afac5b7f5fbe6', 5, 'user', 'draft', 418946102, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:8:\"new2.jpg\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjExOiJ0aGVtZV9ib29zdCI7czo2OiJpdGVtaWQiO2k6MDtzOjg6ImZpbGVhcmVhIjtzOjE1OiJiYWNrZ3JvdW5kaW1hZ2UiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJuZXcyLmpwZyI7fQ==\";}', 'sri portal', 'unknown', 1737451257, 1737451356, 0, NULL),
+(100, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '71c1d947ed168840d40db60f2f31169a472152e3', 5, 'user', 'draft', 418946102, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737452256, 1737452256, 0, NULL),
+(101, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', '7efedb6ed884ccc7536a330fa5dad87d480a5618', 5, 'user', 'draft', 941223364, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:8:\"new2.jpg\";s:8:\"original\";s:232:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjExOiJ0aGVtZV9ib29zdCI7czo2OiJpdGVtaWQiO2k6MDtzOjg6ImZpbGVhcmVhIjtzOjIwOiJsb2dpbmJhY2tncm91bmRpbWFnZSI7czo4OiJmaWxlcGF0aCI7czoxOiIvIjtzOjg6ImZpbGVuYW1lIjtzOjg6Im5ldzIuanBnIjt9\";}', 'sri portal', 'unknown', 1737451274, 1737451356, 0, NULL),
+(102, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'efde9118eb8684ec96e3ffd75bc673eb5c37812b', 5, 'user', 'draft', 941223364, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737452256, 1737452256, 0, NULL),
+(103, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', 'dcc3c809e2e15f57575b53e897071712f3678deb', 5, 'user', 'draft', 941509946, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:8:\"new2.jpg\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9jbGFzc2ljIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTU6ImJhY2tncm91bmRpbWFnZSI7czo4OiJmaWxlcGF0aCI7czoxOiIvIjtzOjg6ImZpbGVuYW1lIjtzOjg6Im5ldzIuanBnIjt9\";}', 'sri portal', 'unknown', 1737451499, 1737451891, 0, NULL),
+(104, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'c64753ed4ef7e5676dcd1c65b2b56f0b14195e56', 5, 'user', 'draft', 941509946, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737452256, 1737452256, 0, NULL),
+(105, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', '4ddf83a942e0deb9749bda07a2a53897def8bcce', 5, 'user', 'draft', 173629323, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:8:\"new2.jpg\";s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9jbGFzc2ljIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjA6ImxvZ2luYmFja2dyb3VuZGltYWdlIjtzOjg6ImZpbGVwYXRoIjtzOjE6Ii8iO3M6ODoiZmlsZW5hbWUiO3M6ODoibmV3Mi5qcGciO30=\";}', 'sri portal', 'unknown', 1737451511, 1737451891, 0, NULL),
+(106, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'f713a008266dc5ef97950976fa4e3a12619d50cb', 5, 'user', 'draft', 173629323, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737452256, 1737452256, 0, NULL),
+(107, '90f778a788fd0745d87e128f7581ffc6c4850dec', '2b6d61c3e07cddd9e4fa2235dbd9ae8a11003bc0', 5, 'user', 'draft', 603234606, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:216:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjExOiJ0aGVtZV9tb292ZSI7czo2OiJpdGVtaWQiO2k6MDtzOjg6ImZpbGVhcmVhIjtzOjQ6ImxvZ28iO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737357063, 1737357069, 0, NULL),
+(108, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '959f159e978251f37f915fffb4d1763ceeaf8ce6', 5, 'user', 'draft', 603234606, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737452256, 1737452256, 0, NULL),
+(109, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', 'e07c6bd1b1bebba1febada462a3c061ecbc8d460', 5, 'user', 'draft', 150675443, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:8:\"new2.jpg\";s:8:\"original\";s:220:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjExOiJ0aGVtZV9tb292ZSI7czo2OiJpdGVtaWQiO2k6MDtzOjg6ImZpbGVhcmVhIjtzOjEwOiJsb2dpbmJnaW1nIjtzOjg6ImZpbGVwYXRoIjtzOjE6Ii8iO3M6ODoiZmlsZW5hbWUiO3M6ODoibmV3Mi5qcGciO30=\";}', 'sri portal', 'unknown', 1737357047, 1737357069, 0, NULL),
+(110, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '9873e5ccc336f98fa2ad11dbd2f401eba3fcabdd', 5, 'user', 'draft', 150675443, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737452256, 1737452256, 0, NULL),
+(111, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', '5bfc7f652db9e4c3c8c938577018438dbb3b133f', 5, 'user', 'draft', 416568217, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:8:\"new2.jpg\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjExOiJ0aGVtZV9ib29zdCI7czo2OiJpdGVtaWQiO2k6MDtzOjg6ImZpbGVhcmVhIjtzOjE1OiJiYWNrZ3JvdW5kaW1hZ2UiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJuZXcyLmpwZyI7fQ==\";}', 'sri portal', 'unknown', 1737451257, 1737451356, 0, NULL),
+(112, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '2f54a5d1e8e07290f6aab5a0b29e359b820cf368', 5, 'user', 'draft', 416568217, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737454648, 1737454648, 0, NULL),
+(113, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', 'ad014a09d9df7e6e917158698de8ebb3a8cce16b', 5, 'user', 'draft', 82322210, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:8:\"new2.jpg\";s:8:\"original\";s:232:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjExOiJ0aGVtZV9ib29zdCI7czo2OiJpdGVtaWQiO2k6MDtzOjg6ImZpbGVhcmVhIjtzOjIwOiJsb2dpbmJhY2tncm91bmRpbWFnZSI7czo4OiJmaWxlcGF0aCI7czoxOiIvIjtzOjg6ImZpbGVuYW1lIjtzOjg6Im5ldzIuanBnIjt9\";}', 'sri portal', 'unknown', 1737451274, 1737451356, 0, NULL),
+(114, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '6b27ce1aa06f5d0b39239a27e0de287c9c744686', 5, 'user', 'draft', 82322210, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737454648, 1737454648, 0, NULL),
+(115, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', 'd0911bf2db71f47f98a437ddcdfd74d4120ea7cd', 5, 'user', 'draft', 513016533, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:8:\"new2.jpg\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9jbGFzc2ljIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTU6ImJhY2tncm91bmRpbWFnZSI7czo4OiJmaWxlcGF0aCI7czoxOiIvIjtzOjg6ImZpbGVuYW1lIjtzOjg6Im5ldzIuanBnIjt9\";}', 'sri portal', 'unknown', 1737451499, 1737451891, 0, NULL),
+(116, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '7829db4c7b27ce530229426f6ac8c665f48d4cc9', 5, 'user', 'draft', 513016533, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737454648, 1737454648, 0, NULL),
+(117, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', 'f8a097ea5d1c443f45941081d51580957564624a', 5, 'user', 'draft', 872088758, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:8:\"new2.jpg\";s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9jbGFzc2ljIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjA6ImxvZ2luYmFja2dyb3VuZGltYWdlIjtzOjg6ImZpbGVwYXRoIjtzOjE6Ii8iO3M6ODoiZmlsZW5hbWUiO3M6ODoibmV3Mi5qcGciO30=\";}', 'sri portal', 'unknown', 1737451511, 1737451891, 0, NULL),
+(118, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'e62ce195b2355801b07a2627016d9c01c3f594fc', 5, 'user', 'draft', 872088758, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737454648, 1737454648, 0, NULL),
+(119, '90f778a788fd0745d87e128f7581ffc6c4850dec', '01121df6e2e48b138f7c8246a58f7eb30905c395', 5, 'user', 'draft', 148949775, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:216:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjExOiJ0aGVtZV9tb292ZSI7czo2OiJpdGVtaWQiO2k6MDtzOjg6ImZpbGVhcmVhIjtzOjQ6ImxvZ28iO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737357063, 1737357069, 0, NULL),
+(120, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'ce12573f9b28ed44acdadd15fdd9cb226c79b5de', 5, 'user', 'draft', 148949775, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737454648, 1737454648, 0, NULL),
+(121, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', '33a09649962d22b065400a11b04879bfa7fcbe5e', 5, 'user', 'draft', 161894630, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:8:\"new2.jpg\";s:8:\"original\";s:220:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjExOiJ0aGVtZV9tb292ZSI7czo2OiJpdGVtaWQiO2k6MDtzOjg6ImZpbGVhcmVhIjtzOjEwOiJsb2dpbmJnaW1nIjtzOjg6ImZpbGVwYXRoIjtzOjE6Ii8iO3M6ODoiZmlsZW5hbWUiO3M6ODoibmV3Mi5qcGciO30=\";}', 'sri portal', 'unknown', 1737357047, 1737357069, 0, NULL),
+(122, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'a2427167d96862e6e26fa1f85d166563f2034f2c', 5, 'user', 'draft', 161894630, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737454648, 1737454648, 0, NULL),
+(124, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '62bdf80457e9de2ab8d0653e5d1753641da22f5f', 5, 'user', 'draft', 630881658, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737454690, 1737454690, 0, NULL),
+(126, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '4bcc8ef34a6a816138e212c0778986dcae163745', 1, 'theme_moove', 'marketing1icon', 0, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737454690, 1737454690, 0, NULL),
+(127, '5f9ba299b431cf381f84404f7f8be80c4e675e63', '672dff9e2e42d1c28c738da6ca5e411113010807', 5, 'user', 'draft', 606050517, '/', 'Files.zip', 2, 40442, 'application/zip', 0, NULL, NULL, NULL, 1737454741, 1737454741, 0, NULL),
+(128, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '9864b80ce7a0c694d75ec3ef4aebf8fdd27033d3', 5, 'user', 'draft', 606050517, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737454741, 1737454741, 0, NULL),
+(129, '170c4361995bee50e8d5b0111dae16b94556599a', 'a67cebf7d2a0d96c0801db65ae764b914297500f', 5, 'user', 'draft', 110455797, '/', 'theme_trema_moodle45_2024111400.zip', 2, 18167578, 'application/zip', 0, 'O:8:\"stdClass\":1:{s:6:\"source\";s:35:\"theme_trema_moodle45_2024111400.zip\";}', 'sri portal', 'unknown', 1737456405, 1737456405, 0, NULL),
+(130, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'ed6ab58534b446699edbce88f75edb2cd85303cb', 5, 'user', 'draft', 110455797, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456405, 1737456405, 0, NULL),
+(131, '47f311454e4d90d504d45bdb9cec17358ea29c27', 'c9c811488a73f4eabd1e5973c88666699700b547', 5, 'user', 'draft', 707941886, '/', 'theme_degrade_moodle45_2025011900.zip', 2, 8278169, 'application/zip', 0, 'O:8:\"stdClass\":1:{s:6:\"source\";s:37:\"theme_degrade_moodle45_2025011900.zip\";}', 'sri portal', 'unknown', 1737456645, 1737456645, 0, NULL),
+(132, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'f2666caa9123da2fc181b5f8334ee6a39f96f1b5', 5, 'user', 'draft', 707941886, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456645, 1737456645, 0, NULL),
+(133, 'b0e1ba13b73ed242f9cb71464c24c42cc8719092', '90db68de6dc41b6c861facc8410b1f066a721403', 1, 'theme_degrade', 'mycourses_icon_1', 0, '/', 'message.svg', 2, 1400, 'image/svg+xml', 0, NULL, NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(134, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '82b5090fd8421e3df01b7a7d9e39e3a42d2a2a74', 1, 'theme_degrade', 'mycourses_icon_1', 0, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456695, 1737530308, 0, NULL),
+(135, 'abb3a5ef41c527333fe1fe303a5b9351fbe23e61', 'd81bdfd7d8fa7898dff371bf065cf3da27e4b0b4', 1, 'theme_degrade', 'mycourses_icon_2', 0, '/', 'profile.svg', 2, 722, 'image/svg+xml', 0, NULL, NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(136, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '8ff51c384dd12437e03329f178bc7a4170d96c5a', 1, 'theme_degrade', 'mycourses_icon_2', 0, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456695, 1737530308, 0, NULL),
+(137, '2c3a267644b90eef727abe4daae210973f28be7e', '7a19f9e3fdc7cff3ea1feddcd80fe6827653b331', 1, 'theme_degrade', 'mycourses_icon_3', 0, '/', 'preferences.svg', 2, 2159, 'image/svg+xml', 0, NULL, NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(138, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '1d684c40ce726e60f2b0f037cce4c73f336899b4', 1, 'theme_degrade', 'mycourses_icon_3', 0, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456695, 1737530308, 0, NULL),
+(139, 'e15c679482a52f1b73b08fc301d830a887ccf9b5', '5582190f140fa88c8a6a893466af3d25edf0285b', 1, 'theme_degrade', 'mycourses_icon_4', 0, '/', 'grade.svg', 2, 872, 'image/svg+xml', 0, NULL, NULL, NULL, 1737456696, 1737456696, 0, NULL),
+(140, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '7c08f1d6fb5e8c68fdcd674f0cc660188c3e91a9', 1, 'theme_degrade', 'mycourses_icon_4', 0, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456696, 1737530308, 0, NULL),
+(141, '4ad68590dfca162f9e0634bf8d6a064169195db9', '4b85bcaf73537a275b37e6eb63ffaf470cc14234', 1, 'theme_degrade', 'settings_icons_image_1', 0, '/', 'audio_file.svg', 2, 266, 'image/svg+xml', 0, NULL, NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(142, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'b2916d191144b4f745ac6b8d316b67d9afdfe126', 1, 'theme_degrade', 'settings_icons_image_1', 0, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456697, 1737530307, 0, NULL),
+(143, '7c6f6b2dd8af961ada7ba051522f4789a870ca68', '5c43bca7fc80d71bab0367c8acabba2e93508185', 1, 'theme_degrade', 'settings_icons_image_2', 0, '/', 'video_file.svg', 2, 287, 'image/svg+xml', 0, NULL, NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(144, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '8d877c383bd0f6725379c6357daefff1c1b817c8', 1, 'theme_degrade', 'settings_icons_image_2', 0, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456697, 1737530307, 0, NULL),
+(145, '8dc4323dab999a3151a3b961ad198cd6cc1c76f8', '5799a1f3d166f04b6f3b3dc8e816d6861e445e63', 1, 'theme_degrade', 'settings_icons_image_3', 0, '/', 'book.svg', 2, 474, 'image/svg+xml', 0, NULL, NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(146, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'cff305da4cc490710e05bbf35109b42173daa6af', 1, 'theme_degrade', 'settings_icons_image_3', 0, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456698, 1737530307, 0, NULL),
+(147, '73484cc247330ed154033cc723e357fdb0021d64', 'b31dcb31d389a46c355a5b4edf9576e7c935e8c3', 1, 'theme_degrade', 'settings_icons_image_4', 0, '/', 'game.svg', 2, 697, 'image/svg+xml', 0, NULL, NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(148, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '496ebe147701e2b7f258278c1c116b6fee371c66', 1, 'theme_degrade', 'settings_icons_image_4', 0, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456698, 1737530307, 0, NULL),
+(149, '9cda70c97cc93f83023221c37ae8ae4cd7dffb47', 'de8c39b6f87dfd4e1577704b4b38e2f96a73b4d5', 1, 'theme_degrade', 'settings_icons_image_5', 0, '/', 'money.svg', 2, 684, 'image/svg+xml', 0, NULL, NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(150, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '17e85afbf70bf0346a6bb7db6416134a540a400e', 1, 'theme_degrade', 'settings_icons_image_5', 0, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456698, 1737530307, 0, NULL),
+(151, '1996f00e47a9833bbadba62a1c836e65c2ef54f9', '9809c3557f7a20aa70d5d42a72ca0aa8c1294674', 1, 'theme_degrade', 'settings_icons_image_6', 0, '/', 'slide.svg', 2, 288, 'image/svg+xml', 0, NULL, NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(152, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'f74aa53fb1c1368b451b6d286019ec8d7e0ac7c2', 1, 'theme_degrade', 'settings_icons_image_6', 0, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456698, 1737530307, 0, NULL),
+(153, '8a489267f1c0d0b8f24031ef66823083559db9f2', '8a4b5f09bdb75926ae6a88973d6226d0ba8693df', 1, 'theme_degrade', 'settings_icons_image_7', 0, '/', 'support.svg', 2, 576, 'image/svg+xml', 0, NULL, NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(154, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '96bd3d9ff681abe9f73bfa717f267afd5e7a9aa9', 1, 'theme_degrade', 'settings_icons_image_7', 0, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456698, 1737530307, 0, NULL),
+(155, '1575a255e0a88da9593dc0c445664fb7bb2a22ad', '9a3cc13d58ffe2253c20593d0e672fa8cf36e65c', 1, 'theme_degrade', 'settings_icons_image_8', 0, '/', 'download.svg', 2, 401, 'image/svg+xml', 0, NULL, NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(156, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'fbe64257f2b0c16b686701c84d3146c4135968f7', 1, 'theme_degrade', 'settings_icons_image_8', 0, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456698, 1737530307, 0, NULL),
+(157, '4ad68590dfca162f9e0634bf8d6a064169195db9', 'b4b26c8c55a0e6054714348db4a2212dbb4c9da7', 5, 'user', 'draft', 62345152, '/', 'audio_file.svg', 2, 266, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:248:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzEiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNDoiYXVkaW9fZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(158, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'fee81468572ecf9de93ba88fd90cb9f6bd7ccec2', 5, 'user', 'draft', 62345152, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456886, 1737456886, 0, NULL),
+(159, '7c6f6b2dd8af961ada7ba051522f4789a870ca68', '1cfb759046ab8165e0fc140d45e253752c859228', 5, 'user', 'draft', 227096943, '/', 'video_file.svg', 2, 287, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:248:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzIiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNDoidmlkZW9fZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(160, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '287adb119cb9810942b90317b13208af70dba368', 5, 'user', 'draft', 227096943, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456886, 1737456886, 0, NULL),
+(161, '8dc4323dab999a3151a3b961ad198cd6cc1c76f8', '49ecf39aef592369e07c97b48100509a08ece062', 5, 'user', 'draft', 706142757, '/', 'book.svg', 2, 474, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzMiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJib29rLnN2ZyI7fQ==\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(162, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '571329a05873ff95c3b76eb11b82b31ffc6c8db8', 5, 'user', 'draft', 706142757, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456886, 1737456886, 0, NULL),
+(163, '73484cc247330ed154033cc723e357fdb0021d64', '28a66a237f1e3b0ce2629996964602af1ae306c1', 5, 'user', 'draft', 143036785, '/', 'game.svg', 2, 697, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzQiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJnYW1lLnN2ZyI7fQ==\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(164, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '72a8a1d4b3b3ae57a8b42b02fbf1b96287705073', 5, 'user', 'draft', 143036785, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456887, 1737456887, 0, NULL),
+(165, '9cda70c97cc93f83023221c37ae8ae4cd7dffb47', '681dfe5c65521e6fbf3a832af2562e1935075ecb', 5, 'user', 'draft', 223748461, '/', 'money.svg', 2, 684, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzUiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJtb25leS5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(166, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'f3232ce072a88b4c293794d9e6d3f58579ef0cdc', 5, 'user', 'draft', 223748461, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456887, 1737456887, 0, NULL);
+INSERT INTO `mdl_files` (`id`, `contenthash`, `pathnamehash`, `contextid`, `component`, `filearea`, `itemid`, `filepath`, `filename`, `userid`, `filesize`, `mimetype`, `status`, `source`, `author`, `license`, `timecreated`, `timemodified`, `sortorder`, `referencefileid`) VALUES
+(167, '1996f00e47a9833bbadba62a1c836e65c2ef54f9', '30387fd3762f29f26506e4115e12b0933cb46ce8', 5, 'user', 'draft', 638007931, '/', 'slide.svg', 2, 288, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzYiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJzbGlkZS5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(168, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '004a2920d4d5d13a99c5914bc04ac1911ad934d3', 5, 'user', 'draft', 638007931, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456887, 1737456887, 0, NULL),
+(169, '8a489267f1c0d0b8f24031ef66823083559db9f2', 'b7692d104dfaa4ba502e55e6e57d59c2b35b4b6d', 5, 'user', 'draft', 151667355, '/', 'support.svg', 2, 576, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:244:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzciO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToic3VwcG9ydC5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(170, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '193f122a2d748095173b174b86d1c5597605595a', 5, 'user', 'draft', 151667355, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456887, 1737456887, 0, NULL),
+(171, '1575a255e0a88da9593dc0c445664fb7bb2a22ad', '66a4b3cee4dcf26fa742e65c1c41477b8e322606', 5, 'user', 'draft', 927007632, '/', 'download.svg', 2, 401, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:244:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzgiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiZG93bmxvYWQuc3ZnIjt9\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(172, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'c3c62909256dc60dc4b380bec57da7f4c10d85a1', 5, 'user', 'draft', 927007632, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456887, 1737456887, 0, NULL),
+(173, 'b0e1ba13b73ed242f9cb71464c24c42cc8719092', 'edbacd5bdb833007e32e10bfae7e6802a59c594a', 5, 'user', 'draft', 713508236, '/', 'message.svg', 2, 1400, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzEiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToibWVzc2FnZS5zdmciO30=\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(174, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '0e7952b6f4490ef6a5f0767e381d794f28526f93', 5, 'user', 'draft', 713508236, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456887, 1737456887, 0, NULL),
+(175, 'abb3a5ef41c527333fe1fe303a5b9351fbe23e61', '9e6a47bee57bebf692852420783b2021f1b83639', 5, 'user', 'draft', 259532973, '/', 'profile.svg', 2, 722, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzIiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToicHJvZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(176, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '12254cc6f340391e22091f94bd3308a9feb2a2c2', 5, 'user', 'draft', 259532973, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456887, 1737456887, 0, NULL),
+(177, '2c3a267644b90eef727abe4daae210973f28be7e', '9fff641cb297f6b6098500e6846a691aa6212720', 5, 'user', 'draft', 117872486, '/', 'preferences.svg', 2, 2159, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzMiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNToicHJlZmVyZW5jZXMuc3ZnIjt9\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(178, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'aa1e5524f106a1c646ee3ca224782ff24bf8feb9', 5, 'user', 'draft', 117872486, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456887, 1737456887, 0, NULL),
+(179, 'e15c679482a52f1b73b08fc301d830a887ccf9b5', '80ca2a44723da01c1fa831e94b4100151f7e6aa9', 5, 'user', 'draft', 898692754, '/', 'grade.svg', 2, 872, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:232:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzQiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJncmFkZS5zdmciO30=\";}', NULL, NULL, 1737456696, 1737456696, 0, NULL),
+(180, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'b13cad0835d81c6b857388e3ca89482921a61323', 5, 'user', 'draft', 898692754, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456887, 1737456887, 0, NULL),
+(181, '90f778a788fd0745d87e128f7581ffc6c4850dec', '37560666cdc6c434944f6368935ae11359558260', 5, 'user', 'draft', 513000148, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":1:{s:6:\"source\";s:12:\"SRI-Logo.png\";}', 'sri portal', 'unknown', 1737456936, 1737456936, 0, NULL),
+(182, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'c1f2bd1e85be640f719eb0e604890f4372c5064e', 5, 'user', 'draft', 513000148, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456936, 1737456936, 0, NULL),
+(183, '90f778a788fd0745d87e128f7581ffc6c4850dec', 'e38f74b8afa4fe77ec38d3d301f1aaa360918258', 5, 'user', 'draft', 676949008, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":1:{s:6:\"source\";s:12:\"SRI-Logo.png\";}', 'sri portal', 'unknown', 1737456966, 1737456966, 0, NULL),
+(184, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '3be626fd1759eeb295da12b5312f4ba0ab5976ca', 5, 'user', 'draft', 676949008, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456966, 1737456966, 0, NULL),
+(185, '90f778a788fd0745d87e128f7581ffc6c4850dec', '3e0d31fdb485de56ce6d02e2fc6ae277a4fa4d67', 1, 'theme_degrade', 'logo_color', 0, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'SRI-Logo.png', 'sri portal', 'unknown', 1737456936, 1737456979, 0, NULL),
+(186, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '7b96c90f0caf40c7412a04ac6c5227e7047677c7', 1, 'theme_degrade', 'logo_color', 0, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456936, 1737530307, 0, NULL),
+(187, '90f778a788fd0745d87e128f7581ffc6c4850dec', '94c3183632dedd77a69025b26c2bf7ba625a45a0', 1, 'theme_degrade', 'logo_write', 0, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'SRI-Logo.png', 'sri portal', 'unknown', 1737456966, 1737456979, 0, NULL),
+(188, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '849d7d62e6633ae72b455dd45a26f86f2db456b8', 1, 'theme_degrade', 'logo_write', 0, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456966, 1737530307, 0, NULL),
+(189, '90f778a788fd0745d87e128f7581ffc6c4850dec', '9bc6e6003a79d364990a8ca88553a4585893670f', 5, 'user', 'draft', 214637755, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTA6ImxvZ29fY29sb3IiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737456936, 1737456979, 0, NULL),
+(190, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'f1e04dafaf099b9f31e2d5971cb88551541b9a99', 5, 'user', 'draft', 214637755, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456985, 1737456985, 0, NULL),
+(191, '90f778a788fd0745d87e128f7581ffc6c4850dec', 'c97d1716b27c941fcdb11515c93eb0870540becc', 5, 'user', 'draft', 642761192, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTA6ImxvZ29fd3JpdGUiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737456966, 1737456979, 0, NULL),
+(192, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'cc3156e1bf2b3c9a21e48bdb9b9d397b74a5b793', 5, 'user', 'draft', 642761192, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456986, 1737456986, 0, NULL),
+(193, '4ad68590dfca162f9e0634bf8d6a064169195db9', '22d635fbfd3716f0fbda3fac34fa68be3cc46217', 5, 'user', 'draft', 903360013, '/', 'audio_file.svg', 2, 266, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:248:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzEiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNDoiYXVkaW9fZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(194, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'e155d4e772dddd291576661ee23372a3b3909503', 5, 'user', 'draft', 903360013, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456986, 1737456986, 0, NULL),
+(195, '7c6f6b2dd8af961ada7ba051522f4789a870ca68', '367b7db6238bf42335b27807fbc966eb92adb422', 5, 'user', 'draft', 207981672, '/', 'video_file.svg', 2, 287, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:248:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzIiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNDoidmlkZW9fZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(196, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'ab4ee7dbdb06215303ac5f358025ddf319d7d624', 5, 'user', 'draft', 207981672, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456986, 1737456986, 0, NULL),
+(197, '8dc4323dab999a3151a3b961ad198cd6cc1c76f8', '989b6d3d01a250c6020ef36176fe619208c97196', 5, 'user', 'draft', 14555896, '/', 'book.svg', 2, 474, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzMiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJib29rLnN2ZyI7fQ==\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(198, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '76cd6d53ce4fb4be9b95de2e4da55c799f5c3d5d', 5, 'user', 'draft', 14555896, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456986, 1737456986, 0, NULL),
+(199, '73484cc247330ed154033cc723e357fdb0021d64', '0166083bb83e00d2b0ab8077a39f48f738850e7d', 5, 'user', 'draft', 328017750, '/', 'game.svg', 2, 697, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzQiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJnYW1lLnN2ZyI7fQ==\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(200, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '1e152034664175e6ab1e2a0c529fedb4a9e256b4', 5, 'user', 'draft', 328017750, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456986, 1737456986, 0, NULL),
+(201, '9cda70c97cc93f83023221c37ae8ae4cd7dffb47', '3cac08d58c2873167eec28354e6e5bc550e841ee', 5, 'user', 'draft', 286634663, '/', 'money.svg', 2, 684, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzUiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJtb25leS5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(202, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '4f6bdadce6727455929a9fc3bff4d6d1aad517c4', 5, 'user', 'draft', 286634663, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456986, 1737456986, 0, NULL),
+(203, '1996f00e47a9833bbadba62a1c836e65c2ef54f9', '02b219caf572c61733f6718fb05f284b6fff2991', 5, 'user', 'draft', 852850228, '/', 'slide.svg', 2, 288, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzYiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJzbGlkZS5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(204, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '06429ec94fabea26bcc74bf1e56ef398a2ec0853', 5, 'user', 'draft', 852850228, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456986, 1737456986, 0, NULL),
+(205, '8a489267f1c0d0b8f24031ef66823083559db9f2', '6fb6354479626a7d1a960f15966b4b57ba77a2d7', 5, 'user', 'draft', 635466452, '/', 'support.svg', 2, 576, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:244:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzciO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToic3VwcG9ydC5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(206, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'b29fb30c92ee46c471c4fc9bfc884147b9b637bb', 5, 'user', 'draft', 635466452, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456986, 1737456986, 0, NULL),
+(207, '1575a255e0a88da9593dc0c445664fb7bb2a22ad', '3e18783b87fff49bb9316902322e5986f89a388b', 5, 'user', 'draft', 855739819, '/', 'download.svg', 2, 401, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:244:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzgiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiZG93bmxvYWQuc3ZnIjt9\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(208, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '4b917f14723f270b3c572c8610b3ce0cfc0d97f4', 5, 'user', 'draft', 855739819, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456986, 1737456986, 0, NULL),
+(209, 'b0e1ba13b73ed242f9cb71464c24c42cc8719092', 'd1483fa6bf298bfee48ae16e1dd6b804253cc163', 5, 'user', 'draft', 562723394, '/', 'message.svg', 2, 1400, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzEiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToibWVzc2FnZS5zdmciO30=\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(210, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'afb958f4453fe5d6fadb906bf3a73c509ac42903', 5, 'user', 'draft', 562723394, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456986, 1737456986, 0, NULL),
+(211, 'abb3a5ef41c527333fe1fe303a5b9351fbe23e61', 'ef77ae4eca31f0045c85b695320d155806fc93df', 5, 'user', 'draft', 592233168, '/', 'profile.svg', 2, 722, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzIiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToicHJvZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(212, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'efd75c88ef574d16066416a807e54b430d311e2c', 5, 'user', 'draft', 592233168, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456986, 1737456986, 0, NULL),
+(213, '2c3a267644b90eef727abe4daae210973f28be7e', '6f3dc15804a08a485471bcd290647afc8b17f0dd', 5, 'user', 'draft', 799403364, '/', 'preferences.svg', 2, 2159, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzMiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNToicHJlZmVyZW5jZXMuc3ZnIjt9\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(214, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '6d4cdfc7856276f3d3d9e06ad3a091e6de59af0c', 5, 'user', 'draft', 799403364, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456986, 1737456986, 0, NULL),
+(215, 'e15c679482a52f1b73b08fc301d830a887ccf9b5', '13d230dad95c66cc88fe15312199a47aa0a3b0c9', 5, 'user', 'draft', 195411484, '/', 'grade.svg', 2, 872, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:232:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzQiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJncmFkZS5zdmciO30=\";}', NULL, NULL, 1737456696, 1737456696, 0, NULL),
+(216, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '15672fe5d1fa0f38e843b364b9507fefa76411da', 5, 'user', 'draft', 195411484, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737456986, 1737456986, 0, NULL),
+(217, '90f778a788fd0745d87e128f7581ffc6c4850dec', 'cb9f569bde931c5e0e66ccc04188306861eef9d5', 5, 'user', 'draft', 3832418, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTA6ImxvZ29fY29sb3IiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737456936, 1737456979, 0, NULL),
+(218, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '417c4ddcea95cfb114f93a7b874181bb61e86b1e', 5, 'user', 'draft', 3832418, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457010, 1737457010, 0, NULL),
+(219, '90f778a788fd0745d87e128f7581ffc6c4850dec', 'd38d14016b5010e28567eac2d7728e1dd86d982a', 5, 'user', 'draft', 307915, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTA6ImxvZ29fd3JpdGUiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737456966, 1737456979, 0, NULL),
+(220, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '630cd126b870dcf39991165b55921a717a27b05f', 5, 'user', 'draft', 307915, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457010, 1737457010, 0, NULL),
+(221, '4ad68590dfca162f9e0634bf8d6a064169195db9', '6e5b3b3dd450da016c1e4fb14b83012dfd9f1bcc', 5, 'user', 'draft', 85159282, '/', 'audio_file.svg', 2, 266, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:248:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzEiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNDoiYXVkaW9fZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(222, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'a33ae952c8844ec9bff333b761b3a2991cb529aa', 5, 'user', 'draft', 85159282, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457010, 1737457010, 0, NULL),
+(223, '7c6f6b2dd8af961ada7ba051522f4789a870ca68', '400670f31744718d5dac20ef498c1bc002b5310d', 5, 'user', 'draft', 586113575, '/', 'video_file.svg', 2, 287, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:248:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzIiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNDoidmlkZW9fZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(224, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'f600cb42fa6e9419641bad0ab205eaec97abd5a0', 5, 'user', 'draft', 586113575, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457010, 1737457010, 0, NULL),
+(225, '8dc4323dab999a3151a3b961ad198cd6cc1c76f8', '57f86d0e0037c8b652cdf9425ed8c8f4e231b965', 5, 'user', 'draft', 171989538, '/', 'book.svg', 2, 474, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzMiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJib29rLnN2ZyI7fQ==\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(226, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'ae33bf4c5f496bab0424de42e40de16f20bbeed2', 5, 'user', 'draft', 171989538, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457010, 1737457010, 0, NULL),
+(227, '73484cc247330ed154033cc723e357fdb0021d64', 'adfe91785b8bf9eebe151bc3a8acf1004a5dba3b', 5, 'user', 'draft', 594902248, '/', 'game.svg', 2, 697, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzQiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJnYW1lLnN2ZyI7fQ==\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(228, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '8da8ba9cc92a107f8d6054c4b171be0e787dacf3', 5, 'user', 'draft', 594902248, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457010, 1737457010, 0, NULL),
+(229, '9cda70c97cc93f83023221c37ae8ae4cd7dffb47', 'bc265f44112856bf8d1c6478ec941611b1dee5ba', 5, 'user', 'draft', 590288717, '/', 'money.svg', 2, 684, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzUiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJtb25leS5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(230, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '1eec5d717e08104aa869c6e2208a253e822bcae9', 5, 'user', 'draft', 590288717, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457010, 1737457010, 0, NULL),
+(231, '1996f00e47a9833bbadba62a1c836e65c2ef54f9', 'cfbfe2f679e15dc00a742e2d0805f68bf73cc675', 5, 'user', 'draft', 474276783, '/', 'slide.svg', 2, 288, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzYiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJzbGlkZS5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(232, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '69c207ea52c20da4a394eaf25031e924dd8381eb', 5, 'user', 'draft', 474276783, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457010, 1737457010, 0, NULL),
+(233, '8a489267f1c0d0b8f24031ef66823083559db9f2', 'fbab68630b5afd2b77c8288a9f3c2aeb883082b4', 5, 'user', 'draft', 745947766, '/', 'support.svg', 2, 576, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:244:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzciO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToic3VwcG9ydC5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(234, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'f8eb124a209e85bcf027ade4f2a69144124a4485', 5, 'user', 'draft', 745947766, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457011, 1737457011, 0, NULL),
+(235, '1575a255e0a88da9593dc0c445664fb7bb2a22ad', '2fbbc9a32e44adeb2fa3652db5dbf72e8a4ed0e0', 5, 'user', 'draft', 835928634, '/', 'download.svg', 2, 401, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:244:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzgiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiZG93bmxvYWQuc3ZnIjt9\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(236, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'c9445bc0821e1ad3fbb23b2703b91bbbceb76bc3', 5, 'user', 'draft', 835928634, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457011, 1737457011, 0, NULL),
+(237, 'b0e1ba13b73ed242f9cb71464c24c42cc8719092', '02417ed4b3e16a5041dbaf525664bf05e2f9e669', 5, 'user', 'draft', 388639479, '/', 'message.svg', 2, 1400, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzEiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToibWVzc2FnZS5zdmciO30=\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(238, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'd1c3f867966424cf58faa835b10f7c836bff5da5', 5, 'user', 'draft', 388639479, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457011, 1737457011, 0, NULL),
+(239, 'abb3a5ef41c527333fe1fe303a5b9351fbe23e61', 'e29676e961af456e5c5794516cd77aec2a230e83', 5, 'user', 'draft', 74059298, '/', 'profile.svg', 2, 722, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzIiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToicHJvZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(240, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'e507575eefea74e10022328e1f2957657e247a6b', 5, 'user', 'draft', 74059298, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457011, 1737457011, 0, NULL),
+(241, '2c3a267644b90eef727abe4daae210973f28be7e', '62247034f2787f65b3b1a7bd25c2d25aeda7ba16', 5, 'user', 'draft', 787186030, '/', 'preferences.svg', 2, 2159, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzMiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNToicHJlZmVyZW5jZXMuc3ZnIjt9\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(242, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'e21345b810e3f860be9e014c1823827eff4a696e', 5, 'user', 'draft', 787186030, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457011, 1737457011, 0, NULL),
+(243, 'e15c679482a52f1b73b08fc301d830a887ccf9b5', '6ab465f3eb917c4a82a6949c802901a495b699b8', 5, 'user', 'draft', 131601698, '/', 'grade.svg', 2, 872, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:232:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzQiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJncmFkZS5zdmciO30=\";}', NULL, NULL, 1737456696, 1737456696, 0, NULL),
+(244, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '3840dec1a83f1b3743aac4ab1674915bf65299ec', 5, 'user', 'draft', 131601698, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457011, 1737457011, 0, NULL),
+(245, '90f778a788fd0745d87e128f7581ffc6c4850dec', '1e35ab914b97d5f55617de076a2492b80533fcf7', 5, 'user', 'draft', 35263638, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTA6ImxvZ29fY29sb3IiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737456936, 1737456979, 0, NULL),
+(246, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '6a4959018d904106d97a7182310bf8640978a5b2', 5, 'user', 'draft', 35263638, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457095, 1737457095, 0, NULL),
+(247, '90f778a788fd0745d87e128f7581ffc6c4850dec', '53bb3a765e6540b1522298208247fbfcd4932707', 5, 'user', 'draft', 124486919, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTA6ImxvZ29fd3JpdGUiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737456966, 1737456979, 0, NULL),
+(248, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '1aa32f07b1a4d433337e3c625884c66a9a33ba3f', 5, 'user', 'draft', 124486919, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457095, 1737457095, 0, NULL),
+(249, '4ad68590dfca162f9e0634bf8d6a064169195db9', '5026d98b46ad5375e1a4af9605b3f905a87c4d34', 5, 'user', 'draft', 118657379, '/', 'audio_file.svg', 2, 266, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:248:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzEiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNDoiYXVkaW9fZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(250, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'e6b0aa502117a279f33d41dd637b4f22f005a408', 5, 'user', 'draft', 118657379, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457095, 1737457095, 0, NULL),
+(251, '7c6f6b2dd8af961ada7ba051522f4789a870ca68', '30038de7866ffbe0742085c369402c547c206141', 5, 'user', 'draft', 354183215, '/', 'video_file.svg', 2, 287, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:248:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzIiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNDoidmlkZW9fZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(252, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '16496e45f883abeffb1d001b12fe2f61c8b85bfa', 5, 'user', 'draft', 354183215, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457095, 1737457095, 0, NULL),
+(253, '8dc4323dab999a3151a3b961ad198cd6cc1c76f8', '33b4bf2e729eff6e8de389ee6222ad94f5d12483', 5, 'user', 'draft', 174362022, '/', 'book.svg', 2, 474, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzMiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJib29rLnN2ZyI7fQ==\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(254, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '087b1b6cae11d977f777b97bb639310496a54c39', 5, 'user', 'draft', 174362022, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457095, 1737457095, 0, NULL),
+(255, '73484cc247330ed154033cc723e357fdb0021d64', '1d5e1963a3fe7ca2540197164b338c1dd37573c1', 5, 'user', 'draft', 123662930, '/', 'game.svg', 2, 697, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzQiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJnYW1lLnN2ZyI7fQ==\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(256, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '96dda0d57fa62e97494a04c526dca81054825146', 5, 'user', 'draft', 123662930, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457095, 1737457095, 0, NULL),
+(257, '9cda70c97cc93f83023221c37ae8ae4cd7dffb47', '9cdee52b6be1ce0b113c7c4d17946389b11939b5', 5, 'user', 'draft', 883398704, '/', 'money.svg', 2, 684, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzUiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJtb25leS5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(258, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'fd9fde810dfac3a1825c9a3dbed5fbbe6fd7b6d8', 5, 'user', 'draft', 883398704, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457095, 1737457095, 0, NULL),
+(259, '1996f00e47a9833bbadba62a1c836e65c2ef54f9', 'ee1c66c0b5527a4f8c70fa5061e085ed1f368164', 5, 'user', 'draft', 78120528, '/', 'slide.svg', 2, 288, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzYiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJzbGlkZS5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(260, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '220d48b6a6a9744cfde4b270bd608fe33e3242f8', 5, 'user', 'draft', 78120528, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457095, 1737457095, 0, NULL),
+(261, '8a489267f1c0d0b8f24031ef66823083559db9f2', 'be67590a80b2fa4938a3250290e7a46d588e3700', 5, 'user', 'draft', 858383093, '/', 'support.svg', 2, 576, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:244:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzciO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToic3VwcG9ydC5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(262, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '901c31e46d53d3956140366af98a12d6df9af532', 5, 'user', 'draft', 858383093, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457095, 1737457095, 0, NULL),
+(263, '1575a255e0a88da9593dc0c445664fb7bb2a22ad', '25c2f28bc9be25e959e4e4c1cd526c553372f327', 5, 'user', 'draft', 763266107, '/', 'download.svg', 2, 401, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:244:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzgiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiZG93bmxvYWQuc3ZnIjt9\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(264, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '1f06d575a8ed325fc6db46074ba0d45b1808ebc6', 5, 'user', 'draft', 763266107, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457095, 1737457095, 0, NULL),
+(265, 'b0e1ba13b73ed242f9cb71464c24c42cc8719092', 'd32decef1e76b7be902bf3da32d017c919249456', 5, 'user', 'draft', 365632204, '/', 'message.svg', 2, 1400, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzEiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToibWVzc2FnZS5zdmciO30=\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(266, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '34a8fb1c8b5bf8e60321a38683723f9cb14e3439', 5, 'user', 'draft', 365632204, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457095, 1737457095, 0, NULL),
+(267, 'abb3a5ef41c527333fe1fe303a5b9351fbe23e61', '0b451b1e083e719dffb087a4fa8e5531695f5d96', 5, 'user', 'draft', 440347021, '/', 'profile.svg', 2, 722, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzIiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToicHJvZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(268, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'dcbcc0314b2bbe294d6a7f6c5cad24d24fba5c5d', 5, 'user', 'draft', 440347021, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457095, 1737457095, 0, NULL),
+(269, '2c3a267644b90eef727abe4daae210973f28be7e', 'c267d7bacaee8d1eb8bcabc073f4a7c6ee928f75', 5, 'user', 'draft', 194977645, '/', 'preferences.svg', 2, 2159, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzMiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNToicHJlZmVyZW5jZXMuc3ZnIjt9\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(270, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '646ad066808b6bc6ad8018b4a27887afa5bba1d9', 5, 'user', 'draft', 194977645, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457095, 1737457095, 0, NULL),
+(271, 'e15c679482a52f1b73b08fc301d830a887ccf9b5', '13bc6ed0a599dd74c04f33a7d24a2af57250d5be', 5, 'user', 'draft', 585852175, '/', 'grade.svg', 2, 872, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:232:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzQiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJncmFkZS5zdmciO30=\";}', NULL, NULL, 1737456696, 1737456696, 0, NULL),
+(272, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '7115554c996e01152f1593d6dd04b0f3de297b5f', 5, 'user', 'draft', 585852175, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457095, 1737457095, 0, NULL),
+(273, '90f778a788fd0745d87e128f7581ffc6c4850dec', 'e92d8a974312a3a4bf037ec7bef5cac257abfea2', 5, 'user', 'draft', 916104875, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTA6ImxvZ29fY29sb3IiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737456936, 1737456979, 0, NULL),
+(274, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '06ca844501ca369aafbf7f09233bccc65e1690f3', 5, 'user', 'draft', 916104875, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457110, 1737457110, 0, NULL),
+(275, '90f778a788fd0745d87e128f7581ffc6c4850dec', '89aeb280b4ba3e6e310e575612aa1fd29131ae20', 5, 'user', 'draft', 4946511, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTA6ImxvZ29fd3JpdGUiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737456966, 1737456979, 0, NULL),
+(276, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '00234c330a873701513c5cdf64bb8c390e5f4227', 5, 'user', 'draft', 4946511, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457110, 1737457110, 0, NULL),
+(277, '4ad68590dfca162f9e0634bf8d6a064169195db9', 'cbccb0ecea374803bbec46420043357b6776ed57', 5, 'user', 'draft', 652963922, '/', 'audio_file.svg', 2, 266, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:248:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzEiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNDoiYXVkaW9fZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(278, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '1e4389eb21be585ed493b57872a95c21fe042a4b', 5, 'user', 'draft', 652963922, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457111, 1737457111, 0, NULL),
+(279, '7c6f6b2dd8af961ada7ba051522f4789a870ca68', '4e15867a05eeb93c11ed374e2e714b16deb39c67', 5, 'user', 'draft', 165236624, '/', 'video_file.svg', 2, 287, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:248:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzIiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNDoidmlkZW9fZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(280, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '0451ffcb76f6fad717b83372f3b222df4d54b4ce', 5, 'user', 'draft', 165236624, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457111, 1737457111, 0, NULL),
+(281, '8dc4323dab999a3151a3b961ad198cd6cc1c76f8', '24c10e2368f0663f4ef372d523dbfaf2dda00eb1', 5, 'user', 'draft', 368456414, '/', 'book.svg', 2, 474, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzMiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJib29rLnN2ZyI7fQ==\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(282, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '72bc1e0b5704b2973dba413f48819d9843727436', 5, 'user', 'draft', 368456414, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457111, 1737457111, 0, NULL),
+(283, '73484cc247330ed154033cc723e357fdb0021d64', 'fc34aa6e7af831a6b977fa8d37a4fb5657b2ef6a', 5, 'user', 'draft', 776437191, '/', 'game.svg', 2, 697, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzQiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJnYW1lLnN2ZyI7fQ==\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(284, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '9cdb7b31563e8c44ada08a802b4df8abd151478f', 5, 'user', 'draft', 776437191, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457111, 1737457111, 0, NULL),
+(285, '9cda70c97cc93f83023221c37ae8ae4cd7dffb47', '2229604e5c0b71a84cd689e4816e9c8f7a68adad', 5, 'user', 'draft', 518756705, '/', 'money.svg', 2, 684, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzUiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJtb25leS5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(286, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '896a90ce776b31fd0b95c7bb8ed17785aaa5c3e9', 5, 'user', 'draft', 518756705, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457111, 1737457111, 0, NULL),
+(287, '1996f00e47a9833bbadba62a1c836e65c2ef54f9', 'c52142c107411ec976fe952ef2bb9c974ae8b98e', 5, 'user', 'draft', 78502507, '/', 'slide.svg', 2, 288, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzYiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJzbGlkZS5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(288, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '356563861e5cd877685a41371aef7f5e4215c3c3', 5, 'user', 'draft', 78502507, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457111, 1737457111, 0, NULL),
+(289, '8a489267f1c0d0b8f24031ef66823083559db9f2', 'bb81ed90dcfceee719799fd3132e2d0cee5f4cb4', 5, 'user', 'draft', 133475772, '/', 'support.svg', 2, 576, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:244:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzciO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToic3VwcG9ydC5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(290, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'c670e35bee9eff05f60116e246dd3c6968c3ec12', 5, 'user', 'draft', 133475772, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457111, 1737457111, 0, NULL),
+(291, '1575a255e0a88da9593dc0c445664fb7bb2a22ad', '40737ed5fa6150c1acb547af39a018cfba16b735', 5, 'user', 'draft', 481352863, '/', 'download.svg', 2, 401, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:244:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzgiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiZG93bmxvYWQuc3ZnIjt9\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(292, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'a52aa4913fdc402878c4f25a027d6fb8137ba344', 5, 'user', 'draft', 481352863, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457111, 1737457111, 0, NULL),
+(293, 'b0e1ba13b73ed242f9cb71464c24c42cc8719092', '250aec7357ade3f4bb2bfc0cfb93877299903374', 5, 'user', 'draft', 884767278, '/', 'message.svg', 2, 1400, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzEiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToibWVzc2FnZS5zdmciO30=\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(294, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '1bf71ccd398d675556ccefdd53e9cba36ce2b4a0', 5, 'user', 'draft', 884767278, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457111, 1737457111, 0, NULL),
+(295, 'abb3a5ef41c527333fe1fe303a5b9351fbe23e61', '29de5a2fb1904434412f8805befae155fddd2d77', 5, 'user', 'draft', 677664622, '/', 'profile.svg', 2, 722, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzIiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToicHJvZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(296, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '17612b32c168e9eb823c3660768761ae52802ea9', 5, 'user', 'draft', 677664622, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457111, 1737457111, 0, NULL),
+(297, '2c3a267644b90eef727abe4daae210973f28be7e', 'd3dea308eb575e3e49b534482e0618b07f23fec5', 5, 'user', 'draft', 985740896, '/', 'preferences.svg', 2, 2159, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzMiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNToicHJlZmVyZW5jZXMuc3ZnIjt9\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(298, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '39a5ff50e7b5aa4419c71dd0d98dd3891d27a7be', 5, 'user', 'draft', 985740896, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457111, 1737457111, 0, NULL),
+(299, 'e15c679482a52f1b73b08fc301d830a887ccf9b5', '0a915b2ccbd6fc6cd86f853061ba7a6accdc6adf', 5, 'user', 'draft', 675796323, '/', 'grade.svg', 2, 872, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:232:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzQiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJncmFkZS5zdmciO30=\";}', NULL, NULL, 1737456696, 1737456696, 0, NULL),
+(300, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'd4e5963bb75be1c3312fa6927e66cfb1f6de50ae', 5, 'user', 'draft', 675796323, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737457111, 1737457111, 0, NULL),
+(301, '90f778a788fd0745d87e128f7581ffc6c4850dec', 'e5d2a148011464b8ff7cee511685d0b845cefbf1', 5, 'user', 'draft', 722778628, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTA6ImxvZ29fY29sb3IiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737456936, 1737456979, 0, NULL),
+(302, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'a0abb4886932cc4f2913381ab1bfc4d3afa3f0c6', 5, 'user', 'draft', 722778628, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529341, 1737529341, 0, NULL),
+(303, '90f778a788fd0745d87e128f7581ffc6c4850dec', '4c529a7d2e510e005c915881eb6c50b1a999a879', 5, 'user', 'draft', 948728288, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTA6ImxvZ29fd3JpdGUiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737456966, 1737456979, 0, NULL),
+(304, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'df9e19bb23e8332e1596f0bb8605ed7524d853a9', 5, 'user', 'draft', 948728288, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529342, 1737529342, 0, NULL);
+INSERT INTO `mdl_files` (`id`, `contenthash`, `pathnamehash`, `contextid`, `component`, `filearea`, `itemid`, `filepath`, `filename`, `userid`, `filesize`, `mimetype`, `status`, `source`, `author`, `license`, `timecreated`, `timemodified`, `sortorder`, `referencefileid`) VALUES
+(305, '4ad68590dfca162f9e0634bf8d6a064169195db9', 'd7dc1989e8758316ebc1de41e814ad2b3961e61e', 5, 'user', 'draft', 145623688, '/', 'audio_file.svg', 2, 266, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:248:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzEiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNDoiYXVkaW9fZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(306, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '0fadf05b6a96daa1882229bcc56b4c3d8a60563a', 5, 'user', 'draft', 145623688, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529342, 1737529342, 0, NULL),
+(307, '7c6f6b2dd8af961ada7ba051522f4789a870ca68', 'ce5adec6f9389e0c1a01c7685e45bf2bf03a2d62', 5, 'user', 'draft', 3611981, '/', 'video_file.svg', 2, 287, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:248:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzIiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNDoidmlkZW9fZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(308, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '9baf3ce6796a8c1f9e72f838e8d3ecbf8585b7a9', 5, 'user', 'draft', 3611981, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529342, 1737529342, 0, NULL),
+(309, '8dc4323dab999a3151a3b961ad198cd6cc1c76f8', '1b435cb76456acea5b03cde705e1e7da9f80e831', 5, 'user', 'draft', 618031364, '/', 'book.svg', 2, 474, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzMiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJib29rLnN2ZyI7fQ==\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(310, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'd614f1fb92f7c01a3b8a5dd04b1db031c91efa32', 5, 'user', 'draft', 618031364, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529342, 1737529342, 0, NULL),
+(311, '73484cc247330ed154033cc723e357fdb0021d64', '3c999d8a85d980bce20c53de0d7439f8633f38d7', 5, 'user', 'draft', 776107881, '/', 'game.svg', 2, 697, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzQiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJnYW1lLnN2ZyI7fQ==\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(312, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '0cead03808df53eea5927e81bd1ecf1ced1599bf', 5, 'user', 'draft', 776107881, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529342, 1737529342, 0, NULL),
+(313, '9cda70c97cc93f83023221c37ae8ae4cd7dffb47', '5c5278d2ea46f359a7f70e846bfb41a6dcb39bc4', 5, 'user', 'draft', 565297535, '/', 'money.svg', 2, 684, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzUiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJtb25leS5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(314, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '1ea6620a39cc8dfb70a35d5140dbd01bc5affbfd', 5, 'user', 'draft', 565297535, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529342, 1737529342, 0, NULL),
+(315, '1996f00e47a9833bbadba62a1c836e65c2ef54f9', '5acc78bbe20efa2b910d3e5eb06cd5b55aa706e8', 5, 'user', 'draft', 96192063, '/', 'slide.svg', 2, 288, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzYiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJzbGlkZS5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(316, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'd53e75d2425468916e3100110d4e497bb307037c', 5, 'user', 'draft', 96192063, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529342, 1737529342, 0, NULL),
+(317, '8a489267f1c0d0b8f24031ef66823083559db9f2', 'ebaf4fae1acefca530050b929776df26d8a50dbc', 5, 'user', 'draft', 99638448, '/', 'support.svg', 2, 576, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:244:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzciO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToic3VwcG9ydC5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(318, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'e7868f16276d2db77c2811e009c7fb0af719c309', 5, 'user', 'draft', 99638448, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529342, 1737529342, 0, NULL),
+(319, '1575a255e0a88da9593dc0c445664fb7bb2a22ad', '28e0b7311ec0520c9df4e70a1d69b1c04831563e', 5, 'user', 'draft', 952902099, '/', 'download.svg', 2, 401, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:244:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzgiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiZG93bmxvYWQuc3ZnIjt9\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(320, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '70d49df958b119230b41c25673124fb3997a436f', 5, 'user', 'draft', 952902099, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529342, 1737529342, 0, NULL),
+(321, 'b0e1ba13b73ed242f9cb71464c24c42cc8719092', '32694ffa748306313453addb4fc903688e6a08d8', 5, 'user', 'draft', 602289675, '/', 'message.svg', 2, 1400, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzEiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToibWVzc2FnZS5zdmciO30=\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(322, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'c144b388ca1a4d23c7472d7923b15afa215c8e6d', 5, 'user', 'draft', 602289675, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529342, 1737529342, 0, NULL),
+(323, 'abb3a5ef41c527333fe1fe303a5b9351fbe23e61', '8382ceb158327e50250008852e7017709ed6fbb4', 5, 'user', 'draft', 955536897, '/', 'profile.svg', 2, 722, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzIiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToicHJvZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(324, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '7f66a177760c62233e327932f674464360ecd25c', 5, 'user', 'draft', 955536897, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529342, 1737529342, 0, NULL),
+(325, '2c3a267644b90eef727abe4daae210973f28be7e', 'f81fa31deee28104a183330237184627a6e2f523', 5, 'user', 'draft', 254915832, '/', 'preferences.svg', 2, 2159, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzMiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNToicHJlZmVyZW5jZXMuc3ZnIjt9\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(326, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'c49a7ece0f991231bb31fc2363c17861bdb251c7', 5, 'user', 'draft', 254915832, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529342, 1737529342, 0, NULL),
+(327, 'e15c679482a52f1b73b08fc301d830a887ccf9b5', '45f3ba9f19ac64d95fcf0e98940cd1c08fa073c0', 5, 'user', 'draft', 512112942, '/', 'grade.svg', 2, 872, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:232:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzQiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJncmFkZS5zdmciO30=\";}', NULL, NULL, 1737456696, 1737456696, 0, NULL),
+(328, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '712c4094912cc1dfbf9f3f509f14342a6639c392', 5, 'user', 'draft', 512112942, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529342, 1737529342, 0, NULL),
+(329, '90f778a788fd0745d87e128f7581ffc6c4850dec', '00c125b8d01c54aa91bd3b9eff6c5adc21374538', 5, 'user', 'draft', 701603523, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTA6ImxvZ29fY29sb3IiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737456936, 1737456979, 0, NULL),
+(330, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'c692f3779e3a2cf0f112046fef768c619cce939e', 5, 'user', 'draft', 701603523, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529535, 1737529535, 0, NULL),
+(331, '90f778a788fd0745d87e128f7581ffc6c4850dec', '1ec0f2e3d4f7f8a46a8824305d9f0aec75723eee', 5, 'user', 'draft', 564975507, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTA6ImxvZ29fd3JpdGUiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737456966, 1737456979, 0, NULL),
+(332, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'b6824c39b72a6714ef367812d5bcfedf70cb5c72', 5, 'user', 'draft', 564975507, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529535, 1737529535, 0, NULL),
+(333, '4ad68590dfca162f9e0634bf8d6a064169195db9', 'edd0f27ef6e176bfd5fb11dd81bb9d277e709af6', 5, 'user', 'draft', 582836089, '/', 'audio_file.svg', 2, 266, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:248:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzEiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNDoiYXVkaW9fZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(334, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '71a965212c634b1340c60c4a07df7c43826ce27d', 5, 'user', 'draft', 582836089, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529535, 1737529535, 0, NULL),
+(335, '7c6f6b2dd8af961ada7ba051522f4789a870ca68', 'f38719e9b6c3f8f949573f07655ce658dc745fc0', 5, 'user', 'draft', 506391639, '/', 'video_file.svg', 2, 287, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:248:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzIiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNDoidmlkZW9fZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(336, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '76aecab74a3110a01875693024a57a2022df17e6', 5, 'user', 'draft', 506391639, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529535, 1737529535, 0, NULL),
+(337, '8dc4323dab999a3151a3b961ad198cd6cc1c76f8', '2016e935f69040a58edae6866f8b10288998125e', 5, 'user', 'draft', 478956601, '/', 'book.svg', 2, 474, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzMiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJib29rLnN2ZyI7fQ==\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(338, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '39f72a7c014b79cd48a9355885b7767132ee932e', 5, 'user', 'draft', 478956601, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529535, 1737529535, 0, NULL),
+(339, '73484cc247330ed154033cc723e357fdb0021d64', '784933ba793ba624f008d84739047dbcb9033b5e', 5, 'user', 'draft', 346045523, '/', 'game.svg', 2, 697, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzQiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJnYW1lLnN2ZyI7fQ==\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(340, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '8f01ed1652e6e617a42cee90a78ab1839325b117', 5, 'user', 'draft', 346045523, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529535, 1737529535, 0, NULL),
+(341, '9cda70c97cc93f83023221c37ae8ae4cd7dffb47', 'dc5aef969bbe5c60e16898a02e0a523a8b331de6', 5, 'user', 'draft', 654105976, '/', 'money.svg', 2, 684, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzUiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJtb25leS5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(342, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '41b76b2c62cd56d7067e9feaa6b472f5aea1113d', 5, 'user', 'draft', 654105976, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529535, 1737529535, 0, NULL),
+(343, '1996f00e47a9833bbadba62a1c836e65c2ef54f9', 'c1bba3886aec6b2394a20bb04e4b522019ab0357', 5, 'user', 'draft', 361190930, '/', 'slide.svg', 2, 288, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzYiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJzbGlkZS5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(344, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'b7fdede17a68d5bf21e0a66380ff110faec89cbb', 5, 'user', 'draft', 361190930, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529535, 1737529535, 0, NULL),
+(345, '8a489267f1c0d0b8f24031ef66823083559db9f2', '4a994cc5c53c42467c83a02d4ec3319ba9fb087b', 5, 'user', 'draft', 569452676, '/', 'support.svg', 2, 576, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:244:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzciO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToic3VwcG9ydC5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(346, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '70446f47d72857abb1adbb3b4d392bd9b8622bd0', 5, 'user', 'draft', 569452676, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529535, 1737529535, 0, NULL),
+(347, '1575a255e0a88da9593dc0c445664fb7bb2a22ad', 'bf88bef18eb8c36b69bba5eb098da597c3ab0e61', 5, 'user', 'draft', 148790579, '/', 'download.svg', 2, 401, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:244:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzgiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiZG93bmxvYWQuc3ZnIjt9\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(348, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '1714c93955274fd0678aed913028ded1e6f84e27', 5, 'user', 'draft', 148790579, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529535, 1737529535, 0, NULL),
+(349, 'b0e1ba13b73ed242f9cb71464c24c42cc8719092', '107a7782fb6ea750ecb52e58ddc5b8bf62f7f2f2', 5, 'user', 'draft', 709149727, '/', 'message.svg', 2, 1400, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzEiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToibWVzc2FnZS5zdmciO30=\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(350, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '9903727691cbc53dee53df1704d71355869e7737', 5, 'user', 'draft', 709149727, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529536, 1737529536, 0, NULL),
+(351, 'abb3a5ef41c527333fe1fe303a5b9351fbe23e61', '0f05cbe489e03834a2a194326694e8cda642b8a2', 5, 'user', 'draft', 575306427, '/', 'profile.svg', 2, 722, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzIiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToicHJvZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(352, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '0b90078ee747d90724814f32e0035a72fc6e4be6', 5, 'user', 'draft', 575306427, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529536, 1737529536, 0, NULL),
+(353, '2c3a267644b90eef727abe4daae210973f28be7e', 'a87116bd59b9932793a1d3b587d2be4ce22f5a1d', 5, 'user', 'draft', 195999930, '/', 'preferences.svg', 2, 2159, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzMiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNToicHJlZmVyZW5jZXMuc3ZnIjt9\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(354, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '7c59d17a2ce955e483d2ac213a1b69ab27d4f198', 5, 'user', 'draft', 195999930, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529536, 1737529536, 0, NULL),
+(355, 'e15c679482a52f1b73b08fc301d830a887ccf9b5', '6460c37b9a99a67a70aea88281f8e007d4942491', 5, 'user', 'draft', 802013058, '/', 'grade.svg', 2, 872, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:232:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzQiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJncmFkZS5zdmciO30=\";}', NULL, NULL, 1737456696, 1737456696, 0, NULL),
+(356, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '7c7ecaead83693e296ea0a6d98e4487994e027e6', 5, 'user', 'draft', 802013058, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529536, 1737529536, 0, NULL),
+(357, '90f778a788fd0745d87e128f7581ffc6c4850dec', 'fdd322778b474aae17b69617437440ee4869f6ab', 5, 'user', 'draft', 860332131, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTA6ImxvZ29fY29sb3IiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737456936, 1737456979, 0, NULL),
+(358, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'ec1d90b898e050ffbf989ba58b8b501b9a08ab07', 5, 'user', 'draft', 860332131, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529553, 1737529553, 0, NULL),
+(359, '90f778a788fd0745d87e128f7581ffc6c4850dec', 'd18f3a996fac90458254072e0bac4cef29e72886', 5, 'user', 'draft', 866576608, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTA6ImxvZ29fd3JpdGUiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737456966, 1737456979, 0, NULL),
+(360, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '5ac6e88216c2559f4a785a653daac18ffd41f7a1', 5, 'user', 'draft', 866576608, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529553, 1737529553, 0, NULL),
+(361, '4ad68590dfca162f9e0634bf8d6a064169195db9', '2ecf5090b9502afa949b1eab6d4d04b6043e2168', 5, 'user', 'draft', 120858723, '/', 'audio_file.svg', 2, 266, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:248:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzEiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNDoiYXVkaW9fZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(362, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '4e06d7f54dd1676562ca21968a940e3a1efd9963', 5, 'user', 'draft', 120858723, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529553, 1737529553, 0, NULL),
+(363, '7c6f6b2dd8af961ada7ba051522f4789a870ca68', '4da08013d7f90a42b0c74f39e63a21d2cb372610', 5, 'user', 'draft', 146651053, '/', 'video_file.svg', 2, 287, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:248:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzIiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNDoidmlkZW9fZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(364, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '6b5cb8fe49d847fb1c1988fa6ac536785a2f00bf', 5, 'user', 'draft', 146651053, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529553, 1737529553, 0, NULL),
+(365, '8dc4323dab999a3151a3b961ad198cd6cc1c76f8', 'bf7d94c21045573b82daa44ff00acfebbd7acb1c', 5, 'user', 'draft', 444830942, '/', 'book.svg', 2, 474, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzMiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJib29rLnN2ZyI7fQ==\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(366, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '2dfb79bc5cd7cec5f9c053fc7a7ea458bf691477', 5, 'user', 'draft', 444830942, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529553, 1737529553, 0, NULL),
+(367, '73484cc247330ed154033cc723e357fdb0021d64', '32c6ebe8f2ef436c854260c0623714cdb8a7561d', 5, 'user', 'draft', 336539563, '/', 'game.svg', 2, 697, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzQiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJnYW1lLnN2ZyI7fQ==\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(368, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '98304bcfc3f7fcae572a005373e39c925311655a', 5, 'user', 'draft', 336539563, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529553, 1737529553, 0, NULL),
+(369, '9cda70c97cc93f83023221c37ae8ae4cd7dffb47', '3f0188ea3455119aa505bab2c0c308bf25af56e8', 5, 'user', 'draft', 415156380, '/', 'money.svg', 2, 684, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzUiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJtb25leS5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(370, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'efc818318fd44ff354d5ca251de0ead8fd02dfbe', 5, 'user', 'draft', 415156380, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529553, 1737529553, 0, NULL),
+(371, '1996f00e47a9833bbadba62a1c836e65c2ef54f9', 'ea8d97cf18df3bdbdef9ff8b14b14875ccb1371b', 5, 'user', 'draft', 348893833, '/', 'slide.svg', 2, 288, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzYiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJzbGlkZS5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(372, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'd320fd8ad1b369183fcb2c1510dcf6aaa5e6d5a5', 5, 'user', 'draft', 348893833, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529553, 1737529553, 0, NULL),
+(373, '8a489267f1c0d0b8f24031ef66823083559db9f2', 'd2b71c1bfa35e5f7a320e5b833d56da79c35f508', 5, 'user', 'draft', 243584786, '/', 'support.svg', 2, 576, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:244:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzciO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToic3VwcG9ydC5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(374, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'fd326b14a9be7812e225541d069e1a0eb6ca6580', 5, 'user', 'draft', 243584786, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529553, 1737529553, 0, NULL),
+(375, '1575a255e0a88da9593dc0c445664fb7bb2a22ad', 'ff440ae362505d656a875efb3eca621707972f13', 5, 'user', 'draft', 644587380, '/', 'download.svg', 2, 401, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:244:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzgiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiZG93bmxvYWQuc3ZnIjt9\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(376, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '0dd906be1738f8112f3b032e96dee585d9aec611', 5, 'user', 'draft', 644587380, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529553, 1737529553, 0, NULL),
+(377, 'b0e1ba13b73ed242f9cb71464c24c42cc8719092', 'ae6e1ec0ad7400bb37f5e268b00993249429cc29', 5, 'user', 'draft', 251766605, '/', 'message.svg', 2, 1400, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzEiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToibWVzc2FnZS5zdmciO30=\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(378, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'f75c9dfd098d5f5e4a8525f1e492e3051f659161', 5, 'user', 'draft', 251766605, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529553, 1737529553, 0, NULL),
+(379, 'abb3a5ef41c527333fe1fe303a5b9351fbe23e61', 'a49cc4c814d2f737bb270a1c9aa8e1bf4efa2d8f', 5, 'user', 'draft', 668457977, '/', 'profile.svg', 2, 722, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzIiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToicHJvZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(380, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '5577885e10c87b6bebc15629afed2b95c37e1631', 5, 'user', 'draft', 668457977, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529553, 1737529553, 0, NULL),
+(381, '2c3a267644b90eef727abe4daae210973f28be7e', '06530c47f54cf2b12c41c9a32d7d13b29e7f5425', 5, 'user', 'draft', 204463644, '/', 'preferences.svg', 2, 2159, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzMiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNToicHJlZmVyZW5jZXMuc3ZnIjt9\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(382, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '640e5b5fa8ee5c0b7acc5cb8aa758a58a2fea573', 5, 'user', 'draft', 204463644, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529553, 1737529553, 0, NULL),
+(383, 'e15c679482a52f1b73b08fc301d830a887ccf9b5', 'ee625c4258cc696fc40a43e6f509f0de4cf46dee', 5, 'user', 'draft', 1835490, '/', 'grade.svg', 2, 872, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:232:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzQiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJncmFkZS5zdmciO30=\";}', NULL, NULL, 1737456696, 1737456696, 0, NULL),
+(384, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '5239b9553e2aac85943ad1f4249e3b05be59dd34', 5, 'user', 'draft', 1835490, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529553, 1737529553, 0, NULL),
+(385, '90f778a788fd0745d87e128f7581ffc6c4850dec', '2f76fad10326447bed4dd79d6ee6d49baabf413c', 5, 'user', 'draft', 435125030, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTA6ImxvZ29fY29sb3IiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737456936, 1737456979, 0, NULL),
+(386, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'c08c89c794994e851a53bfe0fc82859bf0672692', 5, 'user', 'draft', 435125030, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529668, 1737529668, 0, NULL),
+(387, '90f778a788fd0745d87e128f7581ffc6c4850dec', '2dc1f4e7ffaf3484a40fbac972429de951c3f6a1', 5, 'user', 'draft', 964585598, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTA6ImxvZ29fd3JpdGUiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737456966, 1737456979, 0, NULL),
+(388, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '51848eaadc199f296f08911f67e329f48f908145', 5, 'user', 'draft', 964585598, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529668, 1737529668, 0, NULL),
+(389, '4ad68590dfca162f9e0634bf8d6a064169195db9', 'a4c0ce276249446d4eb5c5ce2b77d7fccad3fb2f', 5, 'user', 'draft', 573113531, '/', 'audio_file.svg', 2, 266, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:248:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzEiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNDoiYXVkaW9fZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(390, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '69f8802b911201887effb350177d574f0169c3db', 5, 'user', 'draft', 573113531, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529668, 1737529668, 0, NULL),
+(391, '7c6f6b2dd8af961ada7ba051522f4789a870ca68', '223cbee0819bc386373d3736a334710de5213187', 5, 'user', 'draft', 879524292, '/', 'video_file.svg', 2, 287, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:248:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzIiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNDoidmlkZW9fZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(392, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '74e5bd5c6a92f00b7898f1379cc533f30397d625', 5, 'user', 'draft', 879524292, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529668, 1737529668, 0, NULL),
+(393, '8dc4323dab999a3151a3b961ad198cd6cc1c76f8', '40b23fa5e0283f47e38f1a6fc9c6800e69000d17', 5, 'user', 'draft', 731109713, '/', 'book.svg', 2, 474, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzMiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJib29rLnN2ZyI7fQ==\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(394, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'd38c1aa9658246fc0e1ac12aa6d3746c0e6a5f59', 5, 'user', 'draft', 731109713, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529668, 1737529668, 0, NULL),
+(395, '73484cc247330ed154033cc723e357fdb0021d64', '5fa759c771bfd6322b00937367f0f705ac93a91e', 5, 'user', 'draft', 834753333, '/', 'game.svg', 2, 697, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzQiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJnYW1lLnN2ZyI7fQ==\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(396, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'cf45b2ee35f47f91fff228276b55397030bbb31d', 5, 'user', 'draft', 834753333, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529668, 1737529668, 0, NULL),
+(397, '9cda70c97cc93f83023221c37ae8ae4cd7dffb47', '1273047a47ef5fe9e4641ab5f4568116d0c74c97', 5, 'user', 'draft', 232188827, '/', 'money.svg', 2, 684, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzUiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJtb25leS5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(398, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'd165425d65ec8660bac066bd949ed2b5f11c3eb4', 5, 'user', 'draft', 232188827, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529668, 1737529668, 0, NULL),
+(399, '1996f00e47a9833bbadba62a1c836e65c2ef54f9', '0ddfe3c0538ac24f4528cf110d15ffc89ccad023', 5, 'user', 'draft', 568512717, '/', 'slide.svg', 2, 288, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzYiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJzbGlkZS5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(400, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '20bf89ef3314ed2aba58f572448563b44297aada', 5, 'user', 'draft', 568512717, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529668, 1737529668, 0, NULL),
+(401, '8a489267f1c0d0b8f24031ef66823083559db9f2', 'd49300a920c0a5f423aa56e5d3f065ca9ae19e62', 5, 'user', 'draft', 897494688, '/', 'support.svg', 2, 576, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:244:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzciO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToic3VwcG9ydC5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(402, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'f559b43c6f438a8f9f8354389defc13ad0e27dc1', 5, 'user', 'draft', 897494688, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529668, 1737529668, 0, NULL),
+(403, '1575a255e0a88da9593dc0c445664fb7bb2a22ad', '3eac372256543bf96d840c18cc4c79e3706d16f3', 5, 'user', 'draft', 38372216, '/', 'download.svg', 2, 401, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:244:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzgiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiZG93bmxvYWQuc3ZnIjt9\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(404, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '336cf2c45f397dc26de3d6be1c9ecb6430467f81', 5, 'user', 'draft', 38372216, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529668, 1737529668, 0, NULL),
+(405, 'b0e1ba13b73ed242f9cb71464c24c42cc8719092', 'a21230efcb7e173136998c819e44523521492e94', 5, 'user', 'draft', 453724868, '/', 'message.svg', 2, 1400, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzEiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToibWVzc2FnZS5zdmciO30=\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(406, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '02f9612f12937d43e32e60f8c0d729288b61724d', 5, 'user', 'draft', 453724868, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529668, 1737529668, 0, NULL),
+(407, 'abb3a5ef41c527333fe1fe303a5b9351fbe23e61', '2fbde8a6af3e7b0998ffa0f761a6fefac4fde086', 5, 'user', 'draft', 299294027, '/', 'profile.svg', 2, 722, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzIiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToicHJvZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(408, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '0a5cd29f1d8ebd02eed74070b7e054d639653d85', 5, 'user', 'draft', 299294027, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529668, 1737529668, 0, NULL),
+(409, '2c3a267644b90eef727abe4daae210973f28be7e', '6b5211a02f30bb66de4d1d7268138e78e65cde08', 5, 'user', 'draft', 359866818, '/', 'preferences.svg', 2, 2159, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzMiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNToicHJlZmVyZW5jZXMuc3ZnIjt9\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(410, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '0c345a6790039cc24ebfc6a12a12cd27ba41e80b', 5, 'user', 'draft', 359866818, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529668, 1737529668, 0, NULL),
+(411, 'e15c679482a52f1b73b08fc301d830a887ccf9b5', '37179567c215d10e98f0ae11c32aab3ee9d87823', 5, 'user', 'draft', 375843679, '/', 'grade.svg', 2, 872, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:232:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzQiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJncmFkZS5zdmciO30=\";}', NULL, NULL, 1737456696, 1737456696, 0, NULL),
+(412, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'eae3e9d5025098dfbd74aaed781135066a370d5e', 5, 'user', 'draft', 375843679, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529668, 1737529668, 0, NULL),
+(413, '90f778a788fd0745d87e128f7581ffc6c4850dec', '9c3854d6a046f314a9ef2b8f3269210db44e7daf', 5, 'user', 'draft', 289010076, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTA6ImxvZ29fY29sb3IiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737456936, 1737456979, 0, NULL),
+(414, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '41d5b6610d6bb995fac017e20a5853ca85b0cc95', 5, 'user', 'draft', 289010076, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529745, 1737529745, 0, NULL),
+(415, '90f778a788fd0745d87e128f7581ffc6c4850dec', '97248477cd038b96ccfb24834fab78e70906f668', 5, 'user', 'draft', 744755212, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTA6ImxvZ29fd3JpdGUiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737456966, 1737456979, 0, NULL),
+(416, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '8a36cd68d0671a6803092623a7dc5648d01477f4', 5, 'user', 'draft', 744755212, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529745, 1737529745, 0, NULL),
+(417, '4ad68590dfca162f9e0634bf8d6a064169195db9', '2771915433dec04d242e66d4142f20ab699d4883', 5, 'user', 'draft', 741089095, '/', 'audio_file.svg', 2, 266, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:248:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzEiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNDoiYXVkaW9fZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(418, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '4590a7b15129c2fa9092f8287c00027f607928f2', 5, 'user', 'draft', 741089095, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529745, 1737529745, 0, NULL),
+(419, '7c6f6b2dd8af961ada7ba051522f4789a870ca68', 'ad4f4035817c5600515790fdf77d42e282651e46', 5, 'user', 'draft', 459693988, '/', 'video_file.svg', 2, 287, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:248:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzIiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNDoidmlkZW9fZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(420, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '9e5a0991b4ef290f676264b2fa6724e73ca7ac7d', 5, 'user', 'draft', 459693988, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529745, 1737529745, 0, NULL),
+(421, '8dc4323dab999a3151a3b961ad198cd6cc1c76f8', '17676af6df789ee425c51b11c42541ef4602d046', 5, 'user', 'draft', 437830613, '/', 'book.svg', 2, 474, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzMiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJib29rLnN2ZyI7fQ==\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(422, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '6b698d0dbcd8fcae00f0fd18ad6a45ddc8364d41', 5, 'user', 'draft', 437830613, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529745, 1737529745, 0, NULL),
+(423, '73484cc247330ed154033cc723e357fdb0021d64', 'bb94170e3dc92e26c8e4af134515a3349e451ce4', 5, 'user', 'draft', 966894964, '/', 'game.svg', 2, 697, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzQiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJnYW1lLnN2ZyI7fQ==\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(424, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '936f505ca328e24d6272cdf6e73d822c1dd0cad1', 5, 'user', 'draft', 966894964, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529745, 1737529745, 0, NULL),
+(425, '9cda70c97cc93f83023221c37ae8ae4cd7dffb47', 'c556fccfc65a854c3647c8c2b9160c1a87b07ed9', 5, 'user', 'draft', 213288089, '/', 'money.svg', 2, 684, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzUiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJtb25leS5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(426, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '5f97d971afd385a32827017ddb68b6fa2ad350f3', 5, 'user', 'draft', 213288089, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529745, 1737529745, 0, NULL),
+(427, '1996f00e47a9833bbadba62a1c836e65c2ef54f9', 'b1e31f67b27825f37c5a0363c6c75c9d3c063515', 5, 'user', 'draft', 125159078, '/', 'slide.svg', 2, 288, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzYiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJzbGlkZS5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(428, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '6fe23fa3806309f99740354319671f4c2dbcdee6', 5, 'user', 'draft', 125159078, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529745, 1737529745, 0, NULL),
+(429, '8a489267f1c0d0b8f24031ef66823083559db9f2', 'a5a55efd498d77279b0fc2e50e73fed0a1daaa43', 5, 'user', 'draft', 95501843, '/', 'support.svg', 2, 576, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:244:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzciO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToic3VwcG9ydC5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(430, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'f102f4d3d73082b7c0a704c1c5028e7a67973fc8', 5, 'user', 'draft', 95501843, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529745, 1737529745, 0, NULL),
+(431, '1575a255e0a88da9593dc0c445664fb7bb2a22ad', '86cc7697fef8cf8f722f7b77e64ecec5cbe75485', 5, 'user', 'draft', 606537950, '/', 'download.svg', 2, 401, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:244:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzgiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiZG93bmxvYWQuc3ZnIjt9\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(432, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'cb300e5e8b59c0a10b1a0ff803bb2619962fa37d', 5, 'user', 'draft', 606537950, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529745, 1737529745, 0, NULL),
+(433, 'b0e1ba13b73ed242f9cb71464c24c42cc8719092', '1408e982d8af68756d4eab12f8550e7f5e26d63b', 5, 'user', 'draft', 641115860, '/', 'message.svg', 2, 1400, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzEiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToibWVzc2FnZS5zdmciO30=\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(434, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '0aa57e9f31e4d909660e2e370fb1cd05d3f7987b', 5, 'user', 'draft', 641115860, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529745, 1737529745, 0, NULL),
+(435, 'abb3a5ef41c527333fe1fe303a5b9351fbe23e61', 'a0777ad35cc11d4e06b0d6e4973db81611d79d97', 5, 'user', 'draft', 84944472, '/', 'profile.svg', 2, 722, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzIiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToicHJvZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(436, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '5703a569c93b57955465305f89972d919e804632', 5, 'user', 'draft', 84944472, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529745, 1737529745, 0, NULL),
+(437, '2c3a267644b90eef727abe4daae210973f28be7e', 'db2f2b3c6c6306f41e2fee48f107449cad4e301c', 5, 'user', 'draft', 48653420, '/', 'preferences.svg', 2, 2159, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzMiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNToicHJlZmVyZW5jZXMuc3ZnIjt9\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(438, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '744e7b29931e3adcaaafe0fa77277473f5515bc7', 5, 'user', 'draft', 48653420, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529745, 1737529745, 0, NULL),
+(439, 'e15c679482a52f1b73b08fc301d830a887ccf9b5', '1cc081c13085a2f07843fa2004929303e28cc375', 5, 'user', 'draft', 482772187, '/', 'grade.svg', 2, 872, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:232:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzQiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJncmFkZS5zdmciO30=\";}', NULL, NULL, 1737456696, 1737456696, 0, NULL),
+(440, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'ce1dd7fb898b5b7f12a3425c0b345e3e6ba1d65b', 5, 'user', 'draft', 482772187, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529745, 1737529745, 0, NULL);
+INSERT INTO `mdl_files` (`id`, `contenthash`, `pathnamehash`, `contextid`, `component`, `filearea`, `itemid`, `filepath`, `filename`, `userid`, `filesize`, `mimetype`, `status`, `source`, `author`, `license`, `timecreated`, `timemodified`, `sortorder`, `referencefileid`) VALUES
+(441, '90f778a788fd0745d87e128f7581ffc6c4850dec', 'a2013a8965e24f68febb5fb21e6542df442f5786', 5, 'user', 'draft', 73562653, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTA6ImxvZ29fY29sb3IiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737456936, 1737456979, 0, NULL),
+(442, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '5d5b255139349658757cdd2fa1ef887e3ee5b675', 5, 'user', 'draft', 73562653, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529875, 1737529875, 0, NULL),
+(443, '90f778a788fd0745d87e128f7581ffc6c4850dec', 'b2216e0388ab9527cb55cf66123895288dae6063', 5, 'user', 'draft', 337078944, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTA6ImxvZ29fd3JpdGUiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737456966, 1737456979, 0, NULL),
+(444, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'ffe968ec807f9d44bfbf21c4b3371f2fbde83d0b', 5, 'user', 'draft', 337078944, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529875, 1737529875, 0, NULL),
+(445, '4ad68590dfca162f9e0634bf8d6a064169195db9', '5abcbb63b330de200f0fb886dfa8c22dfcb80bfb', 5, 'user', 'draft', 30918147, '/', 'audio_file.svg', 2, 266, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:248:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzEiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNDoiYXVkaW9fZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(446, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '97732e274518710ce94497a0ed66945be1c79f67', 5, 'user', 'draft', 30918147, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529875, 1737529875, 0, NULL),
+(447, '7c6f6b2dd8af961ada7ba051522f4789a870ca68', '8716985e02c277869efb91a811ba2150e275a5fa', 5, 'user', 'draft', 390727272, '/', 'video_file.svg', 2, 287, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:248:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzIiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNDoidmlkZW9fZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(448, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '6ba9df025e2fdd04fc6463583ec7955377719f27', 5, 'user', 'draft', 390727272, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529875, 1737529875, 0, NULL),
+(449, '8dc4323dab999a3151a3b961ad198cd6cc1c76f8', '44dea31ab1414af255df8a691676f84dd689f44a', 5, 'user', 'draft', 982880264, '/', 'book.svg', 2, 474, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzMiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJib29rLnN2ZyI7fQ==\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(450, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'e4b703c0d3e887dd3e2d15f0d8375bbf101be1fe', 5, 'user', 'draft', 982880264, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529875, 1737529875, 0, NULL),
+(451, '73484cc247330ed154033cc723e357fdb0021d64', 'f866c1cfeaceaeb85082d57258c317065f4fcb5a', 5, 'user', 'draft', 910302602, '/', 'game.svg', 2, 697, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzQiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJnYW1lLnN2ZyI7fQ==\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(452, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'fdcc16fd6cdbb8acdc1162a5d672de3f9449f54a', 5, 'user', 'draft', 910302602, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529875, 1737529875, 0, NULL),
+(453, '9cda70c97cc93f83023221c37ae8ae4cd7dffb47', '446c5d50a6130740a28e2101b310fbafeb534c08', 5, 'user', 'draft', 661709421, '/', 'money.svg', 2, 684, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzUiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJtb25leS5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(454, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '45e0f7f26b29f7ceeeca9cccff92dba954a0d07b', 5, 'user', 'draft', 661709421, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529875, 1737529875, 0, NULL),
+(455, '1996f00e47a9833bbadba62a1c836e65c2ef54f9', '79284ad671940716751395346ae920af6742b61a', 5, 'user', 'draft', 597992236, '/', 'slide.svg', 2, 288, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzYiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJzbGlkZS5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(456, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '22899c26ee6c96496cef2550abcf9a58c19d6331', 5, 'user', 'draft', 597992236, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529875, 1737529875, 0, NULL),
+(457, '8a489267f1c0d0b8f24031ef66823083559db9f2', 'f7ddc69e78ed36df3412aa18c0e4021ad8237712', 5, 'user', 'draft', 263833641, '/', 'support.svg', 2, 576, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:244:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzciO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToic3VwcG9ydC5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(458, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'efe63cd878105bb3912b47767840d67cc84c148d', 5, 'user', 'draft', 263833641, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529875, 1737529875, 0, NULL),
+(459, '1575a255e0a88da9593dc0c445664fb7bb2a22ad', '51c0e7b6c5bd590990fbb1bdd58216b0b7291d04', 5, 'user', 'draft', 104355494, '/', 'download.svg', 2, 401, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:244:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzgiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiZG93bmxvYWQuc3ZnIjt9\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(460, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '3fdff067b9b7688e9749f71ef46b85a1dd8884ba', 5, 'user', 'draft', 104355494, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529875, 1737529875, 0, NULL),
+(461, 'b0e1ba13b73ed242f9cb71464c24c42cc8719092', '099559dc00b77b33b36a528df5e2894f07f23110', 5, 'user', 'draft', 182059287, '/', 'message.svg', 2, 1400, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzEiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToibWVzc2FnZS5zdmciO30=\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(462, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '840bdce9f3a4cff51cc9c89ce72796fd6f668dab', 5, 'user', 'draft', 182059287, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529875, 1737529875, 0, NULL),
+(463, 'abb3a5ef41c527333fe1fe303a5b9351fbe23e61', '919e94247653754650cc12cd84971f998642b53f', 5, 'user', 'draft', 904280062, '/', 'profile.svg', 2, 722, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzIiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToicHJvZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(464, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'c811747dd3aa0422b2471f0b8ef50830705327fd', 5, 'user', 'draft', 904280062, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529875, 1737529875, 0, NULL),
+(465, '2c3a267644b90eef727abe4daae210973f28be7e', 'a2f59bc1d4b840d5c01d76d9629d218f5a7590b6', 5, 'user', 'draft', 993386889, '/', 'preferences.svg', 2, 2159, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzMiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNToicHJlZmVyZW5jZXMuc3ZnIjt9\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(466, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'c4011de5722b799cc58ba56959bbca3d5ab23d91', 5, 'user', 'draft', 993386889, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529875, 1737529875, 0, NULL),
+(467, 'e15c679482a52f1b73b08fc301d830a887ccf9b5', '3eb1b073a7c8d9fb5e700fc3ab2875ad27bc4b23', 5, 'user', 'draft', 560068609, '/', 'grade.svg', 2, 872, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:232:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzQiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJncmFkZS5zdmciO30=\";}', NULL, NULL, 1737456696, 1737456696, 0, NULL),
+(468, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '00df13ef5ab48fedcc10af68685b2b18d7f50402', 5, 'user', 'draft', 560068609, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737529875, 1737529875, 0, NULL),
+(469, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', '3c560f59f63d37bc8cdb763786f2d9047cd9f262', 5, 'user', 'draft', 817598891, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:8:\"new2.jpg\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjExOiJ0aGVtZV9ib29zdCI7czo2OiJpdGVtaWQiO2k6MDtzOjg6ImZpbGVhcmVhIjtzOjE1OiJiYWNrZ3JvdW5kaW1hZ2UiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJuZXcyLmpwZyI7fQ==\";}', 'sri portal', 'unknown', 1737451257, 1737451356, 0, NULL),
+(470, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'caba86091aa67ebc5cd751cbcd3078304da26003', 5, 'user', 'draft', 817598891, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530060, 1737530060, 0, NULL),
+(471, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', 'dd9ced1265ff024c8217b13f80114229e559c256', 5, 'user', 'draft', 96441492, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:8:\"new2.jpg\";s:8:\"original\";s:232:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjExOiJ0aGVtZV9ib29zdCI7czo2OiJpdGVtaWQiO2k6MDtzOjg6ImZpbGVhcmVhIjtzOjIwOiJsb2dpbmJhY2tncm91bmRpbWFnZSI7czo4OiJmaWxlcGF0aCI7czoxOiIvIjtzOjg6ImZpbGVuYW1lIjtzOjg6Im5ldzIuanBnIjt9\";}', 'sri portal', 'unknown', 1737451274, 1737451356, 0, NULL),
+(472, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '858f82d5d869a74457a114e963fd5e2ac712f1d9', 5, 'user', 'draft', 96441492, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530060, 1737530060, 0, NULL),
+(473, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', '75602627f7aa71d9da131e6403cbad367913f0cc', 5, 'user', 'draft', 461079202, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:8:\"new2.jpg\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9jbGFzc2ljIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTU6ImJhY2tncm91bmRpbWFnZSI7czo4OiJmaWxlcGF0aCI7czoxOiIvIjtzOjg6ImZpbGVuYW1lIjtzOjg6Im5ldzIuanBnIjt9\";}', 'sri portal', 'unknown', 1737451499, 1737451891, 0, NULL),
+(474, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '4036f6a9deeb8b628e5ea6c402d5aa7dfd9e810f', 5, 'user', 'draft', 461079202, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530060, 1737530060, 0, NULL),
+(475, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', '14161b518b7123e600537f8bdd0912a0817d2ec2', 5, 'user', 'draft', 373960021, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:8:\"new2.jpg\";s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9jbGFzc2ljIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjA6ImxvZ2luYmFja2dyb3VuZGltYWdlIjtzOjg6ImZpbGVwYXRoIjtzOjE6Ii8iO3M6ODoiZmlsZW5hbWUiO3M6ODoibmV3Mi5qcGciO30=\";}', 'sri portal', 'unknown', 1737451511, 1737451891, 0, NULL),
+(476, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '6179ed67924cfb7e3bf3aa80bee4eb6ffa17da1d', 5, 'user', 'draft', 373960021, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530060, 1737530060, 0, NULL),
+(477, '90f778a788fd0745d87e128f7581ffc6c4850dec', '8d1e36b32b19847e5d03b59100ff0d405b977caa', 5, 'user', 'draft', 878832475, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTA6ImxvZ29fY29sb3IiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737456936, 1737456979, 0, NULL),
+(478, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '1ef616aa6ff508620c0d7dbc0e87902f6379277e', 5, 'user', 'draft', 878832475, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530060, 1737530060, 0, NULL),
+(479, '90f778a788fd0745d87e128f7581ffc6c4850dec', '99ddc9dedec2d89f0093005127e9ae095b33a7fc', 5, 'user', 'draft', 751241835, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTA6ImxvZ29fd3JpdGUiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737456966, 1737456979, 0, NULL),
+(480, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'e4662528e98a6113685e7751336ae32487165d14', 5, 'user', 'draft', 751241835, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530060, 1737530060, 0, NULL),
+(481, '4ad68590dfca162f9e0634bf8d6a064169195db9', '10a8404b962f86169cc6c460e703f76f67e6015f', 5, 'user', 'draft', 96842068, '/', 'audio_file.svg', 2, 266, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:248:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzEiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNDoiYXVkaW9fZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(482, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '843a3f05ba32a4b7a0da0121e3793c9750f181ab', 5, 'user', 'draft', 96842068, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530060, 1737530060, 0, NULL),
+(483, '7c6f6b2dd8af961ada7ba051522f4789a870ca68', '1fa63d78a81445045714c77f10b1fdad9da85958', 5, 'user', 'draft', 528082380, '/', 'video_file.svg', 2, 287, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:248:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzIiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNDoidmlkZW9fZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(484, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '1116dabe9c3f482eabe7a415529ec9442324ca36', 5, 'user', 'draft', 528082380, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530060, 1737530060, 0, NULL),
+(485, '8dc4323dab999a3151a3b961ad198cd6cc1c76f8', '636c650cc87314234f5a57ad68ca9f68d15f08b7', 5, 'user', 'draft', 58124067, '/', 'book.svg', 2, 474, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzMiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJib29rLnN2ZyI7fQ==\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(486, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '54894d05a1265c02ba45eef721975f10566bc375', 5, 'user', 'draft', 58124067, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530060, 1737530060, 0, NULL),
+(487, '73484cc247330ed154033cc723e357fdb0021d64', 'f64d4f9a0274ca1d46ce715a44136581715cf0b2', 5, 'user', 'draft', 775422389, '/', 'game.svg', 2, 697, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzQiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJnYW1lLnN2ZyI7fQ==\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(488, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'ee4cfb3a1d4cde2b0b62911db3e8449a97bf51ce', 5, 'user', 'draft', 775422389, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530060, 1737530060, 0, NULL),
+(489, '9cda70c97cc93f83023221c37ae8ae4cd7dffb47', '61f0090f17857dbae7946f6334a0871b79c80028', 5, 'user', 'draft', 232929776, '/', 'money.svg', 2, 684, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzUiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJtb25leS5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(490, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '641ee8ebf2e70e12e05622fb773a39f3002b014a', 5, 'user', 'draft', 232929776, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530060, 1737530060, 0, NULL),
+(491, '1996f00e47a9833bbadba62a1c836e65c2ef54f9', '2e2d67e011786e86a11f4b973f2a467fcabe7c42', 5, 'user', 'draft', 953974674, '/', 'slide.svg', 2, 288, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzYiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJzbGlkZS5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(492, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '8b0f12c9a67ec2948b194789d741e6d790f49822', 5, 'user', 'draft', 953974674, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530060, 1737530060, 0, NULL),
+(493, '8a489267f1c0d0b8f24031ef66823083559db9f2', 'acf93b6d9713adb8ce5207a65c8e9c1238aa4887', 5, 'user', 'draft', 596424886, '/', 'support.svg', 2, 576, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:244:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzciO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToic3VwcG9ydC5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(494, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '86b5590a4862373840c7d1734459b80be788315a', 5, 'user', 'draft', 596424886, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530060, 1737530060, 0, NULL),
+(495, '1575a255e0a88da9593dc0c445664fb7bb2a22ad', 'c6b2940efb5ad7a924bc08ea6b5f018f5eb3f80d', 5, 'user', 'draft', 57174620, '/', 'download.svg', 2, 401, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:244:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzgiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiZG93bmxvYWQuc3ZnIjt9\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(496, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '2707ae582d5c28ce0d4a740370e0314785d93f24', 5, 'user', 'draft', 57174620, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530060, 1737530060, 0, NULL),
+(497, 'b0e1ba13b73ed242f9cb71464c24c42cc8719092', 'a50f55b10658294b22d27004a59ad0ee41eb9c3d', 5, 'user', 'draft', 317392097, '/', 'message.svg', 2, 1400, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzEiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToibWVzc2FnZS5zdmciO30=\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(498, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '5143a81e82de1c2cd4f107fb17ae731451272e03', 5, 'user', 'draft', 317392097, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530060, 1737530060, 0, NULL),
+(499, 'abb3a5ef41c527333fe1fe303a5b9351fbe23e61', '7fdffe31b804573abd36d859c430d88b73de19e4', 5, 'user', 'draft', 72184661, '/', 'profile.svg', 2, 722, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzIiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToicHJvZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(500, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'c27353f0761648c9b488cc02c01bfac39cd3e16b', 5, 'user', 'draft', 72184661, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530060, 1737530060, 0, NULL),
+(501, '2c3a267644b90eef727abe4daae210973f28be7e', '50a7a40d5b4ee5e7373c0b2329b14be4c3cfe95f', 5, 'user', 'draft', 495180034, '/', 'preferences.svg', 2, 2159, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzMiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNToicHJlZmVyZW5jZXMuc3ZnIjt9\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(502, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '4041af5397bd150e932558d55eb759b67d7550d7', 5, 'user', 'draft', 495180034, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530060, 1737530060, 0, NULL),
+(503, 'e15c679482a52f1b73b08fc301d830a887ccf9b5', 'c3248334ac767cf9f1cb2037201543de8ab77952', 5, 'user', 'draft', 184712516, '/', 'grade.svg', 2, 872, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:232:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzQiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJncmFkZS5zdmciO30=\";}', NULL, NULL, 1737456696, 1737456696, 0, NULL),
+(504, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'a2bbdab8107b4afe46dc5908e7da9704fa04e90d', 5, 'user', 'draft', 184712516, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530060, 1737530060, 0, NULL),
+(505, '90f778a788fd0745d87e128f7581ffc6c4850dec', 'e8870498bff5fc222d26b07df686935ff5f85eab', 5, 'user', 'draft', 290429735, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:216:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjExOiJ0aGVtZV9tb292ZSI7czo2OiJpdGVtaWQiO2k6MDtzOjg6ImZpbGVhcmVhIjtzOjQ6ImxvZ28iO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737357063, 1737357069, 0, NULL),
+(506, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '0cbb6d7cd40a53ba9981fcfd8270bc6e319898d0', 5, 'user', 'draft', 290429735, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530060, 1737530060, 0, NULL),
+(507, '4fbe7701e7e131b606d4b4a2733325f89f44b1d0', '4afb5ce0bd2b0221a501cb24559c1e9afdbbce75', 5, 'user', 'draft', 722135843, '/', 'new2.jpg', 2, 1919248, 'image/jpeg', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:8:\"new2.jpg\";s:8:\"original\";s:220:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjExOiJ0aGVtZV9tb292ZSI7czo2OiJpdGVtaWQiO2k6MDtzOjg6ImZpbGVhcmVhIjtzOjEwOiJsb2dpbmJnaW1nIjtzOjg6ImZpbGVwYXRoIjtzOjE6Ii8iO3M6ODoiZmlsZW5hbWUiO3M6ODoibmV3Mi5qcGciO30=\";}', 'sri portal', 'unknown', 1737357047, 1737357069, 0, NULL),
+(508, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'f2baee5168f3157d2c77856a5c0a8c7def3eb6fb', 5, 'user', 'draft', 722135843, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530060, 1737530060, 0, NULL),
+(509, '90f778a788fd0745d87e128f7581ffc6c4850dec', 'c42de9d10e71ebc3c00c6642ba21b01da4e1af26', 5, 'user', 'draft', 225591415, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTA6ImxvZ29fY29sb3IiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737456936, 1737456979, 0, NULL),
+(510, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '254e7d719d00f6126a263ea8caf0e48f7203f59c', 5, 'user', 'draft', 225591415, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530134, 1737530134, 0, NULL),
+(511, '90f778a788fd0745d87e128f7581ffc6c4850dec', 'ae6a6f7ddbd4be6e2b6328af1a6071598abc713e', 5, 'user', 'draft', 273849551, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTA6ImxvZ29fd3JpdGUiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737456966, 1737456979, 0, NULL),
+(512, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '3a0ed1bc55ce0776ee8c9ba63303525531946a67', 5, 'user', 'draft', 273849551, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530134, 1737530134, 0, NULL),
+(513, '4ad68590dfca162f9e0634bf8d6a064169195db9', '3f245e23051f777a205bdb7153f38a303b14ea70', 5, 'user', 'draft', 421332894, '/', 'audio_file.svg', 2, 266, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:248:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzEiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNDoiYXVkaW9fZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(514, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '67a6de7baa03abf5ef48b2cf9e06c26663e19672', 5, 'user', 'draft', 421332894, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530134, 1737530134, 0, NULL),
+(515, '7c6f6b2dd8af961ada7ba051522f4789a870ca68', '586df784c95dc5c4372d86190f85c66d7dfffa3d', 5, 'user', 'draft', 132644677, '/', 'video_file.svg', 2, 287, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:248:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzIiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNDoidmlkZW9fZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(516, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '4ef0b2517344c2bd45802364ccd44ad978b9ab2a', 5, 'user', 'draft', 132644677, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530134, 1737530134, 0, NULL),
+(517, '8dc4323dab999a3151a3b961ad198cd6cc1c76f8', '7f62a3874f62f3b931f72c3768a8dcb08454c527', 5, 'user', 'draft', 844634401, '/', 'book.svg', 2, 474, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzMiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJib29rLnN2ZyI7fQ==\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(518, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'b4019369634946e99c936f4124733187f598a493', 5, 'user', 'draft', 844634401, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530134, 1737530134, 0, NULL),
+(519, '73484cc247330ed154033cc723e357fdb0021d64', 'f7ccf0e28d1b3a18acc21a6f8863e23577411e63', 5, 'user', 'draft', 178716161, '/', 'game.svg', 2, 697, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzQiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJnYW1lLnN2ZyI7fQ==\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(520, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '72fa7e86a9d6e3dbd86fdede2f6bc736decd1b77', 5, 'user', 'draft', 178716161, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530134, 1737530134, 0, NULL),
+(521, '9cda70c97cc93f83023221c37ae8ae4cd7dffb47', 'e4ef0da0b7793b2a3a8acdf1db5ce25c04679334', 5, 'user', 'draft', 69475211, '/', 'money.svg', 2, 684, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzUiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJtb25leS5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(522, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'ded2770761c3600eb3e127f98268bbd61d343043', 5, 'user', 'draft', 69475211, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530134, 1737530134, 0, NULL),
+(523, '1996f00e47a9833bbadba62a1c836e65c2ef54f9', '0566e264ee3c181adc290d94e3a11f40d73ee33f', 5, 'user', 'draft', 232152006, '/', 'slide.svg', 2, 288, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzYiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJzbGlkZS5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(524, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'ac874a770333e3288c6c613d960620db3593cbc4', 5, 'user', 'draft', 232152006, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530134, 1737530134, 0, NULL),
+(525, '8a489267f1c0d0b8f24031ef66823083559db9f2', '6552182ed96ce6a5f76a295fc0768c0e93ce6e3a', 5, 'user', 'draft', 32658618, '/', 'support.svg', 2, 576, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:244:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzciO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToic3VwcG9ydC5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(526, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'e854a5ee593bfd3f7c85d9f8f5f4121c213b55c2', 5, 'user', 'draft', 32658618, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530134, 1737530134, 0, NULL),
+(527, '1575a255e0a88da9593dc0c445664fb7bb2a22ad', '69ad097f2e443e3ca3ed11c0c995fc9bed0ff8a2', 5, 'user', 'draft', 430327792, '/', 'download.svg', 2, 401, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:244:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzgiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiZG93bmxvYWQuc3ZnIjt9\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(528, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '996de035398ba21fa39943cb5d1b562b600df2eb', 5, 'user', 'draft', 430327792, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530134, 1737530134, 0, NULL),
+(529, 'b0e1ba13b73ed242f9cb71464c24c42cc8719092', 'ae17de7d4351455f63bb17bab3551ba9b714dae9', 5, 'user', 'draft', 298951461, '/', 'message.svg', 2, 1400, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzEiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToibWVzc2FnZS5zdmciO30=\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(530, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '89bbf198a25baaeb3fa3d2b1eb17036045df698a', 5, 'user', 'draft', 298951461, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530134, 1737530134, 0, NULL),
+(531, 'abb3a5ef41c527333fe1fe303a5b9351fbe23e61', '099a6792ad552633f46e033f04b6a29587ed361b', 5, 'user', 'draft', 494222700, '/', 'profile.svg', 2, 722, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzIiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToicHJvZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(532, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '0d0b0990e2b16e300a47b8d2cd999ba7dd77e786', 5, 'user', 'draft', 494222700, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530134, 1737530134, 0, NULL),
+(533, '2c3a267644b90eef727abe4daae210973f28be7e', '8072d0d65fec3cb8c3b4d3f59498ca9a053f4d00', 5, 'user', 'draft', 70793614, '/', 'preferences.svg', 2, 2159, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzMiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNToicHJlZmVyZW5jZXMuc3ZnIjt9\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(534, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '89d14dffde5d7d5c289ced716e8ff7a32846426c', 5, 'user', 'draft', 70793614, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530134, 1737530134, 0, NULL),
+(535, 'e15c679482a52f1b73b08fc301d830a887ccf9b5', '7c678cdcb7c1f2a12aa5327f03af047d55d31c94', 5, 'user', 'draft', 66653071, '/', 'grade.svg', 2, 872, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:232:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzQiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJncmFkZS5zdmciO30=\";}', NULL, NULL, 1737456696, 1737456696, 0, NULL),
+(536, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'b203038b2f049fac935aa5cdebdcad1caa83ee1b', 5, 'user', 'draft', 66653071, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530134, 1737530134, 0, NULL),
+(537, '90f778a788fd0745d87e128f7581ffc6c4850dec', 'bc32ccb39f502743fb4f442b0e501055b744774b', 5, 'user', 'draft', 243347904, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTA6ImxvZ29fY29sb3IiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737456936, 1737456979, 0, NULL),
+(538, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'b0ab0d5de129f81501cf9e8f3bad47013213e8ee', 5, 'user', 'draft', 243347904, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530214, 1737530214, 0, NULL),
+(539, '90f778a788fd0745d87e128f7581ffc6c4850dec', '30e3763a2a823006c412435b09f09734660a461a', 5, 'user', 'draft', 74568569, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTA6ImxvZ29fd3JpdGUiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737456966, 1737456979, 0, NULL),
+(540, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'adb0fa640230b389efda5a5470689382f177c796', 5, 'user', 'draft', 74568569, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530214, 1737530214, 0, NULL),
+(541, '4ad68590dfca162f9e0634bf8d6a064169195db9', 'f660ee80b9ab376e8477dde4bf860bc783321f5d', 5, 'user', 'draft', 236831154, '/', 'audio_file.svg', 2, 266, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:248:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzEiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNDoiYXVkaW9fZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(542, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '49ecf372e72d32e8c7f373d24ade52a8f6bc1b72', 5, 'user', 'draft', 236831154, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530214, 1737530214, 0, NULL),
+(543, '7c6f6b2dd8af961ada7ba051522f4789a870ca68', '2ccf39103128a2fe5a43bc198e2b55bdfcdd19a2', 5, 'user', 'draft', 132428703, '/', 'video_file.svg', 2, 287, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:248:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzIiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNDoidmlkZW9fZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(544, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '8ba24daf7aa6300319253b06d8247a5a8ade346c', 5, 'user', 'draft', 132428703, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530214, 1737530214, 0, NULL),
+(545, '8dc4323dab999a3151a3b961ad198cd6cc1c76f8', '42bca09a9f0938da2c579440a7bda382f1b7445c', 5, 'user', 'draft', 966567136, '/', 'book.svg', 2, 474, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzMiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJib29rLnN2ZyI7fQ==\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(546, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '3d08ff03ec0f4dac3592d23b172754f13a2a2bc9', 5, 'user', 'draft', 966567136, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530214, 1737530214, 0, NULL),
+(547, '73484cc247330ed154033cc723e357fdb0021d64', '25b71e4060e34a593e4dfc2f43d564e21207e256', 5, 'user', 'draft', 594190, '/', 'game.svg', 2, 697, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzQiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJnYW1lLnN2ZyI7fQ==\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(548, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '7b3fd3c3a6c7122a5d05c1e5a5e740b8482529cd', 5, 'user', 'draft', 594190, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530214, 1737530214, 0, NULL),
+(549, '9cda70c97cc93f83023221c37ae8ae4cd7dffb47', '53bd214bbe7db73915812b4f6d207648f86fc520', 5, 'user', 'draft', 589014696, '/', 'money.svg', 2, 684, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzUiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJtb25leS5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(550, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'b470bc839e9f222f7c2147311f9d6cd59e49948a', 5, 'user', 'draft', 589014696, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530214, 1737530214, 0, NULL),
+(551, '1996f00e47a9833bbadba62a1c836e65c2ef54f9', '0420bdf3b15565c1b8c20890e3f9305e20238e8d', 5, 'user', 'draft', 154742221, '/', 'slide.svg', 2, 288, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzYiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJzbGlkZS5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(552, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '300c7082d3dc8afab267105373a48a25cd801038', 5, 'user', 'draft', 154742221, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530214, 1737530214, 0, NULL),
+(553, '8a489267f1c0d0b8f24031ef66823083559db9f2', '5488da726bf42059d71a21a53612b326f0b286f8', 5, 'user', 'draft', 796369361, '/', 'support.svg', 2, 576, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:244:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzciO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToic3VwcG9ydC5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(554, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '00504da3bc049cfb054cafa81ba69f3227956871', 5, 'user', 'draft', 796369361, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530214, 1737530214, 0, NULL),
+(555, '1575a255e0a88da9593dc0c445664fb7bb2a22ad', '1b294da8e281073525e7493a59cd407d1b22408b', 5, 'user', 'draft', 11230817, '/', 'download.svg', 2, 401, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:244:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzgiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiZG93bmxvYWQuc3ZnIjt9\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(556, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '5a6eb061657bd9833c0556ab86ce7b6207b52b32', 5, 'user', 'draft', 11230817, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530214, 1737530214, 0, NULL),
+(557, 'b0e1ba13b73ed242f9cb71464c24c42cc8719092', 'be0814934b6f5a682458509d59749380e3c42c73', 5, 'user', 'draft', 541183991, '/', 'message.svg', 2, 1400, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzEiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToibWVzc2FnZS5zdmciO30=\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(558, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '8c2a843b37fb7ef9074eb5109c271bf468030050', 5, 'user', 'draft', 541183991, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530214, 1737530214, 0, NULL),
+(559, 'abb3a5ef41c527333fe1fe303a5b9351fbe23e61', 'e3126f583b16f30f4d33217743eea3e1354de3cb', 5, 'user', 'draft', 341351016, '/', 'profile.svg', 2, 722, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzIiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToicHJvZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(560, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '4a1fcaf491a0c1862d7df726dd375731e66ed309', 5, 'user', 'draft', 341351016, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530214, 1737530214, 0, NULL),
+(561, '2c3a267644b90eef727abe4daae210973f28be7e', 'd981792d5fe6f327395c87ce4f541323bc1ffee4', 5, 'user', 'draft', 389744772, '/', 'preferences.svg', 2, 2159, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzMiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNToicHJlZmVyZW5jZXMuc3ZnIjt9\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(562, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '72d36611d7135b6e9ae4002f15137b62c4595ffe', 5, 'user', 'draft', 389744772, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530214, 1737530214, 0, NULL),
+(563, 'e15c679482a52f1b73b08fc301d830a887ccf9b5', 'f8010c29b8a8592095a70d63845304269d5126a3', 5, 'user', 'draft', 282477236, '/', 'grade.svg', 2, 872, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:232:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzQiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJncmFkZS5zdmciO30=\";}', NULL, NULL, 1737456696, 1737456696, 0, NULL),
+(564, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '474e3708280a83a203793c30ad3ffd99f80b3c0a', 5, 'user', 'draft', 282477236, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530214, 1737530214, 0, NULL),
+(565, '90f778a788fd0745d87e128f7581ffc6c4850dec', 'eee6b879c89c208bf84e4d67ff14f1f00c5f4dd9', 5, 'user', 'draft', 610488322, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTA6ImxvZ29fY29sb3IiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737456936, 1737456979, 0, NULL),
+(566, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'f60fa6e3354541288a5851081ebd83de3571be2c', 5, 'user', 'draft', 610488322, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530269, 1737530269, 0, NULL),
+(567, '90f778a788fd0745d87e128f7581ffc6c4850dec', 'abb404ff857cae320f701554d7261f9b10d2bd99', 5, 'user', 'draft', 797450373, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTA6ImxvZ29fd3JpdGUiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737456966, 1737456979, 0, NULL),
+(568, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '898533c96306081443fd5d1ea8818f128a14cdbe', 5, 'user', 'draft', 797450373, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530269, 1737530269, 0, NULL),
+(569, '4ad68590dfca162f9e0634bf8d6a064169195db9', 'b7a0533c984d40e5fb9f729dcac2e6a6480fc4d2', 5, 'user', 'draft', 153519444, '/', 'audio_file.svg', 2, 266, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:248:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzEiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNDoiYXVkaW9fZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(570, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'd2a3a75cbcf90c78fdecafd3df9167b912992260', 5, 'user', 'draft', 153519444, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530269, 1737530269, 0, NULL),
+(571, '7c6f6b2dd8af961ada7ba051522f4789a870ca68', '982d6d87a2647dbc70b24afaf2f22a5bd823a328', 5, 'user', 'draft', 863039048, '/', 'video_file.svg', 2, 287, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:248:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzIiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNDoidmlkZW9fZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(572, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '53445515b84815209a7858a9ad505cf7e3cfe2fc', 5, 'user', 'draft', 863039048, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530269, 1737530269, 0, NULL),
+(573, '8dc4323dab999a3151a3b961ad198cd6cc1c76f8', '617b2963dbe9369da2fc63de333c4d5109b0fd83', 5, 'user', 'draft', 883482998, '/', 'book.svg', 2, 474, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzMiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJib29rLnN2ZyI7fQ==\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(574, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '17938b941a527addb58d30fd8c8894a2c86a403e', 5, 'user', 'draft', 883482998, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530269, 1737530269, 0, NULL),
+(575, '73484cc247330ed154033cc723e357fdb0021d64', 'c8907a9bba793fb4ac776aaedc8b0d9aacb2bd7a', 5, 'user', 'draft', 167684041, '/', 'game.svg', 2, 697, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzQiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJnYW1lLnN2ZyI7fQ==\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL);
+INSERT INTO `mdl_files` (`id`, `contenthash`, `pathnamehash`, `contextid`, `component`, `filearea`, `itemid`, `filepath`, `filename`, `userid`, `filesize`, `mimetype`, `status`, `source`, `author`, `license`, `timecreated`, `timemodified`, `sortorder`, `referencefileid`) VALUES
+(576, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'c94d44ae4442d887fe12424279f50728a364d494', 5, 'user', 'draft', 167684041, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530269, 1737530269, 0, NULL),
+(577, '9cda70c97cc93f83023221c37ae8ae4cd7dffb47', 'a7fe1199ee9df541742bd92036287142d02743cd', 5, 'user', 'draft', 387181126, '/', 'money.svg', 2, 684, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzUiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJtb25leS5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(578, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '7449cf3185f00a875783a1a7e41fbecc397710e6', 5, 'user', 'draft', 387181126, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530269, 1737530269, 0, NULL),
+(579, '1996f00e47a9833bbadba62a1c836e65c2ef54f9', '377a6b29029794bac4a7379b0b45dbfd3b17c10a', 5, 'user', 'draft', 230148871, '/', 'slide.svg', 2, 288, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzYiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJzbGlkZS5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(580, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '79dadf88e097b7071d4f3acae4faf6c3299eb545', 5, 'user', 'draft', 230148871, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530269, 1737530269, 0, NULL),
+(581, '8a489267f1c0d0b8f24031ef66823083559db9f2', '335629dc9de3d410f45ff778e4a254a83c8b7ad1', 5, 'user', 'draft', 354210671, '/', 'support.svg', 2, 576, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:244:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzciO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToic3VwcG9ydC5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(582, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'd9e67d0e0b2ef7f0b2d30e0eae9d4d44416e176e', 5, 'user', 'draft', 354210671, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530269, 1737530269, 0, NULL),
+(583, '1575a255e0a88da9593dc0c445664fb7bb2a22ad', '168d400415093fb7625abaf2503b501cb408b004', 5, 'user', 'draft', 231211140, '/', 'download.svg', 2, 401, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:244:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzgiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiZG93bmxvYWQuc3ZnIjt9\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(584, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '79ff5214eeab3884ab12a0bd71073ba18cf76914', 5, 'user', 'draft', 231211140, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530269, 1737530269, 0, NULL),
+(585, 'b0e1ba13b73ed242f9cb71464c24c42cc8719092', 'cc60b8fdfb0450ebef1ed2999142d995e8f19f46', 5, 'user', 'draft', 12728342, '/', 'message.svg', 2, 1400, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzEiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToibWVzc2FnZS5zdmciO30=\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(586, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'c220e5143dc3d7cb92f1bc6808bbb5398f927090', 5, 'user', 'draft', 12728342, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530269, 1737530269, 0, NULL),
+(587, 'abb3a5ef41c527333fe1fe303a5b9351fbe23e61', '1730831628a5a1803c1988df1a2fc797b664831d', 5, 'user', 'draft', 852219562, '/', 'profile.svg', 2, 722, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzIiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToicHJvZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(588, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '06fb0e163422536565927bab589c32fac6b5f048', 5, 'user', 'draft', 852219562, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530269, 1737530269, 0, NULL),
+(589, '2c3a267644b90eef727abe4daae210973f28be7e', '532da1b581ba4fd7dbdc38f6f6dfe4e88f6c7b2f', 5, 'user', 'draft', 774902402, '/', 'preferences.svg', 2, 2159, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzMiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNToicHJlZmVyZW5jZXMuc3ZnIjt9\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(590, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '77c1e93fb3b7ffd07d99f6c2cc754c39086e563f', 5, 'user', 'draft', 774902402, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530269, 1737530269, 0, NULL),
+(591, 'e15c679482a52f1b73b08fc301d830a887ccf9b5', '4e9cd56d958710fb3465a9d456a51b453e739ec2', 5, 'user', 'draft', 758413391, '/', 'grade.svg', 2, 872, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:232:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzQiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJncmFkZS5zdmciO30=\";}', NULL, NULL, 1737456696, 1737456696, 0, NULL),
+(592, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '487487a786ef78f3e62e47305b5a6909fcfbb1a6', 5, 'user', 'draft', 758413391, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530269, 1737530269, 0, NULL),
+(593, '90f778a788fd0745d87e128f7581ffc6c4850dec', '691cd547e309fd3168bcfde5a6fa38c74776f4e7', 5, 'user', 'draft', 375775747, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTA6ImxvZ29fY29sb3IiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737456936, 1737456979, 0, NULL),
+(594, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '4d9a14ebbc9968b9f6577e05754e122bfe02a3a6', 5, 'user', 'draft', 375775747, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530307, 1737530307, 0, NULL),
+(595, '90f778a788fd0745d87e128f7581ffc6c4850dec', 'dedc687eb8f83eca83f091cc3c854fe725058f24', 5, 'user', 'draft', 794450185, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTA6ImxvZ29fd3JpdGUiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737456966, 1737456979, 0, NULL),
+(596, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '2538d6d97eec0ce2550230203453911539d6e7b2', 5, 'user', 'draft', 794450185, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530307, 1737530307, 0, NULL),
+(597, '4ad68590dfca162f9e0634bf8d6a064169195db9', '93164d67ed0e88227217eff92b5f986f7871aff9', 5, 'user', 'draft', 529233543, '/', 'audio_file.svg', 2, 266, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:248:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzEiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNDoiYXVkaW9fZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(598, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '15b5bcdaa546e29876bd0139d0e1ee82092ac17c', 5, 'user', 'draft', 529233543, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530307, 1737530307, 0, NULL),
+(599, '7c6f6b2dd8af961ada7ba051522f4789a870ca68', '14b493dcb0624c3a5d52bee78c7cee769fd325c3', 5, 'user', 'draft', 407453674, '/', 'video_file.svg', 2, 287, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:248:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzIiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNDoidmlkZW9fZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(600, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '45e2599e372bd175e8a0f9e9bde47c75b575776c', 5, 'user', 'draft', 407453674, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530307, 1737530307, 0, NULL),
+(601, '8dc4323dab999a3151a3b961ad198cd6cc1c76f8', '55c4a77b118679938f0ae69599e08532443f27a3', 5, 'user', 'draft', 124657436, '/', 'book.svg', 2, 474, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzMiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJib29rLnN2ZyI7fQ==\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(602, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'bc09d2734efe1a598b8e5b7fda0fa006f4896095', 5, 'user', 'draft', 124657436, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530307, 1737530307, 0, NULL),
+(603, '73484cc247330ed154033cc723e357fdb0021d64', '1691cff006419922b1f36f6022937f1e4e261c69', 5, 'user', 'draft', 616078579, '/', 'game.svg', 2, 697, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzQiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJnYW1lLnN2ZyI7fQ==\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(604, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'be6284c0ec90d5337db8b56928a7f68513cc0a72', 5, 'user', 'draft', 616078579, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530307, 1737530307, 0, NULL),
+(605, '9cda70c97cc93f83023221c37ae8ae4cd7dffb47', '8168a1557932a52c8c2be498c7cfcd0f356bb622', 5, 'user', 'draft', 907967196, '/', 'money.svg', 2, 684, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzUiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJtb25leS5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(606, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '335756e744e4e4328c2066d8c33fef6345c871ff', 5, 'user', 'draft', 907967196, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530307, 1737530307, 0, NULL),
+(607, '1996f00e47a9833bbadba62a1c836e65c2ef54f9', 'ae031c2005817a7e067e7db53ccf3798ddf652ab', 5, 'user', 'draft', 341370942, '/', 'slide.svg', 2, 288, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzYiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJzbGlkZS5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(608, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'd7e813915b5bcdf5fba0490d6501e3a20a3ace83', 5, 'user', 'draft', 341370942, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530307, 1737530307, 0, NULL),
+(609, '8a489267f1c0d0b8f24031ef66823083559db9f2', '938ad173ccc3f74c204a6cda9e8983f127a0c286', 5, 'user', 'draft', 26032596, '/', 'support.svg', 2, 576, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:244:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzciO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToic3VwcG9ydC5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(610, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '61b7b10dad18a162bbdf74f94e8b366f6e2022d1', 5, 'user', 'draft', 26032596, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530307, 1737530307, 0, NULL),
+(611, '1575a255e0a88da9593dc0c445664fb7bb2a22ad', 'f030f3302910718c2c938c356864d8f457d80636', 5, 'user', 'draft', 55833742, '/', 'download.svg', 2, 401, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:244:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzgiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiZG93bmxvYWQuc3ZnIjt9\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(612, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '4268d3e9e8d386e02354f33c355ebe409843c718', 5, 'user', 'draft', 55833742, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530307, 1737530307, 0, NULL),
+(613, 'b0e1ba13b73ed242f9cb71464c24c42cc8719092', '43121e6ba8954c48c4d60e1466f1ef9128763ff1', 5, 'user', 'draft', 192470136, '/', 'message.svg', 2, 1400, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzEiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToibWVzc2FnZS5zdmciO30=\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(614, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '4da24fdc8b696f65f0b9f02cd12ee9ace7fcf9e3', 5, 'user', 'draft', 192470136, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530308, 1737530308, 0, NULL),
+(615, 'abb3a5ef41c527333fe1fe303a5b9351fbe23e61', '42bd57489aadb5fe434e1e10a53d6077c172c52f', 5, 'user', 'draft', 414405550, '/', 'profile.svg', 2, 722, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzIiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToicHJvZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(616, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '3c90c98a4f4db2ec531d9f7f5edd7f7c5f80da2a', 5, 'user', 'draft', 414405550, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530308, 1737530308, 0, NULL),
+(617, '2c3a267644b90eef727abe4daae210973f28be7e', '8965f6a51f98304ae2765d6f17bcedc45a2fe61c', 5, 'user', 'draft', 19059415, '/', 'preferences.svg', 2, 2159, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzMiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNToicHJlZmVyZW5jZXMuc3ZnIjt9\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(618, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '48119621077149922f5d409a5bfe3364d191981b', 5, 'user', 'draft', 19059415, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530308, 1737530308, 0, NULL),
+(619, 'e15c679482a52f1b73b08fc301d830a887ccf9b5', '0704d6bd15d16cd2959822f620113a25105dbc0a', 5, 'user', 'draft', 588308660, '/', 'grade.svg', 2, 872, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:232:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzQiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJncmFkZS5zdmciO30=\";}', NULL, NULL, 1737456696, 1737456696, 0, NULL),
+(620, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '35b59c1782b6b834f3f279fba7b9a6e522bef8c1', 5, 'user', 'draft', 588308660, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530308, 1737530308, 0, NULL),
+(621, '90f778a788fd0745d87e128f7581ffc6c4850dec', 'a23ca5fe3fa915439c7b8754e5a8678eed050c8d', 5, 'user', 'draft', 131899404, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTA6ImxvZ29fY29sb3IiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737456936, 1737456979, 0, NULL),
+(622, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '21c007c898a21a2848ff7271da3eb6d237d8e842', 5, 'user', 'draft', 131899404, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530333, 1737530333, 0, NULL),
+(623, '90f778a788fd0745d87e128f7581ffc6c4850dec', 'f29732ee219d642a02f9e6e9894b92200f1b9b80', 5, 'user', 'draft', 353300036, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTA6ImxvZ29fd3JpdGUiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737456966, 1737456979, 0, NULL),
+(624, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '5901b8d48fa0770177eafba32c160f80a979f8b9', 5, 'user', 'draft', 353300036, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530333, 1737530333, 0, NULL),
+(625, '4ad68590dfca162f9e0634bf8d6a064169195db9', 'd9e1e38de2bf8e676ec34f7753dc2853497e5157', 5, 'user', 'draft', 38254714, '/', 'audio_file.svg', 2, 266, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:248:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzEiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNDoiYXVkaW9fZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(626, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'e0f71318f314254883b1b52d38ff40f8505b99fd', 5, 'user', 'draft', 38254714, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530334, 1737530334, 0, NULL),
+(627, '7c6f6b2dd8af961ada7ba051522f4789a870ca68', 'd261723569d4f2e09cfed328ac0c4e594d9af660', 5, 'user', 'draft', 75794444, '/', 'video_file.svg', 2, 287, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:248:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzIiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNDoidmlkZW9fZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(628, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '638cc681ad817c491d765d7d334b0fc74bf4669b', 5, 'user', 'draft', 75794444, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530334, 1737530334, 0, NULL),
+(629, '8dc4323dab999a3151a3b961ad198cd6cc1c76f8', 'f77defea3deac7e2071596d996a3968450e20cf4', 5, 'user', 'draft', 163952358, '/', 'book.svg', 2, 474, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzMiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJib29rLnN2ZyI7fQ==\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(630, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '053c426f3efd3ec48ad8a969c53d99d606e35ba0', 5, 'user', 'draft', 163952358, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530334, 1737530334, 0, NULL),
+(631, '73484cc247330ed154033cc723e357fdb0021d64', '02920b34255829045e2c5159e4db305f82804fab', 5, 'user', 'draft', 427372705, '/', 'game.svg', 2, 697, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzQiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJnYW1lLnN2ZyI7fQ==\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(632, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '794f32ad83282ba2c6778c717b91eb8d0dd30b91', 5, 'user', 'draft', 427372705, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530334, 1737530334, 0, NULL),
+(633, '9cda70c97cc93f83023221c37ae8ae4cd7dffb47', '9d058128da106601694f8e354c0eca907c0e9646', 5, 'user', 'draft', 634325151, '/', 'money.svg', 2, 684, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzUiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJtb25leS5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(634, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '0caf46c3165f13180eb4b8be0732e9e8ad9c260a', 5, 'user', 'draft', 634325151, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530334, 1737530334, 0, NULL),
+(635, '1996f00e47a9833bbadba62a1c836e65c2ef54f9', '54a80a639a5a8debc5f81631c2de1103c179b5fe', 5, 'user', 'draft', 250992457, '/', 'slide.svg', 2, 288, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzYiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJzbGlkZS5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(636, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '02400e50af9d67a347202248d42ca9359ae9170a', 5, 'user', 'draft', 250992457, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530334, 1737530334, 0, NULL),
+(637, '8a489267f1c0d0b8f24031ef66823083559db9f2', 'b75e65fb7f9f5fb9fda4e0f39f0cc24045f51ea2', 5, 'user', 'draft', 468803547, '/', 'support.svg', 2, 576, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:244:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzciO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToic3VwcG9ydC5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(638, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '04d841cf5c84b94dc883447ec57e088002b482c7', 5, 'user', 'draft', 468803547, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530334, 1737530334, 0, NULL),
+(639, '1575a255e0a88da9593dc0c445664fb7bb2a22ad', '0ce66bf87e63a3aa2e2fed75718abcaee39820c5', 5, 'user', 'draft', 302092138, '/', 'download.svg', 2, 401, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:244:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzgiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiZG93bmxvYWQuc3ZnIjt9\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(640, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'e890bad5a2f83c8b4709bf17d0fb92c4d2032bba', 5, 'user', 'draft', 302092138, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530334, 1737530334, 0, NULL),
+(641, 'b0e1ba13b73ed242f9cb71464c24c42cc8719092', '3bb632a9ee0ccdf1ed892c506de08ef633043d1d', 5, 'user', 'draft', 452539294, '/', 'message.svg', 2, 1400, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzEiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToibWVzc2FnZS5zdmciO30=\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(642, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'd3cff136e56f61e1a06edbe2bb0219a66e80df82', 5, 'user', 'draft', 452539294, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530334, 1737530334, 0, NULL),
+(643, 'abb3a5ef41c527333fe1fe303a5b9351fbe23e61', '5ee6267aadf40ca0eb26cc6f1beea96013a1744b', 5, 'user', 'draft', 466666380, '/', 'profile.svg', 2, 722, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzIiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToicHJvZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(644, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '9d776524d5155a9ea2fe8de79fd15abab71d6f9c', 5, 'user', 'draft', 466666380, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530334, 1737530334, 0, NULL),
+(645, '2c3a267644b90eef727abe4daae210973f28be7e', '155bb508df23272a30ff33c3e0f1d063cbefafc6', 5, 'user', 'draft', 744102648, '/', 'preferences.svg', 2, 2159, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzMiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNToicHJlZmVyZW5jZXMuc3ZnIjt9\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(646, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '1de9c1e2e15b4313c0e089eaf306afe0fe0fdab3', 5, 'user', 'draft', 744102648, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530334, 1737530334, 0, NULL),
+(647, 'e15c679482a52f1b73b08fc301d830a887ccf9b5', 'ae48f67c5e667a83ff991ca532c5a15aeed81aae', 5, 'user', 'draft', 269832758, '/', 'grade.svg', 2, 872, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:232:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzQiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJncmFkZS5zdmciO30=\";}', NULL, NULL, 1737456696, 1737456696, 0, NULL),
+(648, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '4b23804c99e28e0c3499ea64670621f86b09b609', 5, 'user', 'draft', 269832758, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530334, 1737530334, 0, NULL),
+(649, '90f778a788fd0745d87e128f7581ffc6c4850dec', 'eed759564288d7c6c40be3a84fa320e454bf3e41', 1, 'theme_degrade', 'editor_home', 22743134, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, NULL, NULL, NULL, 1737530746, 1737530746, 0, NULL),
+(650, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '0e9c39d4cd7f9419252b8116ee607cb23d9cb9ad', 1, 'theme_degrade', 'editor_home', 22743134, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530746, 1737530746, 0, NULL),
+(651, '90f778a788fd0745d87e128f7581ffc6c4850dec', 'ec1e4714d7601da33edecabfd36df1edd849b0e1', 1, 'theme_degrade', 'editor_home', 22743313, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, NULL, NULL, NULL, 1737530925, 1737530925, 0, NULL),
+(652, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '02a3221e08bed6caa75684da8a73c4b7a99a0283', 1, 'theme_degrade', 'editor_home', 22743313, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737530925, 1737530925, 0, NULL),
+(653, 'a17ea668b0a3785d45b45634e76f651c7d19cb82', '25b7c601579c638d39ad6db09cb5433952231a91', 5, 'user', 'draft', 498606958, '/', 'tool_bulkemail_moodle311_2021012701.zip', 2, 19583, 'application/zip', 0, 'O:8:\"stdClass\":1:{s:6:\"source\";s:39:\"tool_bulkemail_moodle311_2021012701.zip\";}', 'sri portal', 'unknown', 1737538743, 1737538743, 0, NULL),
+(654, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'acab89183a0649051065ca69ea44a33aee3332b6', 5, 'user', 'draft', 498606958, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737538743, 1737538743, 0, NULL),
+(655, '1983fa1e5c51843cc747828307162d8bace55517', '6afd39a7e0bac79c006360cb76310e63319f0134', 5, 'user', 'draft', 645730351, '/', 'qtype_coderunner_moodle44_2024090500.zip', 2, 4251314, 'application/zip', 0, 'O:8:\"stdClass\":1:{s:6:\"source\";s:40:\"qtype_coderunner_moodle44_2024090500.zip\";}', 'sri portal', 'unknown', 1737539704, 1737539704, 0, NULL),
+(656, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'c35ad7353467d52bee2fbb2df8f9ca21b360840b', 5, 'user', 'draft', 645730351, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737539704, 1737539704, 0, NULL),
+(657, 'eab8dc2386e622d5cfd1e8493c7cdfdd2b56c611', '7597fe0b95d8a50e64ef70c4635426c7655e7ebb', 5, 'user', 'draft', 469797766, '/', 'qtype_coderunner_moodle42_2022110900.zip', 2, 4114134, 'application/zip', 0, 'O:8:\"stdClass\":1:{s:6:\"source\";s:40:\"qtype_coderunner_moodle42_2022110900.zip\";}', 'sri portal', 'unknown', 1737540230, 1737540230, 0, NULL),
+(658, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '08fe2f1ae1e56765d16ab29fe9d2542b67a61497', 5, 'user', 'draft', 469797766, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737540230, 1737540230, 0, NULL),
+(659, 'a17ea668b0a3785d45b45634e76f651c7d19cb82', 'f2e2ee6fdba5d59a4eb58a0045a434720bbfffc8', 5, 'user', 'draft', 392903042, '/', 'tool_bulkemail_moodle311_2021012701.zip', 2, 19583, 'application/zip', 0, 'O:8:\"stdClass\":1:{s:6:\"source\";s:39:\"tool_bulkemail_moodle311_2021012701.zip\";}', 'sri portal', 'unknown', 1737546070, 1737546070, 0, NULL),
+(660, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '9b0e33f045f3dc2312ee0873d8b5d84f9751a0e3', 5, 'user', 'draft', 392903042, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737546070, 1737546070, 0, NULL),
+(661, 'ca09b0dca3566513cd64c0ca40157142667c23ff', '84a67e278d931c76f76ac257fedba5b82eda8d45', 5, 'user', 'draft', 817200010, '/', 'block_quickmail_moodle45_2024101701.zip', 2, 491707, 'application/zip', 0, 'O:8:\"stdClass\":1:{s:6:\"source\";s:39:\"block_quickmail_moodle45_2024101701.zip\";}', 'sri portal', 'unknown', 1737546268, 1737546268, 0, NULL),
+(662, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '33f988180d82793d6d8d4810719b9483f6ed0c58', 5, 'user', 'draft', 817200010, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737546268, 1737546268, 0, NULL),
+(663, '90f778a788fd0745d87e128f7581ffc6c4850dec', 'f6737a8ed0fef94a69e6fd8aa783fa6822847006', 5, 'user', 'draft', 825064413, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTA6ImxvZ29fY29sb3IiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737456936, 1737456979, 0, NULL),
+(664, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '0076c562ec1592b0f4f9a349dfc5ecc3987d3316', 5, 'user', 'draft', 825064413, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737546665, 1737546665, 0, NULL),
+(665, '90f778a788fd0745d87e128f7581ffc6c4850dec', '691c4f2843c8631db44e6d8e1d1599a3610822d4', 5, 'user', 'draft', 440227952, '/', 'SRI-Logo.png', 2, 40791, 'image/png', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";s:12:\"SRI-Logo.png\";s:8:\"original\";s:228:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTA6ImxvZ29fd3JpdGUiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiU1JJLUxvZ28ucG5nIjt9\";}', 'sri portal', 'unknown', 1737456966, 1737456979, 0, NULL),
+(666, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '57e174dac56b26a674d493509d7f2e738b0d5d51', 5, 'user', 'draft', 440227952, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737546665, 1737546665, 0, NULL),
+(667, '4ad68590dfca162f9e0634bf8d6a064169195db9', 'b279e682202b2daaf4ee70fb58f6d020376811a2', 5, 'user', 'draft', 636847948, '/', 'audio_file.svg', 2, 266, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:248:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzEiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNDoiYXVkaW9fZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(668, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '94bb5a2dd55c940f4c67c379f723e5809d12057f', 5, 'user', 'draft', 636847948, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737546665, 1737546665, 0, NULL),
+(669, '7c6f6b2dd8af961ada7ba051522f4789a870ca68', '1f38162755da3f175238354b233d3194d3bc33f5', 5, 'user', 'draft', 828690273, '/', 'video_file.svg', 2, 287, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:248:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzIiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNDoidmlkZW9fZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(670, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'f910554a95df154ff354a0c2959f486c2ca91667', 5, 'user', 'draft', 828690273, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737546665, 1737546665, 0, NULL),
+(671, '8dc4323dab999a3151a3b961ad198cd6cc1c76f8', '158ac0a2f58d7b4d2d7031394e1c9c1313f6ed79', 5, 'user', 'draft', 609476781, '/', 'book.svg', 2, 474, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzMiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJib29rLnN2ZyI7fQ==\";}', NULL, NULL, 1737456697, 1737456697, 0, NULL),
+(672, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '70633bd6bed2dcdfe58eee8b065604a34b486ff0', 5, 'user', 'draft', 609476781, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737546665, 1737546665, 0, NULL),
+(673, '73484cc247330ed154033cc723e357fdb0021d64', 'c4675b496451aff013b556e169043cf47006b3b5', 5, 'user', 'draft', 984708384, '/', 'game.svg', 2, 697, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzQiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo4OiJnYW1lLnN2ZyI7fQ==\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(674, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '525aab6a8813143526a05e7db11f91a6134a2199', 5, 'user', 'draft', 984708384, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737546665, 1737546665, 0, NULL),
+(675, '9cda70c97cc93f83023221c37ae8ae4cd7dffb47', 'fdc04016ef67c34e11f4314161f28445ab860e3c', 5, 'user', 'draft', 563064374, '/', 'money.svg', 2, 684, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzUiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJtb25leS5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(676, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'aa81972a8122f656dffdccee5dd9385e3e06dbf8', 5, 'user', 'draft', 563064374, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737546665, 1737546665, 0, NULL),
+(677, '1996f00e47a9833bbadba62a1c836e65c2ef54f9', 'd6c75f15cff7d4e2e5fe7301aba4a8aafd16ca14', 5, 'user', 'draft', 53941993, '/', 'slide.svg', 2, 288, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzYiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJzbGlkZS5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(678, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '347040c8fad11cf923a30f21c0fd157b83320c99', 5, 'user', 'draft', 53941993, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737546665, 1737546665, 0, NULL),
+(679, '8a489267f1c0d0b8f24031ef66823083559db9f2', '153fe0b7cd876dd54c1005f6632198c0aa0e2159', 5, 'user', 'draft', 23301464, '/', 'support.svg', 2, 576, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:244:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzciO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToic3VwcG9ydC5zdmciO30=\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(680, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'bddaaea9736906abb1f3444c2b122b255e23493a', 5, 'user', 'draft', 23301464, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737546665, 1737546665, 0, NULL),
+(681, '1575a255e0a88da9593dc0c445664fb7bb2a22ad', '236a2352b1699ec6916e44699ed0891fae3d1bd2', 5, 'user', 'draft', 827559697, '/', 'download.svg', 2, 401, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:244:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MjI6InNldHRpbmdzX2ljb25zX2ltYWdlXzgiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMjoiZG93bmxvYWQuc3ZnIjt9\";}', NULL, NULL, 1737456698, 1737456698, 0, NULL),
+(682, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '0712110d1a0afb922908af53ca29c44cb1e6df2f', 5, 'user', 'draft', 827559697, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737546666, 1737546666, 0, NULL),
+(683, 'b0e1ba13b73ed242f9cb71464c24c42cc8719092', '24d62bc60e63ad64ecf74235d2ec5d95d625f35b', 5, 'user', 'draft', 350296542, '/', 'message.svg', 2, 1400, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzEiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToibWVzc2FnZS5zdmciO30=\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(684, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '2bc73d9c2c13c2862de95d7602efba30f8e819d1', 5, 'user', 'draft', 350296542, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737546666, 1737546666, 0, NULL),
+(685, 'abb3a5ef41c527333fe1fe303a5b9351fbe23e61', '1b87bd2a2867ffe3c96514a35d1dc093eed46bbb', 5, 'user', 'draft', 512100095, '/', 'profile.svg', 2, 722, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:236:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzIiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxMToicHJvZmlsZS5zdmciO30=\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(686, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '7b3a80aee810f1bf3ba2124f0bb419449e6441a2', 5, 'user', 'draft', 512100095, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737546666, 1737546666, 0, NULL),
+(687, '2c3a267644b90eef727abe4daae210973f28be7e', 'd32d48a86b43703b853f5c5743127f55f4fac32c', 5, 'user', 'draft', 623922699, '/', 'preferences.svg', 2, 2159, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:240:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzMiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czoxNToicHJlZmVyZW5jZXMuc3ZnIjt9\";}', NULL, NULL, 1737456695, 1737456695, 0, NULL),
+(688, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '982487fa1fa21461c2a551183864e741088120d1', 5, 'user', 'draft', 623922699, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737546666, 1737546666, 0, NULL),
+(689, 'e15c679482a52f1b73b08fc301d830a887ccf9b5', '2448b3960df31bb97b49cf9bb562660934b9a86b', 5, 'user', 'draft', 950560808, '/', 'grade.svg', 2, 872, 'image/svg+xml', 0, 'O:8:\"stdClass\":2:{s:6:\"source\";N;s:8:\"original\";s:232:\"YTo2OntzOjk6ImNvbnRleHRpZCI7aToxO3M6OToiY29tcG9uZW50IjtzOjEzOiJ0aGVtZV9kZWdyYWRlIjtzOjY6Iml0ZW1pZCI7aTowO3M6ODoiZmlsZWFyZWEiO3M6MTY6Im15Y291cnNlc19pY29uXzQiO3M6ODoiZmlsZXBhdGgiO3M6MToiLyI7czo4OiJmaWxlbmFtZSI7czo5OiJncmFkZS5zdmciO30=\";}', NULL, NULL, 1737456696, 1737456696, 0, NULL),
+(690, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '1eb01749dd388838736b153a39dddcc08cf622e6', 5, 'user', 'draft', 950560808, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737546666, 1737546666, 0, NULL),
+(691, 'a17ea668b0a3785d45b45634e76f651c7d19cb82', '56bf784a6949d2dac0addd4de1296dd525586be2', 5, 'user', 'draft', 612591274, '/', 'blobid0.dat', 2, 19583, 'application/zip', 0, 'O:8:\"stdClass\":1:{s:6:\"source\";s:11:\"blobid0.dat\";}', NULL, 'unknown', 1737547054, 1737547054, 0, NULL),
+(692, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'da0726a46043bebc273ec5f1fde18e0ca210c61a', 5, 'user', 'draft', 612591274, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737547054, 1737547054, 0, NULL),
+(693, 'a17ea668b0a3785d45b45634e76f651c7d19cb82', 'b2fdfc7fd2e9501a88a2ccba01ece5e54dd8d265', 29, 'block_quickmail', 'message_editor', 1, '/', 'blobid0.dat', 2, 19583, 'application/zip', 0, 'blobid0.dat', NULL, 'unknown', 1737547054, 1737547067, 0, NULL),
+(694, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '04b3f35f9dd0834c193345ccdb0974d6030abdbd', 29, 'block_quickmail', 'message_editor', 1, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737547054, 1737547067, 0, NULL),
+(695, 'eab8dc2386e622d5cfd1e8493c7cdfdd2b56c611', '564c488fdf41b25c92b82dc814e6788ca788347d', 5, 'user', 'draft', 239101103, '/', 'qtype_coderunner_moodle42_2022110900.zip', 2, 4114134, 'application/zip', 0, 'O:8:\"stdClass\":1:{s:6:\"source\";s:40:\"qtype_coderunner_moodle42_2022110900.zip\";}', 'sri portal', 'unknown', 1737547306, 1737547306, 0, NULL),
+(696, 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'faab8b8569d1ecb345aa50250f6cc446e7a262a0', 5, 'user', 'draft', 239101103, '/', '.', 2, 0, NULL, 0, NULL, NULL, NULL, 1737547306, 1737547306, 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -10058,8 +11533,8 @@ INSERT INTO `mdl_grade_grades` (`id`, `itemid`, `userid`, `rawgrade`, `rawgradem
 (2, 1, 2, NULL, 100.00000, 0.00000, NULL, NULL, NULL, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2, NULL, NULL, 'unknown', NULL),
 (5, 4, 2, NULL, 10.00000, 0.00000, NULL, 2, NULL, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2, NULL, NULL, 'novalue', 0.00000),
 (6, 3, 2, NULL, 100.00000, 0.00000, NULL, NULL, NULL, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2, NULL, NULL, 'unknown', NULL),
-(7, 4, 3, 1.00000, 10.00000, 0.00000, NULL, 3, 1.00000, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2, 1737364545, 1737364545, 'used', 1.00000),
-(8, 3, 3, NULL, 10.00000, 0.00000, NULL, NULL, 1.00000, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2, NULL, 1737359138, 'unknown', NULL);
+(7, 4, 3, 10.00000, 10.00000, 0.00000, NULL, 2, 10.00000, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2, 1737539322, 1737539454, 'used', 1.00000),
+(8, 3, 3, NULL, 10.00000, 0.00000, NULL, NULL, 10.00000, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2, NULL, 1737539454, 'unknown', NULL);
 
 -- --------------------------------------------------------
 
@@ -10111,7 +11586,38 @@ INSERT INTO `mdl_grade_grades_history` (`id`, `action`, `oldid`, `source`, `time
 (10, 2, 8, 'aggregation', 1737359138, 3, 3, 3, NULL, 10.00000, 0.00000, NULL, NULL, 1.00000, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2),
 (11, 3, 4, 'userdelete', 1737359534, 2, 1, 3, NULL, 10.00000, 0.00000, NULL, NULL, 5.00000, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2),
 (12, 3, 3, 'userdelete', 1737359534, 2, 2, 3, 5.00000, 10.00000, 0.00000, NULL, 3, 5.00000, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2),
-(13, 2, 7, 'mod/quiz', 1737364545, 3, 4, 3, 1.00000, 10.00000, 0.00000, NULL, 3, 1.00000, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2);
+(13, 2, 7, 'mod/quiz', 1737364545, 3, 4, 3, 1.00000, 10.00000, 0.00000, NULL, 3, 1.00000, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2),
+(14, 2, 7, 'mod/quiz', 1737453536, 3, 4, 3, 1.00000, 10.00000, 0.00000, NULL, 3, 1.00000, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2),
+(15, 2, 7, 'mod/quiz', 1737453661, 2, 4, 3, 1.00000, 10.00000, 0.00000, NULL, 2, 1.00000, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2),
+(16, 2, 7, 'mod/quiz', 1737453661, 2, 4, 3, 0.00000, 10.00000, 0.00000, NULL, 2, 0.00000, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2),
+(17, 2, 8, 'aggregation', 1737453661, 2, 3, 3, NULL, 10.00000, 0.00000, NULL, NULL, 0.00000, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2),
+(18, 2, 7, 'mod/quiz', 1737453661, 2, 4, 3, NULL, 10.00000, 0.00000, NULL, 2, NULL, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2),
+(19, 2, 8, 'aggregation', 1737453662, 2, 3, 3, NULL, 10.00000, 0.00000, NULL, NULL, NULL, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2),
+(20, 2, 7, 'mod/quiz', 1737454031, 3, 4, 3, 0.00000, 10.00000, 0.00000, NULL, 3, 0.00000, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2),
+(21, 2, 8, 'aggregation', 1737454031, 3, 3, 3, NULL, 10.00000, 0.00000, NULL, NULL, 0.00000, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2),
+(22, 2, 7, 'mod/quiz', 1737454056, 2, 4, 3, NULL, 10.00000, 0.00000, NULL, 2, NULL, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2),
+(23, 2, 8, 'aggregation', 1737454056, 2, 3, 3, NULL, 10.00000, 0.00000, NULL, NULL, NULL, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2),
+(24, 2, 7, 'mod/quiz', 1737454203, 3, 4, 3, 0.00000, 10.00000, 0.00000, NULL, 3, 0.00000, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2),
+(25, 2, 8, 'aggregation', 1737454203, 3, 3, 3, NULL, 10.00000, 0.00000, NULL, NULL, 0.00000, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2),
+(26, 2, 7, 'mod/quiz', 1737454224, 3, 4, 3, 10.00000, 10.00000, 0.00000, NULL, 3, 10.00000, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2),
+(27, 2, 8, 'aggregation', 1737454224, 3, 3, 3, NULL, 10.00000, 0.00000, NULL, NULL, 10.00000, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2),
+(28, 2, 7, 'mod/quiz', 1737454238, 3, 4, 3, 10.00000, 10.00000, 0.00000, NULL, 3, 10.00000, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2),
+(29, 2, 7, 'mod/quiz', 1737454265, 3, 4, 3, 10.00000, 10.00000, 0.00000, NULL, 3, 10.00000, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2),
+(30, 2, 7, 'mod/quiz', 1737454552, 2, 4, 3, 10.00000, 10.00000, 0.00000, NULL, 2, 10.00000, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2),
+(31, 2, 7, 'mod/quiz', 1737454552, 2, 4, 3, 5.00000, 10.00000, 0.00000, NULL, 2, 5.00000, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2),
+(32, 2, 8, 'aggregation', 1737454552, 2, 3, 3, NULL, 10.00000, 0.00000, NULL, NULL, 5.00000, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2),
+(33, 2, 7, 'mod/quiz', 1737454552, 2, 4, 3, -5.00000, 10.00000, 0.00000, NULL, 2, 0.00000, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2),
+(34, 2, 8, 'aggregation', 1737454552, 2, 3, 3, NULL, 10.00000, 0.00000, NULL, NULL, 0.00000, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2),
+(35, 2, 7, 'mod/quiz', 1737454552, 2, 4, 3, NULL, 10.00000, 0.00000, NULL, 2, NULL, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2),
+(36, 2, 8, 'aggregation', 1737454552, 2, 3, 3, NULL, 10.00000, 0.00000, NULL, NULL, NULL, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2),
+(37, 2, 7, 'mod/quiz', 1737538216, 3, 4, 3, 0.00000, 10.00000, 0.00000, NULL, 3, 0.00000, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2),
+(38, 2, 8, 'aggregation', 1737538216, 3, 3, 3, NULL, 10.00000, 0.00000, NULL, NULL, 0.00000, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2),
+(39, 2, 7, 'mod/quiz', 1737539073, 2, 4, 3, NULL, 10.00000, 0.00000, NULL, 2, NULL, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2),
+(40, 2, 8, 'aggregation', 1737539073, 2, 3, 3, NULL, 10.00000, 0.00000, NULL, NULL, NULL, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2),
+(41, 2, 7, 'mod/quiz', 1737539323, 3, 4, 3, 0.00000, 10.00000, 0.00000, NULL, 3, 0.00000, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2),
+(42, 2, 8, 'aggregation', 1737539323, 3, 3, 3, NULL, 10.00000, 0.00000, NULL, NULL, 0.00000, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2),
+(43, 2, 7, 'mod/quiz', 1737539454, 2, 4, 3, 10.00000, 10.00000, 0.00000, NULL, 2, 10.00000, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2),
+(44, 2, 8, 'aggregation', 1737539454, 2, 3, 3, NULL, 10.00000, 0.00000, NULL, NULL, 10.00000, 0, 0, 0, 0, 0, 0, NULL, 2, NULL, 2);
 
 -- --------------------------------------------------------
 
@@ -10192,7 +11698,7 @@ INSERT INTO `mdl_grade_items` (`id`, `courseid`, `categoryid`, `itemname`, `item
 (1, 2, NULL, NULL, 'course', NULL, 1, NULL, NULL, NULL, NULL, 1, 10.00000, 0.00000, NULL, NULL, 0.00000, 1.00000, 0.00000, 0.00000, 0.00000, 1, 0, NULL, 0, 0, 0, 0, 0, 1736764421, 1736764428),
 (2, 2, 1, 'quiz1', 'mod', 'quiz', 1, 0, NULL, '', NULL, 1, 10.00000, 0.00000, NULL, NULL, 0.00000, 1.00000, 0.00000, 0.00000, 1.00000, 2, 0, NULL, 0, 0, 0, 0, 0, 1736764428, 1736764428),
 (3, 3, NULL, NULL, 'course', NULL, 2, NULL, NULL, NULL, NULL, 1, 10.00000, 0.00000, NULL, NULL, 0.00000, 1.00000, 0.00000, 0.00000, 0.00000, 1, 0, NULL, 0, 0, 0, 0, 0, 1737357406, 1737357880),
-(4, 3, 2, 'IIT D Recruitment 2025', 'mod', 'quiz', 2, 0, NULL, '14', NULL, 1, 10.00000, 0.00000, NULL, NULL, 5.00000, 1.00000, 0.00000, 0.00000, 1.00000, 2, 0, NULL, 1, 0, 0, 0, 0, 1737357880, 1737357880);
+(4, 3, 2, 'IIT D Recruitment 2025', 'mod', 'quiz', 2, 0, NULL, '14', NULL, 1, 10.00000, 0.00000, NULL, NULL, 1.00000, 1.00000, 0.00000, 0.00000, 1.00000, 2, 0, NULL, 1, 0, 0, 0, 0, 1737357880, 1737454095);
 
 -- --------------------------------------------------------
 
@@ -10252,7 +11758,8 @@ INSERT INTO `mdl_grade_items_history` (`id`, `action`, `oldid`, `source`, `timem
 (8, 1, 4, NULL, 1737357880, 2, 3, 2, 'IIT D Recruitment 2025', 'mod', 'quiz', 2, 0, NULL, '14', NULL, 1, 10.00000, 0.00000, NULL, NULL, 0.00000, 1.00000, 0.00000, 0.00000, 0.00000, 2, 1, 0, 0, 1, 0, NULL, 0),
 (9, 2, 4, NULL, 1737357880, 2, 3, 2, 'IIT D Recruitment 2025', 'mod', 'quiz', 2, 0, NULL, '14', NULL, 1, 10.00000, 0.00000, NULL, NULL, 5.00000, 1.00000, 0.00000, 0.00000, 0.00000, 2, 1, 0, 0, 1, 0, NULL, 0),
 (10, 2, 4, NULL, 1737357880, 2, 3, 2, 'IIT D Recruitment 2025', 'mod', 'quiz', 2, 0, NULL, '14', NULL, 1, 10.00000, 0.00000, NULL, NULL, 5.00000, 1.00000, 0.00000, 0.00000, 1.00000, 2, 1, 0, 0, 1, 0, NULL, 0),
-(11, 2, 3, 'aggregation', 1737357880, 2, 3, NULL, NULL, 'course', NULL, 2, NULL, NULL, NULL, NULL, 1, 10.00000, 0.00000, NULL, NULL, 0.00000, 1.00000, 0.00000, 0.00000, 0.00000, 1, 0, 0, 0, 1, 0, NULL, 0);
+(11, 2, 3, 'aggregation', 1737357880, 2, 3, NULL, NULL, 'course', NULL, 2, NULL, NULL, NULL, NULL, 1, 10.00000, 0.00000, NULL, NULL, 0.00000, 1.00000, 0.00000, 0.00000, 0.00000, 1, 0, 0, 0, 1, 0, NULL, 0),
+(12, 2, 4, NULL, 1737454095, 2, 3, 2, 'IIT D Recruitment 2025', 'mod', 'quiz', 2, 0, NULL, '14', NULL, 1, 10.00000, 0.00000, NULL, NULL, 1.00000, 1.00000, 0.00000, 0.00000, 1.00000, 2, 1, 0, 0, 0, 0, NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -13124,7 +14631,768 @@ INSERT INTO `mdl_logstore_standard_log` (`id`, `eventname`, `component`, `action
 (2073, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 2, 0, NULL, 0, 'null', 1737368503, 'web', '127.0.0.1', NULL),
 (2074, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737368509, 'web', '127.0.0.1', NULL),
 (2075, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 2, 3, NULL, 0, 'null', 1737368513, 'web', '127.0.0.1', NULL),
-(2076, '\\core\\event\\question_category_viewed', 'core', 'viewed', 'question_category', 'question_categories', 12, 'r', 1, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737368517, 'web', '127.0.0.1', NULL);
+(2076, '\\core\\event\\question_category_viewed', 'core', 'viewed', 'question_category', 'question_categories', 12, 'r', 1, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737368517, 'web', '127.0.0.1', NULL),
+(2077, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 2, 1, NULL, 0, 'null', 1737374905, 'web', '127.0.0.1', NULL),
+(2078, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 2, 0, NULL, 0, 'null', 1737374915, 'web', '127.0.0.1', NULL),
+(2079, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737374919, 'web', '127.0.0.1', NULL),
+(2080, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 3, 3, NULL, 0, 'null', 1737374927, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2081, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 3, 3, NULL, 0, 'null', 1737374930, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2082, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 2, 0, NULL, 0, 'null', 1737374967, 'web', '127.0.0.1', NULL),
+(2083, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, 'null', 1737374988, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2084, '\\quizaccess_seb\\event\\access_prevented', 'quizaccess_seb', 'prevented', 'access', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, '{\"reason\":\"Invalid SEB config key\",\"savedconfigkey\":\"09be7c58fd7b53107a638d5933444c0c9942fb035a8e19fca4916f54698bf022\",\"receivedconfigkey\":null,\"receivedbrowserexamkey\":null}', 1737374988, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2085, '\\quizaccess_seb\\event\\access_prevented', 'quizaccess_seb', 'prevented', 'access', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, '{\"reason\":\"Invalid SEB config key\",\"savedconfigkey\":\"09be7c58fd7b53107a638d5933444c0c9942fb035a8e19fca4916f54698bf022\",\"receivedconfigkey\":null,\"receivedbrowserexamkey\":null}', 1737374988, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2086, '\\core\\event\\user_loggedin', 'core', 'loggedin', 'user', 'user', 3, 'r', 0, 1, 10, 0, 3, 0, NULL, 0, '{\"username\":\"manikanta\",\"extrauserinfo\":[]}', 1737375180, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2087, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, 'null', 1737375190, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2088, '\\mod_quiz\\event\\attempt_started', 'mod_quiz', 'started', 'attempt', 'quiz_attempts', 8, 'c', 2, 31, 70, 4, 3, 3, 3, 0, 'null', 1737375229, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2089, '\\mod_quiz\\event\\attempt_viewed', 'mod_quiz', 'viewed', 'attempt', 'quiz_attempts', 8, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"0\"}', 1737375229, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2090, '\\mod_quiz\\event\\attempt_updated', 'mod_quiz', 'updated', 'attempt', 'quiz_attempts', 8, 'u', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"0\"}', 1737375235, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2091, '\\mod_quiz\\event\\attempt_viewed', 'mod_quiz', 'viewed', 'attempt', 'quiz_attempts', 8, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"0\"}', 1737375236, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2092, '\\mod_quiz\\event\\attempt_updated', 'mod_quiz', 'updated', 'attempt', 'quiz_attempts', 8, 'u', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"1\"}', 1737375237, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2093, '\\mod_quiz\\event\\attempt_viewed', 'mod_quiz', 'viewed', 'attempt', 'quiz_attempts', 8, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"1\"}', 1737375237, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2094, '\\mod_quiz\\event\\attempt_updated', 'mod_quiz', 'updated', 'attempt', 'quiz_attempts', 8, 'u', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"3\"}', 1737375238, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2095, '\\mod_quiz\\event\\attempt_viewed', 'mod_quiz', 'viewed', 'attempt', 'quiz_attempts', 8, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"3\"}', 1737375238, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2096, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 3, 3, NULL, 0, 'null', 1737375266, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2097, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 3, 0, NULL, 0, 'null', 1737375273, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2098, '\\core\\event\\message_viewed', 'core', 'viewed', 'message', 'message_user_actions', 1, 'c', 0, 14, 30, 3, 3, 0, 2, 0, '{\"messageid\":\"1\"}', 1737375290, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2099, '\\core\\event\\message_viewed', 'core', 'viewed', 'message', 'message_user_actions', 2, 'c', 0, 14, 30, 3, 3, 0, 2, 0, '{\"messageid\":\"2\"}', 1737375290, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2100, '\\core\\event\\user_loggedout', 'core', 'loggedout', 'user', 'user', 3, 'r', 0, 1, 10, 0, 3, 0, NULL, 0, '{\"sessionid\":\"avh4kk5ja61q0l2nuo5hplfvb2\"}', 1737375308, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2101, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737375308, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2102, '\\core\\event\\user_loggedout', 'core', 'loggedout', 'user', 'user', 2, 'r', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"sessionid\":\"memh90vmmaeh8v5m493hv38dj6\"}', 1737375327, 'web', '127.0.0.1', NULL),
+(2103, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737375327, 'web', '127.0.0.1', NULL),
+(2104, '\\core\\event\\user_loggedin', 'core', 'loggedin', 'user', 'user', 2, 'r', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"username\":\"admin\",\"extrauserinfo\":[]}', 1737375364, 'web', '127.0.0.1', NULL),
+(2105, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 2, 0, NULL, 0, 'null', 1737375365, 'web', '127.0.0.1', NULL),
+(2106, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737375371, 'web', '127.0.0.1', NULL),
+(2107, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737450325, 'web', '127.0.0.1', NULL),
+(2108, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737450357, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2109, '\\core\\event\\user_loggedin', 'core', 'loggedin', 'user', 'user', 2, 'r', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"username\":\"admin\",\"extrauserinfo\":[]}', 1737450364, 'web', '127.0.0.1', NULL),
+(2110, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 2, 0, NULL, 0, 'null', 1737450376, 'web', '127.0.0.1', NULL),
+(2111, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737450603, 'web', '127.0.0.1', NULL),
+(2112, '\\core\\event\\draft_file_added', 'core', 'added', 'draft_file', 'files', 51, 'c', 0, 5, 30, 2, 2, 0, 2, 0, '{\"itemid\":736730928,\"filename\":\"new2.jpg\",\"filesize\":1919248,\"filepath\":\"\\/\",\"contenthash\":\"4fbe7701e7e131b606d4b4a2733325f89f44b1d0\"}', 1737451257, 'web', '127.0.0.1', NULL),
+(2113, '\\core\\event\\draft_file_added', 'core', 'added', 'draft_file', 'files', 53, 'c', 0, 5, 30, 2, 2, 0, 2, 0, '{\"itemid\":911158546,\"filename\":\"new2.jpg\",\"filesize\":1919248,\"filepath\":\"\\/\",\"contenthash\":\"4fbe7701e7e131b606d4b4a2733325f89f44b1d0\"}', 1737451274, 'web', '127.0.0.1', NULL),
+(2114, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1803, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"themedesignermode\",\"oldvalue\":\"0\",\"value\":\"1\",\"plugin\":null}', 1737451356, 'web', '127.0.0.1', NULL),
+(2115, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1804, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"backgroundimage\",\"oldvalue\":\"\",\"value\":\"\\/new2.jpg\",\"plugin\":\"theme_boost\"}', 1737451356, 'web', '127.0.0.1', NULL),
+(2116, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1805, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"loginbackgroundimage\",\"oldvalue\":\"\",\"value\":\"\\/new2.jpg\",\"plugin\":\"theme_boost\"}', 1737451356, 'web', '127.0.0.1', NULL),
+(2117, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1806, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"brandcolor\",\"oldvalue\":\"\",\"value\":\"#4000BE\",\"plugin\":\"theme_boost\"}', 1737451356, 'web', '127.0.0.1', NULL),
+(2118, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1807, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"navbardark\",\"oldvalue\":\"0\",\"value\":\"1\",\"plugin\":\"theme_classic\"}', 1737451356, 'web', '127.0.0.1', NULL),
+(2119, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1808, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"marketingcontent\",\"oldvalue\":\"Moove is a Moodle template based on Boost with modern and creative design.\",\"value\":\"<p>Moove is a Moodle template based on Boost with modern and creative design.<\\/p>\",\"plugin\":\"theme_moove\"}', 1737451356, 'web', '127.0.0.1', NULL),
+(2120, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1809, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"marketing1content\",\"oldvalue\":\"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.\",\"value\":\"<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.<\\/p>\",\"plugin\":\"theme_moove\"}', 1737451356, 'web', '127.0.0.1', NULL),
+(2121, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1810, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"marketing2content\",\"oldvalue\":\"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.\",\"value\":\"<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.<\\/p>\",\"plugin\":\"theme_moove\"}', 1737451356, 'web', '127.0.0.1', NULL),
+(2122, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1811, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"marketing3content\",\"oldvalue\":\"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.\",\"value\":\"<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.<\\/p>\",\"plugin\":\"theme_moove\"}', 1737451356, 'web', '127.0.0.1', NULL),
+(2123, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1812, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"marketing4content\",\"oldvalue\":\"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.\",\"value\":\"<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.<\\/p>\",\"plugin\":\"theme_moove\"}', 1737451356, 'web', '127.0.0.1', NULL),
+(2124, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1813, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"numbersfrontpagecontent\",\"oldvalue\":\"<h2>Trusted by 25,000+ happy customers.<\\/h2>\\r\\n                    <p>With lots of unique blocks, you can easily build <br class=\\\"d-none d-sm-block d-md-none d-xl-block\\\">\\r\\n                        a page without coding. Build your next website <br class=\\\"d-none d-sm-block d-md-none d-xl-block\\\">\\r\\n                        within few minutes.<\\/p>\",\"value\":\"<h2>Trusted by 25,000+ happy customers.<\\/h2>\\r\\n<p>With lots of unique blocks, you can easily build <br class=\\\"d-none d-sm-block d-md-none d-xl-block\\\">a page without coding. Build your next website <br class=\\\"d-none d-sm-block d-md-none d-xl-block\\\">within few minutes.<\\/p>\",\"plugin\":\"theme_moove\"}', 1737451356, 'web', '127.0.0.1', NULL),
+(2125, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737451369, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2126, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737451418, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2127, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737451429, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2128, '\\core\\event\\draft_file_added', 'core', 'added', 'draft_file', 'files', 67, 'c', 0, 5, 30, 2, 2, 0, 2, 0, '{\"itemid\":26240359,\"filename\":\"new2.jpg\",\"filesize\":1919248,\"filepath\":\"\\/\",\"contenthash\":\"4fbe7701e7e131b606d4b4a2733325f89f44b1d0\"}', 1737451499, 'web', '127.0.0.1', NULL),
+(2129, '\\core\\event\\draft_file_added', 'core', 'added', 'draft_file', 'files', 69, 'c', 0, 5, 30, 2, 2, 0, 2, 0, '{\"itemid\":219748685,\"filename\":\"new2.jpg\",\"filesize\":1919248,\"filepath\":\"\\/\",\"contenthash\":\"4fbe7701e7e131b606d4b4a2733325f89f44b1d0\"}', 1737451511, 'web', '127.0.0.1', NULL),
+(2130, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1814, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"brandcolor\",\"oldvalue\":\"#4000BE\",\"value\":\"#0415D2\",\"plugin\":\"theme_boost\"}', 1737451891, 'web', '127.0.0.1', NULL),
+(2131, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1815, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"backgroundimage\",\"oldvalue\":\"\",\"value\":\"\\/new2.jpg\",\"plugin\":\"theme_classic\"}', 1737451891, 'web', '127.0.0.1', NULL),
+(2132, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1816, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"loginbackgroundimage\",\"oldvalue\":\"\",\"value\":\"\\/new2.jpg\",\"plugin\":\"theme_classic\"}', 1737451891, 'web', '127.0.0.1', NULL),
+(2133, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1817, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"brandcolor\",\"oldvalue\":\"\",\"value\":\"#034FB4\",\"plugin\":\"theme_classic\"}', 1737451891, 'web', '127.0.0.1', NULL),
+(2134, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1818, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"secondarymenucolor\",\"oldvalue\":\"#0f47ad\",\"value\":\"#4000C8\",\"plugin\":\"theme_moove\"}', 1737451891, 'web', '127.0.0.1', NULL),
+(2135, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1819, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"displaymarketingbox\",\"oldvalue\":\"1\",\"value\":\"0\",\"plugin\":\"theme_moove\"}', 1737451891, 'web', '127.0.0.1', NULL),
+(2136, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1820, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"marketingheading\",\"oldvalue\":\"Awesome App Features\",\"value\":\"SRI Recruitment Portal\",\"plugin\":\"theme_moove\"}', 1737451891, 'web', '127.0.0.1', NULL),
+(2137, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1821, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"marketingcontent\",\"oldvalue\":\"<p>Moove is a Moodle template based on Boost with modern and creative design.<\\/p>\",\"value\":\"<pre class=\\\"language-markup\\\"><code>&lt;!DOCTYPE html&gt;\\r\\n&lt;html lang=\\\"en\\\"&gt;\\r\\n&lt;head&gt;\\r\\n    &lt;meta charset=\\\"UTF-8\\\"&gt;\\r\\n    &lt;meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1.0\\\"&gt;\\r\\n    &lt;title&gt;Dynamic Quotes&lt;\\/title&gt;\\r\\n    &lt;style&gt;\\r\\n        body {\\r\\n            font-family: Arial, sans-serif;\\r\\n            display: flex;\\r\\n            justify-content: center;\\r\\n            align-items: center;\\r\\n            height: 100vh;\\r\\n            margin: 0;\\r\\n            background-color: #f4f4f4;\\r\\n        }\\r\\n        .quote-container {\\r\\n            text-align: center;\\r\\n            padding: 20px;\\r\\n            background-color: white;\\r\\n            border-radius: 10px;\\r\\n            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\\r\\n        }\\r\\n        .quote-text {\\r\\n            font-size: 24px;\\r\\n            font-style: italic;\\r\\n        }\\r\\n        .quote-author {\\r\\n            margin-top: 10px;\\r\\n            font-size: 18px;\\r\\n            font-weight: bold;\\r\\n        }\\r\\n        .quote-button {\\r\\n            margin-top: 20px;\\r\\n            padding: 10px 20px;\\r\\n            font-size: 16px;\\r\\n            cursor: pointer;\\r\\n            background-color: #008CBA;\\r\\n            color: white;\\r\\n            border: none;\\r\\n            border-radius: 5px;\\r\\n        }\\r\\n        .quote-button:hover {\\r\\n            background-color: #005f73;\\r\\n        }\\r\\n    &lt;\\/style&gt;\\r\\n&lt;\\/head&gt;\\r\\n&lt;body&gt;\\r\\n\\r\\n&lt;div class=\\\"quote-container\\\"&gt;\\r\\n    &lt;div id=\\\"quoteText\\\" class=\\\"quote-text\\\"&gt;Loading...&lt;\\/div&gt;\\r\\n    &lt;div id=\\\"quoteAuthor\\\" class=\\\"quote-author\\\"&gt;Author&lt;\\/div&gt;\\r\\n    &lt;button id=\\\"newQuoteButton\\\" class=\\\"quote-button\\\"&gt;Get New Quote&lt;\\/button&gt;\\r\\n&lt;\\/div&gt;\\r\\n\\r\\n&lt;script&gt;\\r\\n    document.addEventListener(\\\"DOMContentLoaded\\\", function() {\\r\\n        const quoteTextElement = document.getElementById(\'quoteText\');\\r\\n        const quoteAuthorElement = document.getElementById(\'quoteAuthor\');\\r\\n        const newQuoteButton = document.getElementById(\'newQuoteButton\');\\r\\n\\r\\n        \\/\\/ Function to fetch a random quote\\r\\n        async function fetchQuote() {\\r\\n            try {\\r\\n                const response = await fetch(\'https:\\/\\/api.quotable.io\\/random\');\\r\\n                const data = await response.json();\\r\\n                quoteTextElement.textContent = `\\\"${data.content}\\\"`;\\r\\n                quoteAuthorElement.textContent = `- ${data.author}`;\\r\\n            } catch (error) {\\r\\n                quoteTextElement.textContent = \\\"Oops! Couldn\'t fetch a quote.\\\";\\r\\n                quoteAuthorElement.textContent = \\\"\\\";\\r\\n            }\\r\\n        }\\r\\n\\r\\n        \\/\\/ Event listener for button to load a new quote\\r\\n        newQuoteButton.addEventListener(\'click\', fetchQuote);\\r\\n\\r\\n        \\/\\/ Fetch initial quote\\r\\n        fetchQuote();\\r\\n    });\\r\\n&lt;\\/script&gt;\\r\\n\\r\\n&lt;\\/body&gt;\\r\\n&lt;\\/html&gt;\\r\\n<\\/code><\\/pre>\",\"plugin\":\"theme_moove\"}', 1737451891, 'web', '127.0.0.1', NULL),
+(2138, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1822, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"numbersfrontpage\",\"oldvalue\":\"1\",\"value\":\"0\",\"plugin\":\"theme_moove\"}', 1737451891, 'web', '127.0.0.1', NULL),
+(2139, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737451900, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2140, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737451910, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2141, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1823, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"themedesignermode\",\"oldvalue\":\"1\",\"value\":\"0\",\"plugin\":null}', 1737452155, 'web', '127.0.0.1', NULL),
+(2142, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1824, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"navbardark\",\"oldvalue\":\"1\",\"value\":\"0\",\"plugin\":\"theme_classic\"}', 1737452226, 'web', '127.0.0.1', NULL),
+(2143, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737452228, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2144, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737452234, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2145, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1825, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"allowuserblockhiding\",\"oldvalue\":\"1\",\"value\":\"0\",\"plugin\":null}', 1737452253, 'web', '127.0.0.1', NULL),
+(2146, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1826, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"displaymarketingbox\",\"oldvalue\":\"0\",\"value\":\"1\",\"plugin\":\"theme_moove\"}', 1737452344, 'web', '127.0.0.1', NULL),
+(2147, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1827, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"numbersfrontpage\",\"oldvalue\":\"0\",\"value\":\"1\",\"plugin\":\"theme_moove\"}', 1737452344, 'web', '127.0.0.1', NULL),
+(2148, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737452347, 'web', '0:0:0:0:0:0:0:1', NULL);
+INSERT INTO `mdl_logstore_standard_log` (`id`, `eventname`, `component`, `action`, `target`, `objecttable`, `objectid`, `crud`, `edulevel`, `contextid`, `contextlevel`, `contextinstanceid`, `userid`, `courseid`, `relateduserid`, `anonymous`, `other`, `timecreated`, `origin`, `ip`, `realuserid`) VALUES
+(2149, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1828, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"marketingcontent\",\"oldvalue\":\"<pre class=\\\"language-markup\\\"><code>&lt;!DOCTYPE html&gt;\\r\\n&lt;html lang=\\\"en\\\"&gt;\\r\\n&lt;head&gt;\\r\\n    &lt;meta charset=\\\"UTF-8\\\"&gt;\\r\\n    &lt;meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1.0\\\"&gt;\\r\\n    &lt;title&gt;Dynamic Quotes&lt;\\/title&gt;\\r\\n    &lt;style&gt;\\r\\n        body {\\r\\n            font-family: Arial, sans-serif;\\r\\n            display: flex;\\r\\n            justify-content: center;\\r\\n            align-items: center;\\r\\n            height: 100vh;\\r\\n            margin: 0;\\r\\n            background-color: #f4f4f4;\\r\\n        }\\r\\n        .quote-container {\\r\\n            text-align: center;\\r\\n            padding: 20px;\\r\\n            background-color: white;\\r\\n            border-radius: 10px;\\r\\n            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\\r\\n        }\\r\\n        .quote-text {\\r\\n            font-size: 24px;\\r\\n            font-style: italic;\\r\\n        }\\r\\n        .quote-author {\\r\\n            margin-top: 10px;\\r\\n            font-size: 18px;\\r\\n            font-weight: bold;\\r\\n        }\\r\\n        .quote-button {\\r\\n            margin-top: 20px;\\r\\n            padding: 10px 20px;\\r\\n            font-size: 16px;\\r\\n            cursor: pointer;\\r\\n            background-color: #008CBA;\\r\\n            color: white;\\r\\n            border: none;\\r\\n            border-radius: 5px;\\r\\n        }\\r\\n        .quote-button:hover {\\r\\n            background-color: #005f73;\\r\\n        }\\r\\n    &lt;\\/style&gt;\\r\\n&lt;\\/head&gt;\\r\\n&lt;body&gt;\\r\\n\\r\\n&lt;div class=\\\"quote-container\\\"&gt;\\r\\n    &lt;div id=\\\"quoteText\\\" class=\\\"quote-text\\\"&gt;Loading...&lt;\\/div&gt;\\r\\n    &lt;div id=\\\"quoteAuthor\\\" class=\\\"quote-author\\\"&gt;Author&lt;\\/div&gt;\\r\\n    &lt;button id=\\\"newQuoteButton\\\" class=\\\"quote-button\\\"&gt;Get New Quote&lt;\\/button&gt;\\r\\n&lt;\\/div&gt;\\r\\n\\r\\n&lt;script&gt;\\r\\n    document.addEventListener(\\\"DOMContentLoaded\\\", function() {\\r\\n        const quoteTextElement = document.getElementById(\'quoteText\');\\r\\n        const quoteAuthorElement = document.getElementById(\'quoteAuthor\');\\r\\n        const newQuoteButton = document.getElementById(\'newQuoteButton\');\\r\\n\\r\\n        \\/\\/ Function to fetch a random quote\\r\\n        async function fetchQuote() {\\r\\n            try {\\r\\n                const response = await fetch(\'https:\\/\\/api.quotable.io\\/random\');\\r\\n                const data = await response.json();\\r\\n                quoteTextElement.textContent = `\\\"${data.content}\\\"`;\\r\\n                quoteAuthorElement.textContent = `- ${data.author}`;\\r\\n            } catch (error) {\\r\\n                quoteTextElement.textContent = \\\"Oops! Couldn\'t fetch a quote.\\\";\\r\\n                quoteAuthorElement.textContent = \\\"\\\";\\r\\n            }\\r\\n        }\\r\\n\\r\\n        \\/\\/ Event listener for button to load a new quote\\r\\n        newQuoteButton.addEventListener(\'click\', fetchQuote);\\r\\n\\r\\n        \\/\\/ Fetch initial quote\\r\\n        fetchQuote();\\r\\n    });\\r\\n&lt;\\/script&gt;\\r\\n\\r\\n&lt;\\/body&gt;\\r\\n&lt;\\/html&gt;\\r\\n<\\/code><\\/pre>\",\"value\":\"<pre class=\\\"language-python\\\"><code>import random\\r\\nimport time\\r\\n\\r\\n# List of predefined quotes\\r\\nquotes = [\\r\\n    {\\r\\n        \\\"text\\\": \\\"The only way to do great work is to love what you do.\\\",\\r\\n        \\\"author\\\": \\\"Steve Jobs\\\"\\r\\n    },\\r\\n    {\\r\\n        \\\"text\\\": \\\"In the middle of difficulty lies opportunity.\\\",\\r\\n        \\\"author\\\": \\\"Albert Einstein\\\"\\r\\n    },\\r\\n    {\\r\\n        \\\"text\\\": \\\"Life is what happens when you\'re busy making other plans.\\\",\\r\\n        \\\"author\\\": \\\"John Lennon\\\"\\r\\n    },\\r\\n    {\\r\\n        \\\"text\\\": \\\"Success is not the key to happiness. Happiness is the key to success.\\\",\\r\\n        \\\"author\\\": \\\"Albert Schweitzer\\\"\\r\\n    },\\r\\n    {\\r\\n        \\\"text\\\": \\\"You must be the change you wish to see in the world.\\\",\\r\\n        \\\"author\\\": \\\"Mahatma Gandhi\\\"\\r\\n    },\\r\\n    {\\r\\n        \\\"text\\\": \\\"The best way to predict the future is to create it.\\\",\\r\\n        \\\"author\\\": \\\"Peter Drucker\\\"\\r\\n    }\\r\\n]\\r\\n\\r\\ndef get_random_quote():\\r\\n    # Randomly selects a quote from the list\\r\\n    quote = random.choice(quotes)\\r\\n    print(f\\\"\\\\n\\\\\\\"{quote[\'text\']}\\\\\\\"\\\\n - {quote[\'author\']}\\\")\\r\\n\\r\\ndef main():\\r\\n    print(\\\"Welcome to the Dynamic Quotes Generator!\\\\n\\\")\\r\\n    \\r\\n    while True:\\r\\n        get_random_quote()\\r\\n        \\r\\n        # Ask the user if they want another quote\\r\\n        user_input = input(\\\"\\\\nDo you want another quote? (yes\\/no): \\\").strip().lower()\\r\\n        \\r\\n        if user_input != \'yes\':\\r\\n            print(\\\"\\\\nThanks for using the Quote Generator! Goodbye!\\\")\\r\\n            break\\r\\n        \\r\\n        time.sleep(1)  # Adds a 1 second delay before showing the next quote\\r\\n\\r\\nif __name__ == \\\"__main__\\\":\\r\\n    main()\\r\\n<\\/code><\\/pre>\",\"plugin\":\"theme_moove\"}', 1737452541, 'web', '127.0.0.1', NULL),
+(2150, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737452546, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2151, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1829, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"marketingcontent\",\"oldvalue\":\"<pre class=\\\"language-python\\\"><code>import random\\r\\nimport time\\r\\n\\r\\n# List of predefined quotes\\r\\nquotes = [\\r\\n    {\\r\\n        \\\"text\\\": \\\"The only way to do great work is to love what you do.\\\",\\r\\n        \\\"author\\\": \\\"Steve Jobs\\\"\\r\\n    },\\r\\n    {\\r\\n        \\\"text\\\": \\\"In the middle of difficulty lies opportunity.\\\",\\r\\n        \\\"author\\\": \\\"Albert Einstein\\\"\\r\\n    },\\r\\n    {\\r\\n        \\\"text\\\": \\\"Life is what happens when you\'re busy making other plans.\\\",\\r\\n        \\\"author\\\": \\\"John Lennon\\\"\\r\\n    },\\r\\n    {\\r\\n        \\\"text\\\": \\\"Success is not the key to happiness. Happiness is the key to success.\\\",\\r\\n        \\\"author\\\": \\\"Albert Schweitzer\\\"\\r\\n    },\\r\\n    {\\r\\n        \\\"text\\\": \\\"You must be the change you wish to see in the world.\\\",\\r\\n        \\\"author\\\": \\\"Mahatma Gandhi\\\"\\r\\n    },\\r\\n    {\\r\\n        \\\"text\\\": \\\"The best way to predict the future is to create it.\\\",\\r\\n        \\\"author\\\": \\\"Peter Drucker\\\"\\r\\n    }\\r\\n]\\r\\n\\r\\ndef get_random_quote():\\r\\n    # Randomly selects a quote from the list\\r\\n    quote = random.choice(quotes)\\r\\n    print(f\\\"\\\\n\\\\\\\"{quote[\'text\']}\\\\\\\"\\\\n - {quote[\'author\']}\\\")\\r\\n\\r\\ndef main():\\r\\n    print(\\\"Welcome to the Dynamic Quotes Generator!\\\\n\\\")\\r\\n    \\r\\n    while True:\\r\\n        get_random_quote()\\r\\n        \\r\\n        # Ask the user if they want another quote\\r\\n        user_input = input(\\\"\\\\nDo you want another quote? (yes\\/no): \\\").strip().lower()\\r\\n        \\r\\n        if user_input != \'yes\':\\r\\n            print(\\\"\\\\nThanks for using the Quote Generator! Goodbye!\\\")\\r\\n            break\\r\\n        \\r\\n        time.sleep(1)  # Adds a 1 second delay before showing the next quote\\r\\n\\r\\nif __name__ == \\\"__main__\\\":\\r\\n    main()\\r\\n<\\/code><\\/pre>\",\"value\":\"<pre class=\\\"language-markup\\\"><code>&lt;script&gt;\\r\\ndocument.write(\\\"lol\\\");\\r\\n&lt;\\/script&gt;<\\/code><\\/pre>\\r\\n<p>\\r\\n<script>\\r\\ndocument.write(\\\"lol\\\");\\r\\n<\\/script>\\r\\n<\\/p>\",\"plugin\":\"theme_moove\"}', 1737452852, 'web', '127.0.0.1', NULL),
+(2152, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737452854, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2153, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1830, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"marketingcontent\",\"oldvalue\":\"<pre class=\\\"language-markup\\\"><code>&lt;script&gt;\\r\\ndocument.write(\\\"lol\\\");\\r\\n&lt;\\/script&gt;<\\/code><\\/pre>\\r\\n<p>\\r\\n<script>\\r\\ndocument.write(\\\"lol\\\");\\r\\n<\\/script>\\r\\n<\\/p>\",\"value\":\"\",\"plugin\":\"theme_moove\"}', 1737453032, 'web', '127.0.0.1', NULL),
+(2154, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737453049, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2155, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1831, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"marketingcontent\",\"oldvalue\":\"\",\"value\":\"<p><em>\\\"The only way to do great work is to love what you do.\\\"<\\/em><\\/p>\",\"plugin\":\"theme_moove\"}', 1737453168, 'web', '127.0.0.1', NULL),
+(2156, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737453171, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2157, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 2, 0, NULL, 0, 'null', 1737453205, 'web', '127.0.0.1', NULL),
+(2158, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737453211, 'web', '127.0.0.1', NULL),
+(2159, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 2, 3, NULL, 0, 'null', 1737453213, 'web', '127.0.0.1', NULL),
+(2160, '\\core\\event\\question_category_viewed', 'core', 'viewed', 'question_category', 'question_categories', 12, 'r', 1, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737453227, 'web', '127.0.0.1', NULL),
+(2161, '\\core\\event\\question_created', 'core', 'created', 'question', 'question', 18, 'c', 1, 29, 50, 3, 2, 3, NULL, 0, '{\"categoryid\":\"12\"}', 1737453309, 'web', '127.0.0.1', NULL),
+(2162, '\\core\\event\\question_category_viewed', 'core', 'viewed', 'question_category', 'question_categories', 12, 'r', 1, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737453310, 'web', '127.0.0.1', NULL),
+(2163, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 2, 3, NULL, 0, 'null', 1737453318, 'web', '127.0.0.1', NULL),
+(2164, '\\mod_quiz\\event\\attempt_viewed', 'mod_quiz', 'viewed', 'attempt', 'quiz_attempts', 5, 'r', 2, 31, 70, 4, 2, 3, 2, 0, '{\"quizid\":\"2\",\"page\":\"0\"}', 1737453322, 'web', '127.0.0.1', NULL),
+(2165, '\\mod_quiz\\event\\attempt_updated', 'mod_quiz', 'updated', 'attempt', 'quiz_attempts', 5, 'u', 2, 31, 70, 4, 2, 3, 2, 0, '{\"quizid\":\"2\",\"page\":\"0\"}', 1737453325, 'web', '127.0.0.1', NULL),
+(2166, '\\mod_quiz\\event\\attempt_viewed', 'mod_quiz', 'viewed', 'attempt', 'quiz_attempts', 5, 'r', 2, 31, 70, 4, 2, 3, 2, 0, '{\"quizid\":\"2\",\"page\":\"0\"}', 1737453325, 'web', '127.0.0.1', NULL),
+(2167, '\\mod_quiz\\event\\attempt_updated', 'mod_quiz', 'updated', 'attempt', 'quiz_attempts', 5, 'u', 2, 31, 70, 4, 2, 3, 2, 0, '{\"quizid\":\"2\",\"page\":\"1\"}', 1737453327, 'web', '127.0.0.1', NULL),
+(2168, '\\mod_quiz\\event\\attempt_viewed', 'mod_quiz', 'viewed', 'attempt', 'quiz_attempts', 5, 'r', 2, 31, 70, 4, 2, 3, 2, 0, '{\"quizid\":\"2\",\"page\":\"1\"}', 1737453327, 'web', '127.0.0.1', NULL),
+(2169, '\\mod_quiz\\event\\attempt_updated', 'mod_quiz', 'updated', 'attempt', 'quiz_attempts', 5, 'u', 2, 31, 70, 4, 2, 3, 2, 0, '{\"quizid\":\"2\",\"page\":\"2\"}', 1737453328, 'web', '127.0.0.1', NULL),
+(2170, '\\mod_quiz\\event\\attempt_viewed', 'mod_quiz', 'viewed', 'attempt', 'quiz_attempts', 5, 'r', 2, 31, 70, 4, 2, 3, 2, 0, '{\"quizid\":\"2\",\"page\":\"2\"}', 1737453328, 'web', '127.0.0.1', NULL),
+(2171, '\\mod_quiz\\event\\attempt_updated', 'mod_quiz', 'updated', 'attempt', 'quiz_attempts', 5, 'u', 2, 31, 70, 4, 2, 3, 2, 0, '{\"quizid\":\"2\",\"page\":\"3\"}', 1737453329, 'web', '127.0.0.1', NULL),
+(2172, '\\mod_quiz\\event\\attempt_viewed', 'mod_quiz', 'viewed', 'attempt', 'quiz_attempts', 5, 'r', 2, 31, 70, 4, 2, 3, 2, 0, '{\"quizid\":\"2\",\"page\":\"3\"}', 1737453330, 'web', '127.0.0.1', NULL),
+(2173, '\\mod_quiz\\event\\attempt_updated', 'mod_quiz', 'updated', 'attempt', 'quiz_attempts', 5, 'u', 2, 31, 70, 4, 2, 3, 2, 0, '{\"quizid\":\"2\",\"page\":\"4\"}', 1737453331, 'web', '127.0.0.1', NULL),
+(2174, '\\mod_quiz\\event\\attempt_viewed', 'mod_quiz', 'viewed', 'attempt', 'quiz_attempts', 5, 'r', 2, 31, 70, 4, 2, 3, 2, 0, '{\"quizid\":\"2\",\"page\":\"4\"}', 1737453331, 'web', '127.0.0.1', NULL),
+(2175, '\\mod_quiz\\event\\attempt_updated', 'mod_quiz', 'updated', 'attempt', 'quiz_attempts', 5, 'u', 2, 31, 70, 4, 2, 3, 2, 0, '{\"quizid\":\"2\",\"page\":\"5\"}', 1737453332, 'web', '127.0.0.1', NULL),
+(2176, '\\mod_quiz\\event\\attempt_viewed', 'mod_quiz', 'viewed', 'attempt', 'quiz_attempts', 5, 'r', 2, 31, 70, 4, 2, 3, 2, 0, '{\"quizid\":\"2\",\"page\":\"5\"}', 1737453332, 'web', '127.0.0.1', NULL),
+(2177, '\\mod_quiz\\event\\attempt_updated', 'mod_quiz', 'updated', 'attempt', 'quiz_attempts', 5, 'u', 2, 31, 70, 4, 2, 3, 2, 0, '{\"quizid\":\"2\",\"page\":\"4\"}', 1737453338, 'web', '127.0.0.1', NULL),
+(2178, '\\mod_quiz\\event\\attempt_viewed', 'mod_quiz', 'viewed', 'attempt', 'quiz_attempts', 5, 'r', 2, 31, 70, 4, 2, 3, 2, 0, '{\"quizid\":\"2\",\"page\":\"4\"}', 1737453339, 'web', '127.0.0.1', NULL),
+(2179, '\\mod_quiz\\event\\attempt_updated', 'mod_quiz', 'updated', 'attempt', 'quiz_attempts', 5, 'u', 2, 31, 70, 4, 2, 3, 2, 0, '{\"quizid\":\"2\",\"page\":\"5\"}', 1737453342, 'web', '127.0.0.1', NULL),
+(2180, '\\mod_quiz\\event\\attempt_summary_viewed', 'mod_quiz', 'viewed', 'attempt_summary', 'quiz_attempts', 5, 'r', 2, 31, 70, 4, 2, 3, 2, 0, '{\"quizid\":\"2\"}', 1737453342, 'web', '127.0.0.1', NULL),
+(2181, '\\mod_quiz\\event\\attempt_reviewed', 'mod_quiz', 'reviewed', 'attempt', 'quiz_attempts', 5, 'r', 2, 31, 70, 4, 2, 3, 2, 0, '{\"quizid\":\"2\"}', 1737453350, 'web', '127.0.0.1', NULL),
+(2182, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 2, 3, NULL, 0, 'null', 1737453358, 'web', '127.0.0.1', NULL),
+(2183, '\\mod_quiz\\event\\report_viewed', 'mod_quiz', 'viewed', 'report', NULL, NULL, 'r', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\",\"reportname\":\"overview\"}', 1737453366, 'web', '127.0.0.1', NULL),
+(2184, '\\core\\event\\user_loggedin', 'core', 'loggedin', 'user', 'user', 3, 'r', 0, 1, 10, 0, 3, 0, NULL, 0, '{\"username\":\"manikanta\",\"extrauserinfo\":[]}', 1737453390, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2185, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 3, 0, NULL, 0, 'null', 1737453391, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2186, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 3, 3, NULL, 0, 'null', 1737453394, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2187, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, 'null', 1737453395, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2188, '\\quizaccess_seb\\event\\access_prevented', 'quizaccess_seb', 'prevented', 'access', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, '{\"reason\":\"Invalid SEB config key\",\"savedconfigkey\":\"09be7c58fd7b53107a638d5933444c0c9942fb035a8e19fca4916f54698bf022\",\"receivedconfigkey\":null,\"receivedbrowserexamkey\":null}', 1737453396, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2189, '\\quizaccess_seb\\event\\access_prevented', 'quizaccess_seb', 'prevented', 'access', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, '{\"reason\":\"Invalid SEB config key\",\"savedconfigkey\":\"09be7c58fd7b53107a638d5933444c0c9942fb035a8e19fca4916f54698bf022\",\"receivedconfigkey\":null,\"receivedbrowserexamkey\":null}', 1737453396, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2190, '\\core\\event\\user_loggedin', 'core', 'loggedin', 'user', 'user', 3, 'r', 0, 1, 10, 0, 3, 0, NULL, 0, '{\"username\":\"manikanta\",\"extrauserinfo\":[]}', 1737453445, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2191, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, 'null', 1737453453, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2192, '\\mod_quiz\\event\\attempt_viewed', 'mod_quiz', 'viewed', 'attempt', 'quiz_attempts', 8, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"6\"}', 1737453455, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2193, '\\mod_quiz\\event\\attempt_updated', 'mod_quiz', 'updated', 'attempt', 'quiz_attempts', 8, 'u', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"6\"}', 1737453471, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2194, '\\mod_quiz\\event\\attempt_viewed', 'mod_quiz', 'viewed', 'attempt', 'quiz_attempts', 8, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"6\"}', 1737453471, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2195, '\\mod_quiz\\event\\attempt_updated', 'mod_quiz', 'updated', 'attempt', 'quiz_attempts', 8, 'u', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"5\"}', 1737453473, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2196, '\\mod_quiz\\event\\attempt_viewed', 'mod_quiz', 'viewed', 'attempt', 'quiz_attempts', 8, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"5\"}', 1737453473, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2197, '\\mod_quiz\\event\\attempt_updated', 'mod_quiz', 'updated', 'attempt', 'quiz_attempts', 8, 'u', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"4\"}', 1737453497, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2198, '\\mod_quiz\\event\\attempt_summary_viewed', 'mod_quiz', 'viewed', 'attempt_summary', 'quiz_attempts', 8, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\"}', 1737453497, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2199, '\\mod_quiz\\event\\attempt_submitted', 'mod_quiz', 'submitted', 'attempt', 'quiz_attempts', 8, 'u', 2, 31, 70, 4, 3, 3, 3, 0, '{\"submitterid\":\"3\",\"quizid\":\"2\",\"studentisonline\":true}', 1737453536, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2200, '\\mod_quiz\\event\\attempt_reviewed', 'mod_quiz', 'reviewed', 'attempt', 'quiz_attempts', 8, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\"}', 1737453536, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2201, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, 'null', 1737453540, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2202, '\\mod_quiz\\event\\report_viewed', 'mod_quiz', 'viewed', 'report', NULL, NULL, 'r', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\",\"reportname\":\"overview\"}', 1737453551, 'web', '127.0.0.1', NULL),
+(2203, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 2, 0, NULL, 0, 'null', 1737453641, 'web', '127.0.0.1', NULL),
+(2204, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737453646, 'web', '127.0.0.1', NULL),
+(2205, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 2, 3, NULL, 0, 'null', 1737453647, 'web', '127.0.0.1', NULL),
+(2206, '\\mod_quiz\\event\\report_viewed', 'mod_quiz', 'viewed', 'report', NULL, NULL, 'r', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\",\"reportname\":\"overview\"}', 1737453653, 'web', '127.0.0.1', NULL),
+(2207, '\\mod_quiz\\event\\attempt_deleted', 'mod_quiz', 'deleted', 'attempt', 'quiz_attempts', 6, 'd', 1, 31, 70, 4, 2, 3, 3, 0, '{\"quizid\":\"2\"}', 1737453661, 'web', '127.0.0.1', NULL),
+(2208, '\\mod_quiz\\event\\attempt_deleted', 'mod_quiz', 'deleted', 'attempt', 'quiz_attempts', 7, 'd', 1, 31, 70, 4, 2, 3, 3, 0, '{\"quizid\":\"2\"}', 1737453661, 'web', '127.0.0.1', NULL),
+(2209, '\\core\\event\\user_graded', 'core', 'graded', 'user', 'grade_grades', 7, 'u', 1, 29, 50, 3, 2, 3, 3, 0, '{\"itemid\":\"4\",\"overridden\":false,\"finalgrade\":0}', 1737453661, 'web', '127.0.0.1', NULL),
+(2210, '\\core\\event\\user_graded', 'core', 'graded', 'user', 'grade_grades', 8, 'u', 1, 29, 50, 3, -1, 3, 3, 0, '{\"itemid\":\"3\",\"overridden\":false,\"finalgrade\":0}', 1737453661, 'web', '127.0.0.1', NULL),
+(2211, '\\mod_quiz\\event\\attempt_deleted', 'mod_quiz', 'deleted', 'attempt', 'quiz_attempts', 8, 'd', 1, 31, 70, 4, 2, 3, 3, 0, '{\"quizid\":\"2\"}', 1737453661, 'web', '127.0.0.1', NULL),
+(2212, '\\core\\event\\user_graded', 'core', 'graded', 'user', 'grade_grades', 7, 'u', 1, 29, 50, 3, 2, 3, 3, 0, '{\"itemid\":\"4\",\"overridden\":false,\"finalgrade\":null}', 1737453661, 'web', '127.0.0.1', NULL),
+(2213, '\\core\\event\\user_graded', 'core', 'graded', 'user', 'grade_grades', 8, 'u', 1, 29, 50, 3, -1, 3, 3, 0, '{\"itemid\":\"3\",\"overridden\":false,\"finalgrade\":null}', 1737453662, 'web', '127.0.0.1', NULL),
+(2214, '\\mod_quiz\\event\\report_viewed', 'mod_quiz', 'viewed', 'report', NULL, NULL, 'r', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\",\"reportname\":\"overview\"}', 1737453662, 'web', '127.0.0.1', NULL),
+(2215, '\\core\\event\\question_category_viewed', 'core', 'viewed', 'question_category', 'question_categories', 12, 'r', 1, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737453669, 'web', '127.0.0.1', NULL),
+(2216, '\\core\\event\\question_category_viewed', 'core', 'viewed', 'question_category', 'question_categories', 12, 'r', 1, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737453728, 'web', '127.0.0.1', NULL),
+(2217, '\\core\\event\\question_deleted', 'core', 'deleted', 'question', 'question', 9, 'd', 1, 29, 50, 3, 2, 3, NULL, 0, '{\"categoryid\":\"12\"}', 1737453751, 'web', '127.0.0.1', NULL),
+(2218, '\\core\\event\\question_category_viewed', 'core', 'viewed', 'question_category', 'question_categories', 12, 'r', 1, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737453752, 'web', '127.0.0.1', NULL),
+(2219, '\\core\\event\\question_deleted', 'core', 'deleted', 'question', 'question', 3, 'd', 1, 29, 50, 3, 2, 3, NULL, 0, '{\"categoryid\":\"12\"}', 1737453802, 'web', '127.0.0.1', NULL),
+(2220, '\\core\\event\\question_deleted', 'core', 'deleted', 'question', 'question', 7, 'd', 1, 29, 50, 3, 2, 3, NULL, 0, '{\"categoryid\":\"12\"}', 1737453802, 'web', '127.0.0.1', NULL),
+(2221, '\\core\\event\\question_deleted', 'core', 'deleted', 'question', 'question', 10, 'd', 1, 29, 50, 3, 2, 3, NULL, 0, '{\"categoryid\":\"12\"}', 1737453802, 'web', '127.0.0.1', NULL),
+(2222, '\\core\\event\\question_deleted', 'core', 'deleted', 'question', 'question', 13, 'd', 1, 29, 50, 3, 2, 3, NULL, 0, '{\"categoryid\":\"12\"}', 1737453802, 'web', '127.0.0.1', NULL),
+(2223, '\\core\\event\\question_deleted', 'core', 'deleted', 'question', 'question', 15, 'd', 1, 29, 50, 3, 2, 3, NULL, 0, '{\"categoryid\":\"12\"}', 1737453802, 'web', '127.0.0.1', NULL),
+(2224, '\\core\\event\\question_category_viewed', 'core', 'viewed', 'question_category', 'question_categories', 12, 'r', 1, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737453803, 'web', '127.0.0.1', NULL),
+(2225, '\\core\\event\\question_category_viewed', 'core', 'viewed', 'question_category', 'question_categories', 12, 'r', 1, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737453811, 'web', '127.0.0.1', NULL),
+(2226, '\\core\\event\\question_created', 'core', 'created', 'question', 'question', 19, 'c', 1, 29, 50, 3, 2, 3, NULL, 0, '{\"categoryid\":\"12\"}', 1737453852, 'web', '127.0.0.1', NULL),
+(2227, '\\core\\event\\question_created', 'core', 'created', 'question', 'question', 20, 'c', 1, 29, 50, 3, 2, 3, NULL, 0, '{\"categoryid\":\"12\"}', 1737453856, 'web', '127.0.0.1', NULL),
+(2228, '\\core\\event\\question_category_viewed', 'core', 'viewed', 'question_category', 'question_categories', 12, 'r', 1, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737453857, 'web', '127.0.0.1', NULL),
+(2229, '\\core\\event\\question_category_viewed', 'core', 'viewed', 'question_category', 'question_categories', 12, 'r', 1, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737453874, 'web', '127.0.0.1', NULL),
+(2230, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 3, 3, NULL, 0, 'null', 1737453883, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2231, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, 'null', 1737453884, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2232, '\\quizaccess_seb\\event\\access_prevented', 'quizaccess_seb', 'prevented', 'access', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, '{\"reason\":\"Invalid SEB config key\",\"savedconfigkey\":\"09be7c58fd7b53107a638d5933444c0c9942fb035a8e19fca4916f54698bf022\",\"receivedconfigkey\":null,\"receivedbrowserexamkey\":null}', 1737453885, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2233, '\\quizaccess_seb\\event\\access_prevented', 'quizaccess_seb', 'prevented', 'access', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, '{\"reason\":\"Invalid SEB config key\",\"savedconfigkey\":\"09be7c58fd7b53107a638d5933444c0c9942fb035a8e19fca4916f54698bf022\",\"receivedconfigkey\":null,\"receivedbrowserexamkey\":null}', 1737453885, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2234, '\\core\\event\\user_loggedin', 'core', 'loggedin', 'user', 'user', 3, 'r', 0, 1, 10, 0, 3, 0, NULL, 0, '{\"username\":\"manikanta\",\"extrauserinfo\":[]}', 1737453929, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2235, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, 'null', 1737453935, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2236, '\\mod_quiz\\event\\attempt_started', 'mod_quiz', 'started', 'attempt', 'quiz_attempts', 9, 'c', 2, 31, 70, 4, 3, 3, 3, 0, 'null', 1737453937, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2237, '\\mod_quiz\\event\\attempt_viewed', 'mod_quiz', 'viewed', 'attempt', 'quiz_attempts', 9, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"0\"}', 1737453937, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2238, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 3, 3, NULL, 0, 'null', 1737453957, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2239, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 3, 3, NULL, 0, 'null', 1737453960, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2240, '\\core\\event\\user_loggedout', 'core', 'loggedout', 'user', 'user', 3, 'r', 0, 1, 10, 0, 3, 0, NULL, 0, '{\"sessionid\":\"1h8m0sok4gq6e4b9n136v11e5i\"}', 1737453964, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2241, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737453964, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2242, '\\core\\event\\user_loggedin', 'core', 'loggedin', 'user', 'user', 3, 'r', 0, 1, 10, 0, 3, 0, NULL, 0, '{\"username\":\"manikanta\",\"extrauserinfo\":[]}', 1737453973, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2243, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 3, 0, NULL, 0, 'null', 1737453974, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2244, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 3, 3, NULL, 0, 'null', 1737453977, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2245, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, 'null', 1737453979, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2246, '\\quizaccess_seb\\event\\access_prevented', 'quizaccess_seb', 'prevented', 'access', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, '{\"reason\":\"Invalid SEB config key\",\"savedconfigkey\":\"09be7c58fd7b53107a638d5933444c0c9942fb035a8e19fca4916f54698bf022\",\"receivedconfigkey\":null,\"receivedbrowserexamkey\":null}', 1737453979, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2247, '\\quizaccess_seb\\event\\access_prevented', 'quizaccess_seb', 'prevented', 'access', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, '{\"reason\":\"Invalid SEB config key\",\"savedconfigkey\":\"09be7c58fd7b53107a638d5933444c0c9942fb035a8e19fca4916f54698bf022\",\"receivedconfigkey\":null,\"receivedbrowserexamkey\":null}', 1737453979, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2248, '\\core\\event\\user_login_failed', 'core', 'failed', 'user_login', NULL, NULL, 'r', 0, 1, 10, 0, 3, 0, NULL, 0, '{\"username\":\"manikanta\",\"reason\":3}', 1737454005, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2249, '\\core\\event\\user_loggedin', 'core', 'loggedin', 'user', 'user', 3, 'r', 0, 1, 10, 0, 3, 0, NULL, 0, '{\"username\":\"manikanta\",\"extrauserinfo\":[]}', 1737454015, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2250, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, 'null', 1737454021, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2251, '\\mod_quiz\\event\\attempt_viewed', 'mod_quiz', 'viewed', 'attempt', 'quiz_attempts', 9, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"0\"}', 1737454024, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2252, '\\mod_quiz\\event\\attempt_updated', 'mod_quiz', 'updated', 'attempt', 'quiz_attempts', 9, 'u', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"0\"}', 1737454028, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2253, '\\mod_quiz\\event\\attempt_summary_viewed', 'mod_quiz', 'viewed', 'attempt_summary', 'quiz_attempts', 9, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\"}', 1737454028, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2254, '\\core\\event\\user_graded', 'core', 'graded', 'user', 'grade_grades', 7, 'u', 1, 29, 50, 3, 3, 3, 3, 0, '{\"itemid\":\"4\",\"overridden\":false,\"finalgrade\":0}', 1737454031, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2255, '\\core\\event\\user_graded', 'core', 'graded', 'user', 'grade_grades', 8, 'u', 1, 29, 50, 3, -1, 3, 3, 0, '{\"itemid\":\"3\",\"overridden\":false,\"finalgrade\":0}', 1737454031, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2256, '\\mod_quiz\\event\\attempt_submitted', 'mod_quiz', 'submitted', 'attempt', 'quiz_attempts', 9, 'u', 2, 31, 70, 4, 3, 3, 3, 0, '{\"submitterid\":\"3\",\"quizid\":\"2\",\"studentisonline\":true}', 1737454031, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2257, '\\mod_quiz\\event\\attempt_reviewed', 'mod_quiz', 'reviewed', 'attempt', 'quiz_attempts', 9, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\"}', 1737454032, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2258, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, 'null', 1737454033, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2259, '\\mod_quiz\\event\\attempt_started', 'mod_quiz', 'started', 'attempt', 'quiz_attempts', 10, 'c', 2, 31, 70, 4, 3, 3, 3, 0, 'null', 1737454036, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2260, '\\mod_quiz\\event\\attempt_viewed', 'mod_quiz', 'viewed', 'attempt', 'quiz_attempts', 10, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"0\"}', 1737454036, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2261, '\\mod_quiz\\event\\report_viewed', 'mod_quiz', 'viewed', 'report', NULL, NULL, 'r', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\",\"reportname\":\"overview\"}', 1737454049, 'web', '127.0.0.1', NULL),
+(2262, '\\mod_quiz\\event\\attempt_deleted', 'mod_quiz', 'deleted', 'attempt', 'quiz_attempts', 9, 'd', 1, 31, 70, 4, 2, 3, 3, 0, '{\"quizid\":\"2\"}', 1737454056, 'web', '127.0.0.1', NULL),
+(2263, '\\core\\event\\user_graded', 'core', 'graded', 'user', 'grade_grades', 7, 'u', 1, 29, 50, 3, 2, 3, 3, 0, '{\"itemid\":\"4\",\"overridden\":false,\"finalgrade\":null}', 1737454056, 'web', '127.0.0.1', NULL),
+(2264, '\\core\\event\\user_graded', 'core', 'graded', 'user', 'grade_grades', 8, 'u', 1, 29, 50, 3, -1, 3, 3, 0, '{\"itemid\":\"3\",\"overridden\":false,\"finalgrade\":null}', 1737454056, 'web', '127.0.0.1', NULL),
+(2265, '\\mod_quiz\\event\\attempt_deleted', 'mod_quiz', 'deleted', 'attempt', 'quiz_attempts', 10, 'd', 1, 31, 70, 4, 2, 3, 3, 0, '{\"quizid\":\"2\"}', 1737454056, 'web', '127.0.0.1', NULL),
+(2266, '\\mod_quiz\\event\\report_viewed', 'mod_quiz', 'viewed', 'report', NULL, NULL, 'r', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\",\"reportname\":\"overview\"}', 1737454057, 'web', '127.0.0.1', NULL),
+(2267, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 2, 3, NULL, 0, 'null', 1737454063, 'web', '127.0.0.1', NULL),
+(2268, '\\core\\event\\grade_item_updated', 'core', 'updated', 'grade_item', 'grade_items', 4, 'u', 0, 29, 50, 3, 2, 3, NULL, 0, '{\"itemname\":\"IIT D Recruitment 2025\",\"itemtype\":\"mod\",\"itemmodule\":\"quiz\"}', 1737454095, 'web', '127.0.0.1', NULL),
+(2269, '\\core\\event\\course_module_updated', 'core', 'updated', 'course_module', 'course_modules', 4, 'u', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"modulename\":\"quiz\",\"instanceid\":\"2\",\"name\":\"IIT D Recruitment 2025\"}', 1737454095, 'web', '127.0.0.1', NULL),
+(2270, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737454096, 'web', '127.0.0.1', NULL),
+(2271, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 2, 3, NULL, 0, 'null', 1737454097, 'web', '127.0.0.1', NULL),
+(2272, '\\mod_quiz\\event\\attempt_preview_started', 'mod_quiz', 'started', 'attempt_preview', 'quiz_attempts', 11, 'c', 1, 31, 70, 4, 2, 3, 2, 0, '{\"quizid\":\"2\"}', 1737454099, 'web', '127.0.0.1', NULL),
+(2273, '\\mod_quiz\\event\\attempt_viewed', 'mod_quiz', 'viewed', 'attempt', 'quiz_attempts', 11, 'r', 2, 31, 70, 4, 2, 3, 2, 0, '{\"quizid\":\"2\",\"page\":\"0\"}', 1737454100, 'web', '127.0.0.1', NULL),
+(2274, '\\mod_quiz\\event\\edit_page_viewed', 'mod_quiz', 'viewed', 'edit_page', NULL, NULL, 'r', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\"}', 1737454105, 'web', '127.0.0.1', NULL),
+(2275, '\\core\\event\\question_category_viewed', 'core', 'viewed', 'question_category', 'question_categories', 12, 'r', 1, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737454110, 'web', '127.0.0.1', NULL),
+(2276, '\\mod_quiz\\event\\edit_page_viewed', 'mod_quiz', 'viewed', 'edit_page', NULL, NULL, 'r', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\"}', 1737454113, 'web', '127.0.0.1', NULL),
+(2277, '\\mod_quiz\\event\\report_viewed', 'mod_quiz', 'viewed', 'report', NULL, NULL, 'r', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\",\"reportname\":\"overview\"}', 1737454120, 'web', '127.0.0.1', NULL),
+(2278, '\\core\\event\\question_category_viewed', 'core', 'viewed', 'question_category', 'question_categories', 12, 'r', 1, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737454122, 'web', '127.0.0.1', NULL),
+(2279, '\\mod_quiz\\event\\edit_page_viewed', 'mod_quiz', 'viewed', 'edit_page', NULL, NULL, 'r', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\"}', 1737454129, 'web', '127.0.0.1', NULL),
+(2280, '\\mod_quiz\\event\\slot_deleted', 'mod_quiz', 'deleted', 'slot', 'quiz_slots', 3, 'd', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\",\"slotnumber\":\"1\"}', 1737454138, 'web', '127.0.0.1', NULL),
+(2281, '\\mod_quiz\\event\\slot_deleted', 'mod_quiz', 'deleted', 'slot', 'quiz_slots', 4, 'd', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\",\"slotnumber\":\"1\"}', 1737454138, 'web', '127.0.0.1', NULL),
+(2282, '\\mod_quiz\\event\\slot_deleted', 'mod_quiz', 'deleted', 'slot', 'quiz_slots', 5, 'd', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\",\"slotnumber\":\"1\"}', 1737454138, 'web', '127.0.0.1', NULL),
+(2283, '\\mod_quiz\\event\\slot_deleted', 'mod_quiz', 'deleted', 'slot', 'quiz_slots', 6, 'd', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\",\"slotnumber\":\"1\"}', 1737454138, 'web', '127.0.0.1', NULL),
+(2284, '\\mod_quiz\\event\\slot_deleted', 'mod_quiz', 'deleted', 'slot', 'quiz_slots', 7, 'd', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\",\"slotnumber\":\"1\"}', 1737454138, 'web', '127.0.0.1', NULL),
+(2285, '\\mod_quiz\\event\\slot_deleted', 'mod_quiz', 'deleted', 'slot', 'quiz_slots', 8, 'd', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\",\"slotnumber\":\"1\"}', 1737454138, 'web', '127.0.0.1', NULL),
+(2286, '\\mod_quiz\\event\\slot_deleted', 'mod_quiz', 'deleted', 'slot', 'quiz_slots', 9, 'd', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\",\"slotnumber\":\"1\"}', 1737454138, 'web', '127.0.0.1', NULL),
+(2287, '\\mod_quiz\\event\\slot_deleted', 'mod_quiz', 'deleted', 'slot', 'quiz_slots', 10, 'd', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\",\"slotnumber\":\"1\"}', 1737454138, 'web', '127.0.0.1', NULL),
+(2288, '\\mod_quiz\\event\\slot_deleted', 'mod_quiz', 'deleted', 'slot', 'quiz_slots', 11, 'd', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\",\"slotnumber\":\"1\"}', 1737454138, 'web', '127.0.0.1', NULL),
+(2289, '\\mod_quiz\\event\\slot_deleted', 'mod_quiz', 'deleted', 'slot', 'quiz_slots', 12, 'd', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\",\"slotnumber\":\"1\"}', 1737454138, 'web', '127.0.0.1', NULL),
+(2290, '\\mod_quiz\\event\\slot_created', 'mod_quiz', 'created', 'slot', 'quiz_slots', 13, 'c', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\",\"slotnumber\":1,\"page\":1}', 1737454146, 'web', '127.0.0.1', NULL),
+(2291, '\\mod_quiz\\event\\slot_created', 'mod_quiz', 'created', 'slot', 'quiz_slots', 14, 'c', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\",\"slotnumber\":2,\"page\":2}', 1737454146, 'web', '127.0.0.1', NULL),
+(2292, '\\mod_quiz\\event\\edit_page_viewed', 'mod_quiz', 'viewed', 'edit_page', NULL, NULL, 'r', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\"}', 1737454146, 'web', '127.0.0.1', NULL),
+(2293, '\\mod_quiz\\event\\edit_page_viewed', 'mod_quiz', 'viewed', 'edit_page', NULL, NULL, 'r', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\"}', 1737454153, 'web', '127.0.0.1', NULL),
+(2294, '\\core\\event\\user_loggedin', 'core', 'loggedin', 'user', 'user', 3, 'r', 0, 1, 10, 0, 3, 0, NULL, 0, '{\"username\":\"manikanta\",\"extrauserinfo\":[]}', 1737454181, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2295, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, 'null', 1737454187, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2296, '\\mod_quiz\\event\\attempt_started', 'mod_quiz', 'started', 'attempt', 'quiz_attempts', 12, 'c', 2, 31, 70, 4, 3, 3, 3, 0, 'null', 1737454189, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2297, '\\mod_quiz\\event\\attempt_viewed', 'mod_quiz', 'viewed', 'attempt', 'quiz_attempts', 12, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"0\"}', 1737454189, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2298, '\\mod_quiz\\event\\attempt_updated', 'mod_quiz', 'updated', 'attempt', 'quiz_attempts', 12, 'u', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"0\"}', 1737454195, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2299, '\\mod_quiz\\event\\attempt_viewed', 'mod_quiz', 'viewed', 'attempt', 'quiz_attempts', 12, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"0\"}', 1737454196, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2300, '\\mod_quiz\\event\\attempt_updated', 'mod_quiz', 'updated', 'attempt', 'quiz_attempts', 12, 'u', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"1\"}', 1737454199, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2301, '\\mod_quiz\\event\\attempt_summary_viewed', 'mod_quiz', 'viewed', 'attempt_summary', 'quiz_attempts', 12, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\"}', 1737454200, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2302, '\\core\\event\\user_graded', 'core', 'graded', 'user', 'grade_grades', 7, 'u', 1, 29, 50, 3, 3, 3, 3, 0, '{\"itemid\":\"4\",\"overridden\":false,\"finalgrade\":0}', 1737454203, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2303, '\\core\\event\\user_graded', 'core', 'graded', 'user', 'grade_grades', 8, 'u', 1, 29, 50, 3, -1, 3, 3, 0, '{\"itemid\":\"3\",\"overridden\":false,\"finalgrade\":0}', 1737454203, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2304, '\\mod_quiz\\event\\attempt_submitted', 'mod_quiz', 'submitted', 'attempt', 'quiz_attempts', 12, 'u', 2, 31, 70, 4, 3, 3, 3, 0, '{\"submitterid\":\"3\",\"quizid\":\"2\",\"studentisonline\":true}', 1737454203, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2305, '\\mod_quiz\\event\\attempt_reviewed', 'mod_quiz', 'reviewed', 'attempt', 'quiz_attempts', 12, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\"}', 1737454204, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2306, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, 'null', 1737454206, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2307, '\\mod_quiz\\event\\attempt_started', 'mod_quiz', 'started', 'attempt', 'quiz_attempts', 13, 'c', 2, 31, 70, 4, 3, 3, 3, 0, 'null', 1737454207, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2308, '\\mod_quiz\\event\\attempt_viewed', 'mod_quiz', 'viewed', 'attempt', 'quiz_attempts', 13, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"0\"}', 1737454207, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2309, '\\mod_quiz\\event\\attempt_updated', 'mod_quiz', 'updated', 'attempt', 'quiz_attempts', 13, 'u', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"0\"}', 1737454214, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2310, '\\mod_quiz\\event\\attempt_viewed', 'mod_quiz', 'viewed', 'attempt', 'quiz_attempts', 13, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"0\"}', 1737454214, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2311, '\\mod_quiz\\event\\attempt_updated', 'mod_quiz', 'updated', 'attempt', 'quiz_attempts', 13, 'u', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"1\"}', 1737454221, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2312, '\\mod_quiz\\event\\attempt_summary_viewed', 'mod_quiz', 'viewed', 'attempt_summary', 'quiz_attempts', 13, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\"}', 1737454221, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2313, '\\core\\event\\user_graded', 'core', 'graded', 'user', 'grade_grades', 7, 'u', 1, 29, 50, 3, 3, 3, 3, 0, '{\"itemid\":\"4\",\"overridden\":false,\"finalgrade\":10}', 1737454224, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2314, '\\core\\event\\user_graded', 'core', 'graded', 'user', 'grade_grades', 8, 'u', 1, 29, 50, 3, -1, 3, 3, 0, '{\"itemid\":\"3\",\"overridden\":false,\"finalgrade\":10}', 1737454224, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2315, '\\mod_quiz\\event\\attempt_submitted', 'mod_quiz', 'submitted', 'attempt', 'quiz_attempts', 13, 'u', 2, 31, 70, 4, 3, 3, 3, 0, '{\"submitterid\":\"3\",\"quizid\":\"2\",\"studentisonline\":true}', 1737454224, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2316, '\\mod_quiz\\event\\attempt_reviewed', 'mod_quiz', 'reviewed', 'attempt', 'quiz_attempts', 13, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\"}', 1737454224, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2317, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, 'null', 1737454225, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2318, '\\mod_quiz\\event\\attempt_started', 'mod_quiz', 'started', 'attempt', 'quiz_attempts', 14, 'c', 2, 31, 70, 4, 3, 3, 3, 0, 'null', 1737454226, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2319, '\\mod_quiz\\event\\attempt_viewed', 'mod_quiz', 'viewed', 'attempt', 'quiz_attempts', 14, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"0\"}', 1737454226, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2320, '\\mod_quiz\\event\\attempt_updated', 'mod_quiz', 'updated', 'attempt', 'quiz_attempts', 14, 'u', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"0\"}', 1737454231, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2321, '\\mod_quiz\\event\\attempt_viewed', 'mod_quiz', 'viewed', 'attempt', 'quiz_attempts', 14, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"0\"}', 1737454232, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2322, '\\mod_quiz\\event\\attempt_updated', 'mod_quiz', 'updated', 'attempt', 'quiz_attempts', 14, 'u', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"1\"}', 1737454234, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2323, '\\mod_quiz\\event\\attempt_summary_viewed', 'mod_quiz', 'viewed', 'attempt_summary', 'quiz_attempts', 14, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\"}', 1737454234, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2324, '\\mod_quiz\\event\\attempt_submitted', 'mod_quiz', 'submitted', 'attempt', 'quiz_attempts', 14, 'u', 2, 31, 70, 4, 3, 3, 3, 0, '{\"submitterid\":\"3\",\"quizid\":\"2\",\"studentisonline\":true}', 1737454238, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2325, '\\mod_quiz\\event\\attempt_reviewed', 'mod_quiz', 'reviewed', 'attempt', 'quiz_attempts', 14, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\"}', 1737454239, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2326, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, 'null', 1737454240, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2327, '\\mod_quiz\\event\\attempt_started', 'mod_quiz', 'started', 'attempt', 'quiz_attempts', 15, 'c', 2, 31, 70, 4, 3, 3, 3, 0, 'null', 1737454242, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2328, '\\mod_quiz\\event\\attempt_viewed', 'mod_quiz', 'viewed', 'attempt', 'quiz_attempts', 15, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"0\"}', 1737454242, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2329, '\\mod_quiz\\event\\attempt_updated', 'mod_quiz', 'updated', 'attempt', 'quiz_attempts', 15, 'u', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"0\"}', 1737454251, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2330, '\\mod_quiz\\event\\attempt_viewed', 'mod_quiz', 'viewed', 'attempt', 'quiz_attempts', 15, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"0\"}', 1737454251, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2331, '\\mod_quiz\\event\\attempt_updated', 'mod_quiz', 'updated', 'attempt', 'quiz_attempts', 15, 'u', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"1\"}', 1737454254, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2332, '\\mod_quiz\\event\\attempt_summary_viewed', 'mod_quiz', 'viewed', 'attempt_summary', 'quiz_attempts', 15, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\"}', 1737454254, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2333, '\\mod_quiz\\event\\attempt_viewed', 'mod_quiz', 'viewed', 'attempt', 'quiz_attempts', 15, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"1\"}', 1737454255, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2334, '\\mod_quiz\\event\\attempt_updated', 'mod_quiz', 'updated', 'attempt', 'quiz_attempts', 15, 'u', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"1\"}', 1737454257, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2335, '\\mod_quiz\\event\\attempt_summary_viewed', 'mod_quiz', 'viewed', 'attempt_summary', 'quiz_attempts', 15, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\"}', 1737454257, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2336, '\\mod_quiz\\event\\attempt_submitted', 'mod_quiz', 'submitted', 'attempt', 'quiz_attempts', 15, 'u', 2, 31, 70, 4, 3, 3, 3, 0, '{\"submitterid\":\"3\",\"quizid\":\"2\",\"studentisonline\":true}', 1737454265, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2337, '\\mod_quiz\\event\\attempt_reviewed', 'mod_quiz', 'reviewed', 'attempt', 'quiz_attempts', 15, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\"}', 1737454265, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2338, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, 'null', 1737454267, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2339, '\\mod_quiz\\event\\report_viewed', 'mod_quiz', 'viewed', 'report', NULL, NULL, 'r', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\",\"reportname\":\"overview\"}', 1737454274, 'web', '127.0.0.1', NULL),
+(2340, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 3, 3, NULL, 0, 'null', 1737454321, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2341, '\\core\\event\\question_category_viewed', 'core', 'viewed', 'question_category', 'question_categories', 12, 'r', 1, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737454334, 'web', '127.0.0.1', NULL),
+(2342, '\\core\\event\\question_category_viewed', 'core', 'viewed', 'question_category', 'question_categories', 12, 'r', 1, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737454471, 'web', '127.0.0.1', NULL),
+(2343, '\\core\\event\\question_category_viewed', 'core', 'viewed', 'question_category', 'question_categories', 12, 'r', 1, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737454498, 'web', '127.0.0.1', NULL),
+(2344, '\\core\\event\\question_created', 'core', 'created', 'question', 'question', 21, 'c', 1, 29, 50, 3, 2, 3, NULL, 0, '{\"categoryid\":\"12\"}', 1737454532, 'web', '127.0.0.1', NULL),
+(2345, '\\core\\event\\question_category_viewed', 'core', 'viewed', 'question_category', 'question_categories', 12, 'r', 1, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737454532, 'web', '127.0.0.1', NULL),
+(2346, '\\mod_quiz\\event\\edit_page_viewed', 'mod_quiz', 'viewed', 'edit_page', NULL, NULL, 'r', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\"}', 1737454534, 'web', '127.0.0.1', NULL),
+(2347, '\\mod_quiz\\event\\report_viewed', 'mod_quiz', 'viewed', 'report', NULL, NULL, 'r', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\",\"reportname\":\"overview\"}', 1737454544, 'web', '127.0.0.1', NULL),
+(2348, '\\mod_quiz\\event\\attempt_deleted', 'mod_quiz', 'deleted', 'attempt', 'quiz_attempts', 12, 'd', 1, 31, 70, 4, 2, 3, 3, 0, '{\"quizid\":\"2\"}', 1737454552, 'web', '127.0.0.1', NULL),
+(2349, '\\mod_quiz\\event\\attempt_deleted', 'mod_quiz', 'deleted', 'attempt', 'quiz_attempts', 13, 'd', 1, 31, 70, 4, 2, 3, 3, 0, '{\"quizid\":\"2\"}', 1737454552, 'web', '127.0.0.1', NULL),
+(2350, '\\core\\event\\user_graded', 'core', 'graded', 'user', 'grade_grades', 7, 'u', 1, 29, 50, 3, 2, 3, 3, 0, '{\"itemid\":\"4\",\"overridden\":false,\"finalgrade\":5}', 1737454552, 'web', '127.0.0.1', NULL),
+(2351, '\\core\\event\\user_graded', 'core', 'graded', 'user', 'grade_grades', 8, 'u', 1, 29, 50, 3, -1, 3, 3, 0, '{\"itemid\":\"3\",\"overridden\":false,\"finalgrade\":5}', 1737454552, 'web', '127.0.0.1', NULL),
+(2352, '\\mod_quiz\\event\\attempt_deleted', 'mod_quiz', 'deleted', 'attempt', 'quiz_attempts', 14, 'd', 1, 31, 70, 4, 2, 3, 3, 0, '{\"quizid\":\"2\"}', 1737454552, 'web', '127.0.0.1', NULL);
+INSERT INTO `mdl_logstore_standard_log` (`id`, `eventname`, `component`, `action`, `target`, `objecttable`, `objectid`, `crud`, `edulevel`, `contextid`, `contextlevel`, `contextinstanceid`, `userid`, `courseid`, `relateduserid`, `anonymous`, `other`, `timecreated`, `origin`, `ip`, `realuserid`) VALUES
+(2353, '\\core\\event\\user_graded', 'core', 'graded', 'user', 'grade_grades', 7, 'u', 1, 29, 50, 3, 2, 3, 3, 0, '{\"itemid\":\"4\",\"overridden\":false,\"finalgrade\":0}', 1737454552, 'web', '127.0.0.1', NULL),
+(2354, '\\core\\event\\user_graded', 'core', 'graded', 'user', 'grade_grades', 8, 'u', 1, 29, 50, 3, -1, 3, 3, 0, '{\"itemid\":\"3\",\"overridden\":false,\"finalgrade\":0}', 1737454552, 'web', '127.0.0.1', NULL),
+(2355, '\\mod_quiz\\event\\attempt_deleted', 'mod_quiz', 'deleted', 'attempt', 'quiz_attempts', 15, 'd', 1, 31, 70, 4, 2, 3, 3, 0, '{\"quizid\":\"2\"}', 1737454552, 'web', '127.0.0.1', NULL),
+(2356, '\\core\\event\\user_graded', 'core', 'graded', 'user', 'grade_grades', 7, 'u', 1, 29, 50, 3, 2, 3, 3, 0, '{\"itemid\":\"4\",\"overridden\":false,\"finalgrade\":null}', 1737454552, 'web', '127.0.0.1', NULL),
+(2357, '\\core\\event\\user_graded', 'core', 'graded', 'user', 'grade_grades', 8, 'u', 1, 29, 50, 3, -1, 3, 3, 0, '{\"itemid\":\"3\",\"overridden\":false,\"finalgrade\":null}', 1737454552, 'web', '127.0.0.1', NULL),
+(2358, '\\mod_quiz\\event\\report_viewed', 'mod_quiz', 'viewed', 'report', NULL, NULL, 'r', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\",\"reportname\":\"overview\"}', 1737454552, 'web', '127.0.0.1', NULL),
+(2359, '\\mod_quiz\\event\\edit_page_viewed', 'mod_quiz', 'viewed', 'edit_page', NULL, NULL, 'r', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\"}', 1737454555, 'web', '127.0.0.1', NULL),
+(2360, '\\core\\event\\question_category_viewed', 'core', 'viewed', 'question_category', 'question_categories', 12, 'r', 1, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737454565, 'web', '127.0.0.1', NULL),
+(2361, '\\core\\event\\question_viewed', 'core', 'viewed', 'question', 'question', 21, 'r', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"categoryid\":\"12\"}', 1737454572, 'web', '127.0.0.1', NULL),
+(2362, '\\core\\event\\question_category_viewed', 'core', 'viewed', 'question_category', 'question_categories', 12, 'r', 1, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737454580, 'web', '127.0.0.1', NULL),
+(2363, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 2, 3, NULL, 0, 'null', 1737454587, 'web', '127.0.0.1', NULL),
+(2364, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 2, 1, NULL, 0, 'null', 1737454588, 'web', '127.0.0.1', NULL),
+(2365, '\\core\\event\\user_loggedout', 'core', 'loggedout', 'user', 'user', 3, 'r', 0, 1, 10, 0, 3, 0, NULL, 0, '{\"sessionid\":\"bgg0c8q3du0squ1pkd4a67ps77\"}', 1737454596, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2366, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737454596, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2367, '\\core\\event\\draft_file_added', 'core', 'added', 'draft_file', 'files', 123, 'c', 0, 5, 30, 2, 2, 0, 2, 0, '{\"itemid\":630881658,\"filename\":\"SRI-Logo.png\",\"filesize\":40791,\"filepath\":\"\\/\",\"contenthash\":\"90f778a788fd0745d87e128f7581ffc6c4850dec\"}', 1737454690, 'web', '127.0.0.1', NULL),
+(2368, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1832, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"marketing1icon\",\"oldvalue\":\"\",\"value\":\"\\/SRI-Logo.png\",\"plugin\":\"theme_moove\"}', 1737454694, 'web', '127.0.0.1', NULL),
+(2369, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737454696, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2370, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1833, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"marketing1icon\",\"oldvalue\":\"\\/SRI-Logo.png\",\"value\":\"\",\"plugin\":\"theme_moove\"}', 1737454760, 'web', '127.0.0.1', NULL),
+(2371, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1834, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"marketing1heading\",\"oldvalue\":\"Lorem\",\"value\":\"\",\"plugin\":\"theme_moove\"}', 1737454760, 'web', '127.0.0.1', NULL),
+(2372, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1835, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"marketing1content\",\"oldvalue\":\"<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.<\\/p>\",\"value\":\"\",\"plugin\":\"theme_moove\"}', 1737454760, 'web', '127.0.0.1', NULL),
+(2373, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737454762, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2374, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1836, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"scsspre\",\"oldvalue\":\"\",\"value\":\"#feature {\\r\\n  display: none;\\r\\n}\",\"plugin\":\"theme_classic\"}', 1737454917, 'web', '127.0.0.1', NULL),
+(2375, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737454923, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2376, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1837, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"scss\",\"oldvalue\":\"\",\"value\":\"#feature {\\r\\n  display: none;\\r\\n}\",\"plugin\":\"theme_boost\"}', 1737454990, 'web', '127.0.0.1', NULL),
+(2377, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1838, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"scss\",\"oldvalue\":\"\",\"value\":\"#feature {\\r\\n  display: none;\\r\\n}\",\"plugin\":\"theme_moove\"}', 1737454991, 'web', '127.0.0.1', NULL),
+(2378, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737455000, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2379, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737455049, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2380, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1839, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"numbersfrontpagecontent\",\"oldvalue\":\"<h2>Trusted by 25,000+ happy customers.<\\/h2>\\r\\n<p>With lots of unique blocks, you can easily build <br class=\\\"d-none d-sm-block d-md-none d-xl-block\\\">a page without coding. Build your next website <br class=\\\"d-none d-sm-block d-md-none d-xl-block\\\">within few minutes.<\\/p>\",\"value\":\"<h2>SRI Recruitment Portal<\\/h2>\\r\\n<p>\\\"The only way to do great work is to love what you do.\\\"<\\/p>\",\"plugin\":\"theme_moove\"}', 1737455148, 'web', '127.0.0.1', NULL),
+(2381, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737455176, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2382, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737455203, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2383, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737455207, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2384, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737455209, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2385, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737455216, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2386, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1840, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"themelist\",\"oldvalue\":\"\",\"value\":\"boost\",\"plugin\":null}', 1737455381, 'web', '127.0.0.1', NULL),
+(2387, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737455387, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2388, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 2, 1, NULL, 0, 'null', 1737455520, 'web', '127.0.0.1', NULL),
+(2389, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 2, 1, NULL, 0, 'null', 1737455534, 'web', '127.0.0.1', NULL),
+(2390, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737455544, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2391, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737455587, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2392, '\\core\\event\\draft_file_added', 'core', 'added', 'draft_file', 'files', 129, 'c', 0, 5, 30, 2, 2, 0, 2, 0, '{\"itemid\":110455797,\"filename\":\"theme_trema_moodle45_2024111400.zip\",\"filesize\":18167578,\"filepath\":\"\\/\",\"contenthash\":\"170c4361995bee50e8d5b0111dae16b94556599a\"}', 1737456405, 'web', '127.0.0.1', NULL),
+(2393, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1841, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"unaddableblocks\",\"oldvalue\":null,\"value\":\"navigation,settings,course_list,section_links\",\"plugin\":\"theme_trema\"}', 1737456519, 'web', '127.0.0.1', NULL),
+(2394, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1842, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"backgroundimage\",\"oldvalue\":null,\"value\":\"\",\"plugin\":\"theme_trema\"}', 1737456519, 'web', '127.0.0.1', NULL),
+(2395, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1843, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"linkdecoration\",\"oldvalue\":null,\"value\":\"underline\",\"plugin\":\"theme_trema\"}', 1737456519, 'web', '127.0.0.1', NULL),
+(2396, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1844, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"navfilter\",\"oldvalue\":null,\"value\":\"1\",\"plugin\":\"theme_trema\"}', 1737456519, 'web', '127.0.0.1', NULL),
+(2397, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1845, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"hideprimarynavigationitems\",\"oldvalue\":null,\"value\":\"\",\"plugin\":\"theme_trema\"}', 1737456519, 'web', '127.0.0.1', NULL),
+(2398, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1846, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"custommenualignment\",\"oldvalue\":null,\"value\":\"left\",\"plugin\":\"theme_trema\"}', 1737456519, 'web', '127.0.0.1', NULL),
+(2399, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1847, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"showumlogoutlink\",\"oldvalue\":null,\"value\":\"1\",\"plugin\":\"theme_trema\"}', 1737456519, 'web', '127.0.0.1', NULL),
+(2400, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1848, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"favicon\",\"oldvalue\":null,\"value\":\"\",\"plugin\":\"theme_trema\"}', 1737456519, 'web', '127.0.0.1', NULL),
+(2401, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1849, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"enableadmindashboard\",\"oldvalue\":null,\"value\":\"1\",\"plugin\":\"theme_trema\"}', 1737456519, 'web', '127.0.0.1', NULL),
+(2402, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1850, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"enabletremalines\",\"oldvalue\":null,\"value\":\"1\",\"plugin\":\"theme_trema\"}', 1737456519, 'web', '127.0.0.1', NULL),
+(2403, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1851, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"softness\",\"oldvalue\":null,\"value\":\"1\",\"plugin\":\"theme_trema\"}', 1737456519, 'web', '127.0.0.1', NULL),
+(2404, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1852, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"preset\",\"oldvalue\":null,\"value\":\"default.scss\",\"plugin\":\"theme_trema\"}', 1737456519, 'web', '127.0.0.1', NULL),
+(2405, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1853, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"presetfiles\",\"oldvalue\":null,\"value\":\"\",\"plugin\":\"theme_trema\"}', 1737456519, 'web', '127.0.0.1', NULL),
+(2406, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1854, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"scsspre\",\"oldvalue\":null,\"value\":\"\",\"plugin\":\"theme_trema\"}', 1737456519, 'web', '127.0.0.1', NULL),
+(2407, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1855, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"scss\",\"oldvalue\":null,\"value\":\"\",\"plugin\":\"theme_trema\"}', 1737456519, 'web', '127.0.0.1', NULL),
+(2408, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1856, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"primarycolor\",\"oldvalue\":null,\"value\":\"#1c6ca3\",\"plugin\":\"theme_trema\"}', 1737456519, 'web', '127.0.0.1', NULL),
+(2409, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1857, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"secondarycolor\",\"oldvalue\":null,\"value\":\"#343a40\",\"plugin\":\"theme_trema\"}', 1737456519, 'web', '127.0.0.1', NULL),
+(2410, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1858, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"bodybackgroundcolor\",\"oldvalue\":null,\"value\":\"#f1f1f1\",\"plugin\":\"theme_trema\"}', 1737456519, 'web', '127.0.0.1', NULL),
+(2411, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1859, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"headerbgcolor\",\"oldvalue\":null,\"value\":\"$white\",\"plugin\":\"theme_trema\"}', 1737456519, 'web', '127.0.0.1', NULL),
+(2412, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1860, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"loginbtnbgcolor\",\"oldvalue\":null,\"value\":\"primarycolor\",\"plugin\":\"theme_trema\"}', 1737456519, 'web', '127.0.0.1', NULL),
+(2413, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1861, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"drawerbgcolor\",\"oldvalue\":null,\"value\":\"$gray-200\",\"plugin\":\"theme_trema\"}', 1737456519, 'web', '127.0.0.1', NULL),
+(2414, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1862, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"footerbgcolor\",\"oldvalue\":null,\"value\":\"$gray-800\",\"plugin\":\"theme_trema\"}', 1737456519, 'web', '127.0.0.1', NULL),
+(2415, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1863, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"sitefont\",\"oldvalue\":null,\"value\":\"Lato, sans-serif\",\"plugin\":\"theme_trema\"}', 1737456519, 'web', '127.0.0.1', NULL),
+(2416, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1864, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"bannertitlesfont\",\"oldvalue\":null,\"value\":\"Lato, sans-serif\",\"plugin\":\"theme_trema\"}', 1737456519, 'web', '127.0.0.1', NULL),
+(2417, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1865, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"h1font\",\"oldvalue\":null,\"value\":\"Lato, sans-serif\",\"plugin\":\"theme_trema\"}', 1737456519, 'web', '127.0.0.1', NULL),
+(2418, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1866, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"hxfont\",\"oldvalue\":null,\"value\":\"Lato, sans-serif\",\"plugin\":\"theme_trema\"}', 1737456519, 'web', '127.0.0.1', NULL),
+(2419, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1867, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"texttransform\",\"oldvalue\":null,\"value\":\"none\",\"plugin\":\"theme_trema\"}', 1737456519, 'web', '127.0.0.1', NULL),
+(2420, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1868, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"bannertitletransform\",\"oldvalue\":null,\"value\":\"none\",\"plugin\":\"theme_trema\"}', 1737456519, 'web', '127.0.0.1', NULL),
+(2421, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1869, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"bannertitlespacing\",\"oldvalue\":null,\"value\":\"normal\",\"plugin\":\"theme_trema\"}', 1737456519, 'web', '127.0.0.1', NULL),
+(2422, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1870, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"numberofimages\",\"oldvalue\":null,\"value\":\"1\",\"plugin\":\"theme_trema\"}', 1737456519, 'web', '127.0.0.1', NULL),
+(2423, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1871, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"frontpageenabledarkoverlay\",\"oldvalue\":null,\"value\":\"1\",\"plugin\":\"theme_trema\"}', 1737456519, 'web', '127.0.0.1', NULL),
+(2424, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1872, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"frontpagebannercontentalign\",\"oldvalue\":null,\"value\":\"center\",\"plugin\":\"theme_trema\"}', 1737456519, 'web', '127.0.0.1', NULL),
+(2425, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1873, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"bannerheight\",\"oldvalue\":null,\"value\":\"100vh\",\"plugin\":\"theme_trema\"}', 1737456519, 'web', '127.0.0.1', NULL),
+(2426, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1874, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"frontpagebanner\",\"oldvalue\":null,\"value\":\"\",\"plugin\":\"theme_trema\"}', 1737456519, 'web', '127.0.0.1', NULL),
+(2427, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1875, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"frontpagetitle\",\"oldvalue\":null,\"value\":\"Banner title\",\"plugin\":\"theme_trema\"}', 1737456519, 'web', '127.0.0.1', NULL),
+(2428, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1876, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"frontpagesubtitle\",\"oldvalue\":null,\"value\":\"This is a banner subtitle,<br>with multiple lines of text.\",\"plugin\":\"theme_trema\"}', 1737456519, 'web', '127.0.0.1', NULL),
+(2429, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1877, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"frontpagebuttontext\",\"oldvalue\":null,\"value\":\"Learn more\",\"plugin\":\"theme_trema\"}', 1737456519, 'web', '127.0.0.1', NULL),
+(2430, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1878, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"frontpagebuttonhref\",\"oldvalue\":null,\"value\":\"#topofcontent\",\"plugin\":\"theme_trema\"}', 1737456519, 'web', '127.0.0.1', NULL),
+(2431, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1879, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"frontpagebuttonclass\",\"oldvalue\":null,\"value\":\"btn-primary\",\"plugin\":\"theme_trema\"}', 1737456520, 'web', '127.0.0.1', NULL),
+(2432, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1880, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"defaultfrontpagebody\",\"oldvalue\":null,\"value\":\"\",\"plugin\":\"theme_trema\"}', 1737456520, 'web', '127.0.0.1', NULL),
+(2433, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1881, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"showfrontpagelinkstopages\",\"oldvalue\":null,\"value\":\"1\",\"plugin\":\"theme_trema\"}', 1737456520, 'web', '127.0.0.1', NULL),
+(2434, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1882, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"frontpageenablecards\",\"oldvalue\":null,\"value\":\"1\",\"plugin\":\"theme_trema\"}', 1737456520, 'web', '127.0.0.1', NULL),
+(2435, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1883, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"cardcontacts\",\"oldvalue\":null,\"value\":\"1\",\"plugin\":\"theme_trema\"}', 1737456520, 'web', '127.0.0.1', NULL),
+(2436, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1884, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"showcategories\",\"oldvalue\":null,\"value\":\"\",\"plugin\":\"theme_trema\"}', 1737456520, 'web', '127.0.0.1', NULL),
+(2437, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1885, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"summarytype\",\"oldvalue\":null,\"value\":\"modal\",\"plugin\":\"theme_trema\"}', 1737456520, 'web', '127.0.0.1', NULL),
+(2438, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1886, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"showehiddencategorycourses\",\"oldvalue\":null,\"value\":\"1\",\"plugin\":\"theme_trema\"}', 1737456520, 'web', '127.0.0.1', NULL),
+(2439, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1887, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"courseenrolmentpageformat\",\"oldvalue\":null,\"value\":\"fullwidth\",\"plugin\":\"theme_trema\"}', 1737456520, 'web', '127.0.0.1', NULL),
+(2440, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1888, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"shownactivitynavigation\",\"oldvalue\":null,\"value\":\"\",\"plugin\":\"theme_trema\"}', 1737456520, 'web', '127.0.0.1', NULL),
+(2441, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1889, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"showactivityicons\",\"oldvalue\":null,\"value\":\"1\",\"plugin\":\"theme_trema\"}', 1737456520, 'web', '127.0.0.1', NULL),
+(2442, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1890, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"enabletremafooter\",\"oldvalue\":null,\"value\":\"1\",\"plugin\":\"theme_trema\"}', 1737456520, 'web', '127.0.0.1', NULL),
+(2443, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1891, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"footeropacity\",\"oldvalue\":null,\"value\":\"1\",\"plugin\":\"theme_trema\"}', 1737456520, 'web', '127.0.0.1', NULL),
+(2444, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1892, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"defaultfooter\",\"oldvalue\":null,\"value\":\"<div class=\\\"row\\\">\\r\\n<div class=\\\"col-md-4 col-sm-6 col-12\\\">\\r\\n<h3 class=\\\"h5 mb-4\\\">Trema Campus<\\/h3>\\r\\n<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.<\\/p>\\r\\n<\\/div>\\r\\n<div class=\\\"col-md-3 col-sm-12 ml-auto\\\">\\r\\n<h3 class=\\\"h5 mb-4\\\">Contact Us<\\/h3>\\r\\n<ul class=\\\"labeled-icons\\\">\\r\\n<li class=\\\"mb-2\\\"><i class=\\\"fa fa-info-circle fa-fw\\\"><\\/i>\\u00a0<a href=\\\"#\\\">FAQ<\\/a><\\/li>\\r\\n<li class=\\\"mb-2\\\"><i class=\\\"fa fa-mortar-board\\\"><\\/i>\\u00a0<a href=\\\"#\\\">Registrar\'s office<\\/a><\\/li>\\r\\n<li class=\\\"mb-2\\\"><i class=\\\"fa fa-question-circle fa-fw\\\"><\\/i>\\u00a0<a href=\\\"#\\\">Student support<\\/a><\\/li>\\r\\n<li class=\\\"mb-2\\\"><i class=\\\"fa fa-phone fa-fw\\\"><\\/i>\\u00a0<a href=\\\"tel:999-555-1212\\\">999-555-1212<\\/a><\\/li>\\r\\n<li class=\\\"mb-2\\\"><i class=\\\"fa fa-clock fa-fw\\\"><\\/i>\\u00a0Monday-Friday 8 AM to 4 PM<\\/li>\\r\\n<\\/ul>\\r\\n<\\/div>\\r\\n<div class=\\\"col-md-3 col-sm-6 col-12\\\">\\r\\n<h3 class=\\\"h5 mb-4\\\">Stay in touch<\\/h3>\\r\\n<ul class=\\\"labeled-icons\\\">\\r\\n<li class=\\\"mb-2\\\"><i class=\\\"fa fa-envelope fa-fw\\\" aria-hidden=\\\"true\\\"><\\/i>\\u00a0<a href=\\\"#\\\">Sign up for our newsletter<\\/a><\\/li>\\r\\n<li class=\\\"mb-2\\\"><i class=\\\"fa fa-facebook fa-fw\\\" aria-hidden=\\\"true\\\"><\\/i>\\u00a0<a href=\\\"https:\\/\\/facebook.com\\\">Facebook<\\/a><\\/li>\\r\\n<li class=\\\"mb-2\\\"><i class=\\\"fa fa-twitter fa-fw\\\" aria-hidden=\\\"true\\\"><\\/i>\\u00a0<a href=\\\"https:\\/\\/twitter.com\\\">Twitter<\\/a><\\/li>\\r\\n<li class=\\\"mb-2\\\"><i class=\\\"fa fa-linkedin fa-fw\\\" aria-hidden=\\\"true\\\"><\\/i>\\u00a0<a href=\\\"https:\\/\\/linkedin.com\\\">LinkedIn<\\/a><\\/li>\\r\\n<li class=\\\"mb-2\\\"><i class=\\\"fa fa-youtube fa-fw\\\" aria-hidden=\\\"true\\\"><\\/i>\\u00a0<a href=\\\"https:\\/\\/youtube.com\\\">YouTube<\\/a><\\/li>\\r\\n<\\/ul>\\r\\n<\\/div>\\r\\n<\\/div>\",\"plugin\":\"theme_trema\"}', 1737456520, 'web', '127.0.0.1', NULL),
+(2445, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1893, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"enablefooterinfo\",\"oldvalue\":null,\"value\":\"1\",\"plugin\":\"theme_trema\"}', 1737456520, 'web', '127.0.0.1', NULL),
+(2446, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1894, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"showbranding\",\"oldvalue\":null,\"value\":\"1\",\"plugin\":\"theme_trema\"}', 1737456520, 'web', '127.0.0.1', NULL),
+(2447, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1895, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"loginpagestyle\",\"oldvalue\":null,\"value\":\"none\",\"plugin\":\"theme_trema\"}', 1737456520, 'web', '127.0.0.1', NULL),
+(2448, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1896, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"loginboxcontentalign\",\"oldvalue\":null,\"value\":\"center\",\"plugin\":\"theme_trema\"}', 1737456520, 'web', '127.0.0.1', NULL),
+(2449, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1897, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"loginpagecreatefirst\",\"oldvalue\":null,\"value\":\"0\",\"plugin\":\"theme_trema\"}', 1737456520, 'web', '127.0.0.1', NULL),
+(2450, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1898, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"loginshowloginform\",\"oldvalue\":null,\"value\":\"1\",\"plugin\":\"theme_trema\"}', 1737456520, 'web', '127.0.0.1', NULL),
+(2451, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1899, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"showprofileemaildisplay\",\"oldvalue\":null,\"value\":\"1\",\"plugin\":\"theme_trema\"}', 1737456520, 'web', '127.0.0.1', NULL),
+(2452, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1900, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"showprofilemoodlenetprofile\",\"oldvalue\":null,\"value\":\"1\",\"plugin\":\"theme_trema\"}', 1737456520, 'web', '127.0.0.1', NULL),
+(2453, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1901, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"showprofilecity\",\"oldvalue\":null,\"value\":\"1\",\"plugin\":\"theme_trema\"}', 1737456520, 'web', '127.0.0.1', NULL),
+(2454, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1902, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"showprofilecountry\",\"oldvalue\":null,\"value\":\"1\",\"plugin\":\"theme_trema\"}', 1737456520, 'web', '127.0.0.1', NULL),
+(2455, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1903, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"showprofiletimezone\",\"oldvalue\":null,\"value\":\"1\",\"plugin\":\"theme_trema\"}', 1737456520, 'web', '127.0.0.1', NULL),
+(2456, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1904, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"showprofiledescription\",\"oldvalue\":null,\"value\":\"1\",\"plugin\":\"theme_trema\"}', 1737456520, 'web', '127.0.0.1', NULL),
+(2457, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1905, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"showprofilepictureofuser\",\"oldvalue\":null,\"value\":\"1\",\"plugin\":\"theme_trema\"}', 1737456520, 'web', '127.0.0.1', NULL),
+(2458, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1906, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"showprofileadditionalnames\",\"oldvalue\":null,\"value\":\"1\",\"plugin\":\"theme_trema\"}', 1737456520, 'web', '127.0.0.1', NULL),
+(2459, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1907, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"showprofileinterests\",\"oldvalue\":null,\"value\":\"1\",\"plugin\":\"theme_trema\"}', 1737456520, 'web', '127.0.0.1', NULL),
+(2460, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1908, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"showprofileoptional\",\"oldvalue\":null,\"value\":\"1\",\"plugin\":\"theme_trema\"}', 1737456520, 'web', '127.0.0.1', NULL),
+(2461, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1909, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"showprofileidnumber\",\"oldvalue\":null,\"value\":\"1\",\"plugin\":\"theme_trema\"}', 1737456520, 'web', '127.0.0.1', NULL),
+(2462, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1910, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"showprofileinstitution\",\"oldvalue\":null,\"value\":\"1\",\"plugin\":\"theme_trema\"}', 1737456520, 'web', '127.0.0.1', NULL),
+(2463, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1911, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"showprofiledepartment\",\"oldvalue\":null,\"value\":\"1\",\"plugin\":\"theme_trema\"}', 1737456520, 'web', '127.0.0.1', NULL),
+(2464, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1912, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"showprofilephone1\",\"oldvalue\":null,\"value\":\"1\",\"plugin\":\"theme_trema\"}', 1737456521, 'web', '127.0.0.1', NULL),
+(2465, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1913, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"showprofilephone2\",\"oldvalue\":null,\"value\":\"1\",\"plugin\":\"theme_trema\"}', 1737456521, 'web', '127.0.0.1', NULL),
+(2466, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1914, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"showprofileaddress\",\"oldvalue\":null,\"value\":\"1\",\"plugin\":\"theme_trema\"}', 1737456521, 'web', '127.0.0.1', NULL),
+(2467, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1915, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"frontpagecardstitle\",\"oldvalue\":null,\"value\":\"Card title\",\"plugin\":\"theme_trema\"}', 1737456531, 'web', '127.0.0.1', NULL),
+(2468, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1916, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"frontpagecardssubtitle\",\"oldvalue\":null,\"value\":\"Card subtitle\",\"plugin\":\"theme_trema\"}', 1737456531, 'web', '127.0.0.1', NULL),
+(2469, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1917, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"numberofcards\",\"oldvalue\":null,\"value\":\"4\",\"plugin\":\"theme_trema\"}', 1737456531, 'web', '127.0.0.1', NULL),
+(2470, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1918, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"cardicon1\",\"oldvalue\":null,\"value\":\"fa-paper-plane\",\"plugin\":\"theme_trema\"}', 1737456541, 'web', '127.0.0.1', NULL),
+(2471, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1919, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"cardiconcolor1\",\"oldvalue\":null,\"value\":\"#000000\",\"plugin\":\"theme_trema\"}', 1737456541, 'web', '127.0.0.1', NULL),
+(2472, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1920, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"cardtitle1\",\"oldvalue\":null,\"value\":\"Card Title 1\",\"plugin\":\"theme_trema\"}', 1737456541, 'web', '127.0.0.1', NULL),
+(2473, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1921, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"cardsubtitle1\",\"oldvalue\":null,\"value\":\"The description of this card goes here. Several lines of text can be placed in this space.\",\"plugin\":\"theme_trema\"}', 1737456541, 'web', '127.0.0.1', NULL),
+(2474, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1922, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"cardlink1\",\"oldvalue\":null,\"value\":\"\",\"plugin\":\"theme_trema\"}', 1737456541, 'web', '127.0.0.1', NULL),
+(2475, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1923, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"cardicon2\",\"oldvalue\":null,\"value\":\"fa-paper-plane\",\"plugin\":\"theme_trema\"}', 1737456541, 'web', '127.0.0.1', NULL),
+(2476, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1924, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"cardiconcolor2\",\"oldvalue\":null,\"value\":\"#000000\",\"plugin\":\"theme_trema\"}', 1737456541, 'web', '127.0.0.1', NULL),
+(2477, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1925, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"cardtitle2\",\"oldvalue\":null,\"value\":\"Card Title 2\",\"plugin\":\"theme_trema\"}', 1737456541, 'web', '127.0.0.1', NULL),
+(2478, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1926, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"cardsubtitle2\",\"oldvalue\":null,\"value\":\"The description of this card goes here. Several lines of text can be placed in this space.\",\"plugin\":\"theme_trema\"}', 1737456541, 'web', '127.0.0.1', NULL),
+(2479, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1927, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"cardlink2\",\"oldvalue\":null,\"value\":\"\",\"plugin\":\"theme_trema\"}', 1737456541, 'web', '127.0.0.1', NULL),
+(2480, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1928, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"cardicon3\",\"oldvalue\":null,\"value\":\"fa-paper-plane\",\"plugin\":\"theme_trema\"}', 1737456541, 'web', '127.0.0.1', NULL),
+(2481, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1929, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"cardiconcolor3\",\"oldvalue\":null,\"value\":\"#000000\",\"plugin\":\"theme_trema\"}', 1737456541, 'web', '127.0.0.1', NULL),
+(2482, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1930, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"cardtitle3\",\"oldvalue\":null,\"value\":\"Card Title 3\",\"plugin\":\"theme_trema\"}', 1737456541, 'web', '127.0.0.1', NULL),
+(2483, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1931, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"cardsubtitle3\",\"oldvalue\":null,\"value\":\"The description of this card goes here. Several lines of text can be placed in this space.\",\"plugin\":\"theme_trema\"}', 1737456541, 'web', '127.0.0.1', NULL),
+(2484, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1932, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"cardlink3\",\"oldvalue\":null,\"value\":\"\",\"plugin\":\"theme_trema\"}', 1737456541, 'web', '127.0.0.1', NULL),
+(2485, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1933, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"cardicon4\",\"oldvalue\":null,\"value\":\"fa-paper-plane\",\"plugin\":\"theme_trema\"}', 1737456541, 'web', '127.0.0.1', NULL),
+(2486, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1934, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"cardiconcolor4\",\"oldvalue\":null,\"value\":\"#000000\",\"plugin\":\"theme_trema\"}', 1737456541, 'web', '127.0.0.1', NULL),
+(2487, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1935, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"cardtitle4\",\"oldvalue\":null,\"value\":\"Card Title 4\",\"plugin\":\"theme_trema\"}', 1737456541, 'web', '127.0.0.1', NULL),
+(2488, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1936, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"cardsubtitle4\",\"oldvalue\":null,\"value\":\"The description of this card goes here. Several lines of text can be placed in this space.\",\"plugin\":\"theme_trema\"}', 1737456541, 'web', '127.0.0.1', NULL),
+(2489, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1937, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"cardlink4\",\"oldvalue\":null,\"value\":\"\",\"plugin\":\"theme_trema\"}', 1737456541, 'web', '127.0.0.1', NULL),
+(2490, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737456574, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2491, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 2, 1, NULL, 0, 'null', 1737456602, 'web', '127.0.0.1', NULL),
+(2492, '\\core\\event\\draft_file_added', 'core', 'added', 'draft_file', 'files', 131, 'c', 0, 5, 30, 2, 2, 0, 2, 0, '{\"itemid\":707941886,\"filename\":\"theme_degrade_moodle45_2025011900.zip\",\"filesize\":8278169,\"filepath\":\"\\/\",\"contenthash\":\"47f311454e4d90d504d45bdb9cec17358ea29c27\"}', 1737456645, 'web', '127.0.0.1', NULL),
+(2493, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1938, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"background_color\",\"oldvalue\":null,\"value\":\"default1\",\"plugin\":\"theme_degrade\"}', 1737456755, 'web', '127.0.0.1', NULL),
+(2494, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1939, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"background_text_color\",\"oldvalue\":null,\"value\":\"#FFFFFF\",\"plugin\":\"theme_degrade\"}', 1737456755, 'web', '127.0.0.1', NULL),
+(2495, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1940, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"top_scroll\",\"oldvalue\":null,\"value\":\"0\",\"plugin\":\"theme_degrade\"}', 1737456755, 'web', '127.0.0.1', NULL),
+(2496, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 2, 1, NULL, 0, 'null', 1737456810, 'web', '127.0.0.1', NULL),
+(2497, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737456822, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2498, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737456842, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2499, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 2, 1, NULL, 0, 'null', 1737456852, 'web', '127.0.0.1', NULL),
+(2500, '\\core\\event\\draft_file_added', 'core', 'added', 'draft_file', 'files', 181, 'c', 0, 5, 30, 2, 2, 0, 2, 0, '{\"itemid\":513000148,\"filename\":\"SRI-Logo.png\",\"filesize\":40791,\"filepath\":\"\\/\",\"contenthash\":\"90f778a788fd0745d87e128f7581ffc6c4850dec\"}', 1737456936, 'web', '127.0.0.1', NULL),
+(2501, '\\core\\event\\draft_file_added', 'core', 'added', 'draft_file', 'files', 183, 'c', 0, 5, 30, 2, 2, 0, 2, 0, '{\"itemid\":676949008,\"filename\":\"SRI-Logo.png\",\"filesize\":40791,\"filepath\":\"\\/\",\"contenthash\":\"90f778a788fd0745d87e128f7581ffc6c4850dec\"}', 1737456966, 'web', '127.0.0.1', NULL),
+(2502, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1941, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"background_color\",\"oldvalue\":\"default1\",\"value\":\"blue2\",\"plugin\":\"theme_degrade\"}', 1737456979, 'web', '127.0.0.1', NULL),
+(2503, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1942, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"logo_color\",\"oldvalue\":\"\",\"value\":\"\\/SRI-Logo.png\",\"plugin\":\"theme_degrade\"}', 1737456979, 'web', '127.0.0.1', NULL),
+(2504, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1943, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"top_scroll_background_color\",\"oldvalue\":\"#5C5D5F\",\"value\":\"#5c5d5f\",\"plugin\":\"theme_degrade\"}', 1737456979, 'web', '127.0.0.1', NULL),
+(2505, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1944, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"top_scroll_text_color\",\"oldvalue\":\"#FFFFFF\",\"value\":\"#ffffff\",\"plugin\":\"theme_degrade\"}', 1737456979, 'web', '127.0.0.1', NULL),
+(2506, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1945, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"logo_write\",\"oldvalue\":\"\",\"value\":\"\\/SRI-Logo.png\",\"plugin\":\"theme_degrade\"}', 1737456979, 'web', '127.0.0.1', NULL),
+(2507, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1946, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"theme_color__color_primary\",\"oldvalue\":\"#2B4E84\",\"value\":\"#2b4e84\",\"plugin\":\"theme_degrade\"}', 1737456979, 'web', '127.0.0.1', NULL),
+(2508, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1947, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"theme_color__color_secondary\",\"oldvalue\":\"#3E65A0\",\"value\":\"#3e65a0\",\"plugin\":\"theme_degrade\"}', 1737456979, 'web', '127.0.0.1', NULL),
+(2509, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1948, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"theme_color__color_names\",\"oldvalue\":\"#C0CCDC\",\"value\":\"#c0ccdc\",\"plugin\":\"theme_degrade\"}', 1737456979, 'web', '127.0.0.1', NULL),
+(2510, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1949, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"theme_color__color_titles\",\"oldvalue\":\"#E8F0FB\",\"value\":\"#e8f0fb\",\"plugin\":\"theme_degrade\"}', 1737456979, 'web', '127.0.0.1', NULL),
+(2511, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1950, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"sitefonts\",\"oldvalue\":\"<style>\\n@import url(\'https:\\/\\/fonts.googleapis.com\\/css2?&family=Briem+Hand:wght@100..900&family=Epilogue:ital,wght@0,100..900;1,100..900&family=Inter+Tight:ital,wght@0,100..900;1,100..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Manrope:wght@200..800&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Oswald:wght@200..700&family=Oxygen:wght@300;400;700&family=Poetsen+One&family=Poppins:ital,wght@0,100;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&family=Raleway:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap\');\\n<\\/style>\",\"value\":\"<style>\\r\\n@import url(\'https:\\/\\/fonts.googleapis.com\\/css2?&family=Briem+Hand:wght@100..900&family=Epilogue:ital,wght@0,100..900;1,100..900&family=Inter+Tight:ital,wght@0,100..900;1,100..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Manrope:wght@200..800&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Oswald:wght@200..700&family=Oxygen:wght@300;400;700&family=Poetsen+One&family=Poppins:ital,wght@0,100;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&family=Raleway:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap\');\\r\\n<\\/style>\",\"plugin\":\"theme_degrade\"}', 1737456980, 'web', '127.0.0.1', NULL),
+(2512, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1951, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"settings_icons_image_1\",\"oldvalue\":\"\",\"value\":\"\\/audio_file.svg\",\"plugin\":\"theme_degrade\"}', 1737456980, 'web', '127.0.0.1', NULL),
+(2513, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1952, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"settings_icons_image_2\",\"oldvalue\":\"\",\"value\":\"\\/video_file.svg\",\"plugin\":\"theme_degrade\"}', 1737456980, 'web', '127.0.0.1', NULL),
+(2514, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1953, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"settings_icons_image_3\",\"oldvalue\":\"\",\"value\":\"\\/book.svg\",\"plugin\":\"theme_degrade\"}', 1737456980, 'web', '127.0.0.1', NULL),
+(2515, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1954, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"settings_icons_image_4\",\"oldvalue\":\"\",\"value\":\"\\/game.svg\",\"plugin\":\"theme_degrade\"}', 1737456980, 'web', '127.0.0.1', NULL),
+(2516, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1955, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"settings_icons_image_5\",\"oldvalue\":\"\",\"value\":\"\\/money.svg\",\"plugin\":\"theme_degrade\"}', 1737456980, 'web', '127.0.0.1', NULL),
+(2517, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1956, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"settings_icons_image_6\",\"oldvalue\":\"\",\"value\":\"\\/slide.svg\",\"plugin\":\"theme_degrade\"}', 1737456980, 'web', '127.0.0.1', NULL),
+(2518, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1957, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"settings_icons_image_7\",\"oldvalue\":\"\",\"value\":\"\\/support.svg\",\"plugin\":\"theme_degrade\"}', 1737456980, 'web', '127.0.0.1', NULL),
+(2519, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1958, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"settings_icons_image_8\",\"oldvalue\":\"\",\"value\":\"\\/download.svg\",\"plugin\":\"theme_degrade\"}', 1737456980, 'web', '127.0.0.1', NULL),
+(2520, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1959, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"frontpage_mycourses_instructor\",\"oldvalue\":\"\",\"value\":\"0\",\"plugin\":\"theme_degrade\"}', 1737456980, 'web', '127.0.0.1', NULL),
+(2521, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1960, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"mycourses_icon_1\",\"oldvalue\":\"133\",\"value\":\"\\/message.svg\",\"plugin\":\"theme_degrade\"}', 1737456980, 'web', '127.0.0.1', NULL),
+(2522, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1961, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"mycourses_icon_2\",\"oldvalue\":\"135\",\"value\":\"\\/profile.svg\",\"plugin\":\"theme_degrade\"}', 1737456980, 'web', '127.0.0.1', NULL),
+(2523, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1962, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"mycourses_color_2\",\"oldvalue\":\"#FF1053\",\"value\":\"#ff1053\",\"plugin\":\"theme_degrade\"}', 1737456980, 'web', '127.0.0.1', NULL),
+(2524, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1963, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"mycourses_icon_3\",\"oldvalue\":\"137\",\"value\":\"\\/preferences.svg\",\"plugin\":\"theme_degrade\"}', 1737456980, 'web', '127.0.0.1', NULL),
+(2525, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1964, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"mycourses_color_3\",\"oldvalue\":\"#00A78E\",\"value\":\"#00a78e\",\"plugin\":\"theme_degrade\"}', 1737456980, 'web', '127.0.0.1', NULL),
+(2526, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1965, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"mycourses_icon_4\",\"oldvalue\":\"139\",\"value\":\"\\/grade.svg\",\"plugin\":\"theme_degrade\"}', 1737456980, 'web', '127.0.0.1', NULL),
+(2527, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1966, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"mycourses_color_4\",\"oldvalue\":\"#ECD06F\",\"value\":\"#ecd06f\",\"plugin\":\"theme_degrade\"}', 1737456980, 'web', '127.0.0.1', NULL),
+(2528, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1967, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"login_theme\",\"oldvalue\":\"theme_image_login\",\"value\":\"login_theme_block\",\"plugin\":\"theme_degrade\"}', 1737456980, 'web', '127.0.0.1', NULL),
+(2529, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1968, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"home_type\",\"oldvalue\":\"0\",\"value\":\"1\",\"plugin\":\"theme_degrade\"}', 1737457007, 'web', '127.0.0.1', NULL),
+(2530, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1969, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"background_color\",\"oldvalue\":\"blue2\",\"value\":\"blue6\",\"plugin\":\"theme_degrade\"}', 1737457105, 'web', '127.0.0.1', NULL);
+INSERT INTO `mdl_logstore_standard_log` (`id`, `eventname`, `component`, `action`, `target`, `objecttable`, `objectid`, `crud`, `edulevel`, `contextid`, `contextlevel`, `contextinstanceid`, `userid`, `courseid`, `relateduserid`, `anonymous`, `other`, `timecreated`, `origin`, `ip`, `realuserid`) VALUES
+(2531, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1970, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"pagefonts\",\"oldvalue\":\"<style>\\n@import url(\'https:\\/\\/fonts.googleapis.com\\/css2?family=Acme&family=Almendra:ital,wght@0,400;0,700;1,400;1,700&family=Bad+Script&family=Dancing+Script:wght@400..700&family=Great+Vibes&family=Marck+Script&family=Nanum+Pen+Script&family=Orbitron:wght@400..900&family=Ubuntu+Condensed&family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap\');\\n<\\/style>\",\"value\":\"<style>\\r\\n@import url(\'https:\\/\\/fonts.googleapis.com\\/css2?family=Acme&family=Almendra:ital,wght@0,400;0,700;1,400;1,700&family=Bad+Script&family=Dancing+Script:wght@400..700&family=Great+Vibes&family=Marck+Script&family=Nanum+Pen+Script&family=Orbitron:wght@400..900&family=Ubuntu+Condensed&family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap\');\\r\\n<\\/style>\",\"plugin\":\"theme_degrade\"}', 1737457105, 'web', '127.0.0.1', NULL),
+(2532, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737457125, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2533, '\\core\\event\\user_loggedout', 'core', 'loggedout', 'user', 'user', 2, 'r', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"sessionid\":\"u554h6ecd5u6oh3kvnfnm7vu29\"}', 1737457144, 'web', '127.0.0.1', NULL),
+(2534, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737457145, 'web', '127.0.0.1', NULL),
+(2535, '\\core\\event\\user_loggedin', 'core', 'loggedin', 'user', 'user', 2, 'r', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"username\":\"admin\",\"extrauserinfo\":[]}', 1737457150, 'web', '127.0.0.1', NULL),
+(2536, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 2, 0, NULL, 0, 'null', 1737457152, 'web', '127.0.0.1', NULL),
+(2537, '\\core\\event\\user_loggedout', 'core', 'loggedout', 'user', 'user', 2, 'r', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"sessionid\":\"gqak331pnv9ccs4snkhig11pil\"}', 1737457164, 'web', '127.0.0.1', NULL),
+(2538, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737457164, 'web', '127.0.0.1', NULL),
+(2539, '\\core\\event\\user_loggedin', 'core', 'loggedin', 'user', 'user', 3, 'r', 0, 1, 10, 0, 3, 0, NULL, 0, '{\"username\":\"manikanta\",\"extrauserinfo\":[]}', 1737457179, 'web', '127.0.0.1', NULL),
+(2540, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 3, 0, NULL, 0, 'null', 1737457180, 'web', '127.0.0.1', NULL),
+(2541, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 3, 3, NULL, 0, 'null', 1737457199, 'web', '127.0.0.1', NULL),
+(2542, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, 'null', 1737457203, 'web', '127.0.0.1', NULL),
+(2543, '\\quizaccess_seb\\event\\access_prevented', 'quizaccess_seb', 'prevented', 'access', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, '{\"reason\":\"Invalid SEB config key\",\"savedconfigkey\":\"09be7c58fd7b53107a638d5933444c0c9942fb035a8e19fca4916f54698bf022\",\"receivedconfigkey\":null,\"receivedbrowserexamkey\":null}', 1737457203, 'web', '127.0.0.1', NULL),
+(2544, '\\quizaccess_seb\\event\\access_prevented', 'quizaccess_seb', 'prevented', 'access', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, '{\"reason\":\"Invalid SEB config key\",\"savedconfigkey\":\"09be7c58fd7b53107a638d5933444c0c9942fb035a8e19fca4916f54698bf022\",\"receivedconfigkey\":null,\"receivedbrowserexamkey\":null}', 1737457204, 'web', '127.0.0.1', NULL),
+(2545, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 3, 3, NULL, 0, 'null', 1737457214, 'web', '127.0.0.1', NULL),
+(2546, '\\core\\event\\user_loggedout', 'core', 'loggedout', 'user', 'user', 3, 'r', 0, 1, 10, 0, 3, 0, NULL, 0, '{\"sessionid\":\"s9aib7vtp4cet5ku83g0lbjunu\"}', 1737457220, 'web', '127.0.0.1', NULL),
+(2547, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737457220, 'web', '127.0.0.1', NULL),
+(2548, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737529224, 'web', '127.0.0.1', NULL),
+(2549, '\\core\\event\\user_loggedin', 'core', 'loggedin', 'user', 'user', 2, 'r', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"username\":\"admin\",\"extrauserinfo\":[]}', 1737529235, 'web', '127.0.0.1', NULL),
+(2550, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 2, 0, NULL, 0, 'null', 1737529236, 'web', '127.0.0.1', NULL),
+(2551, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 2, 1, NULL, 0, 'null', 1737529296, 'web', '127.0.0.1', NULL),
+(2552, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 2, 1, NULL, 0, 'null', 1737529305, 'web', '127.0.0.1', NULL),
+(2553, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 2, 0, NULL, 0, 'null', 1737529386, 'web', '127.0.0.1', NULL),
+(2554, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 2, 1, NULL, 0, 'null', 1737529411, 'web', '127.0.0.1', NULL),
+(2555, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737529422, 'web', '127.0.0.1', NULL),
+(2556, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 2, 1, NULL, 0, 'null', 1737529431, 'web', '127.0.0.1', NULL),
+(2557, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 2, 0, NULL, 0, 'null', 1737529434, 'web', '127.0.0.1', NULL),
+(2558, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 2, 1, NULL, 0, 'null', 1737529440, 'web', '127.0.0.1', NULL),
+(2559, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 2, 0, NULL, 0, 'null', 1737529444, 'web', '127.0.0.1', NULL),
+(2560, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737529468, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2561, '\\core\\event\\user_loggedin', 'core', 'loggedin', 'user', 'user', 3, 'r', 0, 1, 10, 0, 3, 0, NULL, 0, '{\"username\":\"manikanta\",\"extrauserinfo\":[]}', 1737529490, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2562, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 3, 0, NULL, 0, 'null', 1737529491, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2563, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 3, 3, NULL, 0, 'null', 1737529498, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2564, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1971, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"footer_type\",\"oldvalue\":\"0\",\"value\":\"1\",\"plugin\":\"theme_degrade\"}', 1737529551, 'web', '127.0.0.1', NULL),
+(2565, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 2, 1, NULL, 0, 'null', 1737529589, 'web', '127.0.0.1', NULL),
+(2566, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 2, 1, NULL, 0, 'null', 1737529641, 'web', '127.0.0.1', NULL),
+(2567, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 3, 3, NULL, 0, 'null', 1737529674, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2568, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 2, 1, NULL, 0, 'null', 1737529695, 'web', '127.0.0.1', NULL),
+(2569, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 2, 1, NULL, 0, 'null', 1737529722, 'web', '127.0.0.1', NULL),
+(2570, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 2, 1, NULL, 0, 'null', 1737529816, 'web', '127.0.0.1', NULL),
+(2571, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 2, 1, NULL, 0, 'null', 1737529842, 'web', '127.0.0.1', NULL),
+(2572, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 2, 1, NULL, 0, 'null', 1737529847, 'web', '127.0.0.1', NULL),
+(2573, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 2, 1, NULL, 0, 'null', 1737529911, 'web', '127.0.0.1', NULL),
+(2574, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 2, 1, NULL, 0, 'null', 1737529927, 'web', '127.0.0.1', NULL),
+(2575, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 2, 1, NULL, 0, 'null', 1737529933, 'web', '127.0.0.1', NULL),
+(2576, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 2, 1, NULL, 0, 'null', 1737530026, 'web', '127.0.0.1', NULL),
+(2577, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1972, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"footer_type\",\"oldvalue\":\"1\",\"value\":\"0\",\"plugin\":\"theme_degrade\"}', 1737530084, 'web', '127.0.0.1', NULL),
+(2578, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 2, 1, NULL, 0, 'null', 1737530090, 'web', '127.0.0.1', NULL),
+(2579, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 2, 1, NULL, 0, 'null', 1737530179, 'web', '127.0.0.1', NULL),
+(2580, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737530183, 'web', '127.0.0.1', NULL),
+(2581, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1973, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"customcss\",\"oldvalue\":\"\",\"value\":\"#footer{\\r\\ndisplay: none;\\r\\n}\",\"plugin\":\"theme_degrade\"}', 1737530210, 'web', '127.0.0.1', NULL),
+(2582, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 2, 1, NULL, 0, 'null', 1737530222, 'web', '127.0.0.1', NULL),
+(2583, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1974, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"customcss\",\"oldvalue\":\"#footer{\\r\\ndisplay: none;\\r\\n}\",\"value\":\"#footer{\\r\\ndisplay: none;\\r\\n}\\r\\n.tool_dataprivacy{\\r\\ndisplay: none;\\r\\n}\",\"plugin\":\"theme_degrade\"}', 1737530266, 'web', '127.0.0.1', NULL),
+(2584, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 2, 1, NULL, 0, 'null', 1737530274, 'web', '127.0.0.1', NULL),
+(2585, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 3, 3, NULL, 0, 'null', 1737530279, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2586, '\\core\\event\\user_loggedout', 'core', 'loggedout', 'user', 'user', 3, 'r', 0, 1, 10, 0, 3, 0, NULL, 0, '{\"sessionid\":\"n96sbr4pp72kski2v5831f5mv2\"}', 1737530284, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2587, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737530284, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2588, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737530292, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2589, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1975, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"home_type\",\"oldvalue\":\"1\",\"value\":\"0\",\"plugin\":\"theme_degrade\"}', 1737530306, 'web', '127.0.0.1', NULL),
+(2590, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737530310, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2591, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1976, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"home_type\",\"oldvalue\":\"0\",\"value\":\"1\",\"plugin\":\"theme_degrade\"}', 1737530332, 'web', '127.0.0.1', NULL),
+(2592, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 2, 1, NULL, 0, 'null', 1737530408, 'web', '127.0.0.1', NULL),
+(2593, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737530424, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2594, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 2, 1, NULL, 0, 'null', 1737531408, 'web', '127.0.0.1', NULL),
+(2595, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 2, 1, NULL, 0, 'null', 1737531410, 'web', '127.0.0.1', NULL),
+(2596, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737531412, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2597, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 2, 1, NULL, 0, 'null', 1737531430, 'web', '127.0.0.1', NULL),
+(2598, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 2, 1, NULL, 0, 'null', 1737531437, 'web', '127.0.0.1', NULL),
+(2599, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737531441, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2600, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 2, 1, NULL, 0, 'null', 1737531474, 'web', '127.0.0.1', NULL),
+(2601, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737531478, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2602, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737531489, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2603, '\\core\\event\\user_loggedin', 'core', 'loggedin', 'user', 'user', 3, 'r', 0, 1, 10, 0, 3, 0, NULL, 0, '{\"username\":\"manikanta\",\"extrauserinfo\":[]}', 1737531508, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2604, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 3, 0, NULL, 0, 'null', 1737531509, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2605, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 3, 1, NULL, 0, 'null', 1737531518, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2606, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 3, 0, NULL, 0, 'null', 1737531521, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2607, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 3, 1, NULL, 0, 'null', 1737531524, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2608, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 3, 0, NULL, 0, 'null', 1737531528, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2609, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 2, 0, NULL, 0, 'null', 1737531541, 'web', '127.0.0.1', NULL),
+(2610, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 2, 0, NULL, 0, 'null', 1737531552, 'web', '127.0.0.1', NULL),
+(2611, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 2, 0, NULL, 0, 'null', 1737534128, 'web', '127.0.0.1', NULL),
+(2612, '\\core\\event\\user_profile_viewed', 'core', 'viewed', 'user_profile', 'user', 2, 'r', 0, 5, 30, 2, 2, 0, 2, 0, 'null', 1737534142, 'web', '127.0.0.1', NULL),
+(2613, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 3, 0, NULL, 0, 'null', 1737534156, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2614, '\\core\\event\\user_loggedout', 'core', 'loggedout', 'user', 'user', 3, 'r', 0, 1, 10, 0, 3, 0, NULL, 0, '{\"sessionid\":\"02iaq4vllivef7624j7eqb3dv5\"}', 1737534159, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2615, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737534159, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2616, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737534162, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2617, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737534166, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2618, '\\core\\event\\user_loggedin', 'core', 'loggedin', 'user', 'user', 3, 'r', 0, 1, 10, 0, 3, 0, NULL, 0, '{\"username\":\"manikanta\",\"extrauserinfo\":[]}', 1737534184, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2619, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 3, 0, NULL, 0, 'null', 1737534184, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2620, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 3, 1, NULL, 0, 'null', 1737534189, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2621, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 3, 0, NULL, 0, 'null', 1737534191, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2622, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 3, 3, NULL, 0, 'null', 1737534195, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2623, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, 'null', 1737534198, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2624, '\\quizaccess_seb\\event\\access_prevented', 'quizaccess_seb', 'prevented', 'access', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, '{\"reason\":\"Invalid SEB config key\",\"savedconfigkey\":\"09be7c58fd7b53107a638d5933444c0c9942fb035a8e19fca4916f54698bf022\",\"receivedconfigkey\":null,\"receivedbrowserexamkey\":null}', 1737534198, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2625, '\\quizaccess_seb\\event\\access_prevented', 'quizaccess_seb', 'prevented', 'access', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, '{\"reason\":\"Invalid SEB config key\",\"savedconfigkey\":\"09be7c58fd7b53107a638d5933444c0c9942fb035a8e19fca4916f54698bf022\",\"receivedconfigkey\":null,\"receivedbrowserexamkey\":null}', 1737534198, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2626, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, 'null', 1737534208, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2627, '\\quizaccess_seb\\event\\access_prevented', 'quizaccess_seb', 'prevented', 'access', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, '{\"reason\":\"Invalid SEB config key\",\"savedconfigkey\":\"09be7c58fd7b53107a638d5933444c0c9942fb035a8e19fca4916f54698bf022\",\"receivedconfigkey\":null,\"receivedbrowserexamkey\":null}', 1737534208, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2628, '\\quizaccess_seb\\event\\access_prevented', 'quizaccess_seb', 'prevented', 'access', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, '{\"reason\":\"Invalid SEB config key\",\"savedconfigkey\":\"09be7c58fd7b53107a638d5933444c0c9942fb035a8e19fca4916f54698bf022\",\"receivedconfigkey\":null,\"receivedbrowserexamkey\":null}', 1737534208, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2629, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 2, 0, NULL, 0, 'null', 1737537960, 'web', '127.0.0.1', NULL),
+(2630, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 2, 1, NULL, 0, 'null', 1737537962, 'web', '127.0.0.1', NULL),
+(2631, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 2, 0, NULL, 0, 'null', 1737537987, 'web', '127.0.0.1', NULL),
+(2632, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 2, 1, NULL, 0, 'null', 1737537991, 'web', '127.0.0.1', NULL),
+(2633, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 2, 0, NULL, 0, 'null', 1737538066, 'web', '127.0.0.1', NULL),
+(2634, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737538073, 'web', '127.0.0.1', NULL),
+(2635, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 2, 3, NULL, 0, 'null', 1737538078, 'web', '127.0.0.1', NULL),
+(2636, '\\mod_quiz\\event\\report_viewed', 'mod_quiz', 'viewed', 'report', NULL, NULL, 'r', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\",\"reportname\":\"overview\"}', 1737538082, 'web', '127.0.0.1', NULL),
+(2637, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 2, 3, NULL, 0, 'null', 1737538123, 'web', '127.0.0.1', NULL),
+(2638, '\\mod_quiz\\event\\edit_page_viewed', 'mod_quiz', 'viewed', 'edit_page', NULL, NULL, 'r', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\"}', 1737538127, 'web', '127.0.0.1', NULL),
+(2639, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 3, 3, NULL, 0, 'null', 1737538150, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2640, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, 'null', 1737538152, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2641, '\\quizaccess_seb\\event\\access_prevented', 'quizaccess_seb', 'prevented', 'access', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, '{\"reason\":\"Invalid SEB config key\",\"savedconfigkey\":\"09be7c58fd7b53107a638d5933444c0c9942fb035a8e19fca4916f54698bf022\",\"receivedconfigkey\":null,\"receivedbrowserexamkey\":null}', 1737538152, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2642, '\\quizaccess_seb\\event\\access_prevented', 'quizaccess_seb', 'prevented', 'access', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, '{\"reason\":\"Invalid SEB config key\",\"savedconfigkey\":\"09be7c58fd7b53107a638d5933444c0c9942fb035a8e19fca4916f54698bf022\",\"receivedconfigkey\":null,\"receivedbrowserexamkey\":null}', 1737538152, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2643, '\\core\\event\\user_loggedin', 'core', 'loggedin', 'user', 'user', 3, 'r', 0, 1, 10, 0, 3, 0, NULL, 0, '{\"username\":\"manikanta\",\"extrauserinfo\":[]}', 1737538191, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2644, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, 'null', 1737538197, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2645, '\\mod_quiz\\event\\attempt_started', 'mod_quiz', 'started', 'attempt', 'quiz_attempts', 16, 'c', 2, 31, 70, 4, 3, 3, 3, 0, 'null', 1737538200, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2646, '\\mod_quiz\\event\\attempt_viewed', 'mod_quiz', 'viewed', 'attempt', 'quiz_attempts', 16, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"0\"}', 1737538201, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2647, '\\mod_quiz\\event\\attempt_updated', 'mod_quiz', 'updated', 'attempt', 'quiz_attempts', 16, 'u', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"0\"}', 1737538206, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2648, '\\mod_quiz\\event\\attempt_viewed', 'mod_quiz', 'viewed', 'attempt', 'quiz_attempts', 16, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"0\"}', 1737538206, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2649, '\\mod_quiz\\event\\attempt_updated', 'mod_quiz', 'updated', 'attempt', 'quiz_attempts', 16, 'u', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"1\"}', 1737538210, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2650, '\\mod_quiz\\event\\attempt_summary_viewed', 'mod_quiz', 'viewed', 'attempt_summary', 'quiz_attempts', 16, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\"}', 1737538211, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2651, '\\core\\event\\user_graded', 'core', 'graded', 'user', 'grade_grades', 7, 'u', 1, 29, 50, 3, 3, 3, 3, 0, '{\"itemid\":\"4\",\"overridden\":false,\"finalgrade\":0}', 1737538216, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2652, '\\core\\event\\user_graded', 'core', 'graded', 'user', 'grade_grades', 8, 'u', 1, 29, 50, 3, -1, 3, 3, 0, '{\"itemid\":\"3\",\"overridden\":false,\"finalgrade\":0}', 1737538216, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2653, '\\mod_quiz\\event\\attempt_submitted', 'mod_quiz', 'submitted', 'attempt', 'quiz_attempts', 16, 'u', 2, 31, 70, 4, 3, 3, 3, 0, '{\"submitterid\":\"3\",\"quizid\":\"2\",\"studentisonline\":true}', 1737538216, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2654, '\\mod_quiz\\event\\attempt_reviewed', 'mod_quiz', 'reviewed', 'attempt', 'quiz_attempts', 16, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\"}', 1737538217, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2655, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, 'null', 1737538221, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2656, '\\mod_quiz\\event\\report_viewed', 'mod_quiz', 'viewed', 'report', NULL, NULL, 'r', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\",\"reportname\":\"overview\"}', 1737538237, 'web', '127.0.0.1', NULL),
+(2657, '\\mod_quiz\\event\\attempt_regraded', 'mod_quiz', 'regraded', 'attempt', 'quiz_attempts', 16, 'u', 1, 31, 70, 4, 2, 3, 3, 0, '{\"quizid\":\"2\"}', 1737538252, 'web', '127.0.0.1', NULL),
+(2658, '\\mod_quiz\\event\\report_viewed', 'mod_quiz', 'viewed', 'report', NULL, NULL, 'r', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\",\"reportname\":\"overview\"}', 1737538269, 'web', '127.0.0.1', NULL),
+(2659, '\\mod_quiz\\event\\edit_page_viewed', 'mod_quiz', 'viewed', 'edit_page', NULL, NULL, 'r', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\"}', 1737538307, 'web', '127.0.0.1', NULL),
+(2660, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 2, 3, NULL, 0, 'null', 1737538319, 'web', '127.0.0.1', NULL),
+(2661, '\\core\\event\\question_category_viewed', 'core', 'viewed', 'question_category', 'question_categories', 12, 'r', 1, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737538330, 'web', '127.0.0.1', NULL),
+(2662, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 2, 0, NULL, 0, 'null', 1737538367, 'web', '127.0.0.1', NULL),
+(2663, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737538526, 'web', '127.0.0.1', NULL),
+(2664, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 2, 3, NULL, 0, 'null', 1737538529, 'web', '127.0.0.1', NULL),
+(2665, '\\core\\event\\question_category_viewed', 'core', 'viewed', 'question_category', 'question_categories', 12, 'r', 1, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737538532, 'web', '127.0.0.1', NULL),
+(2666, '\\core\\event\\draft_file_added', 'core', 'added', 'draft_file', 'files', 653, 'c', 0, 5, 30, 2, 2, 0, 2, 0, '{\"itemid\":498606958,\"filename\":\"tool_bulkemail_moodle311_2021012701.zip\",\"filesize\":19583,\"filepath\":\"\\/\",\"contenthash\":\"a17ea668b0a3785d45b45634e76f651c7d19cb82\"}', 1737538743, 'web', '127.0.0.1', NULL),
+(2667, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 2, 0, NULL, 0, 'null', 1737539025, 'web', '127.0.0.1', NULL),
+(2668, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737539029, 'web', '127.0.0.1', NULL),
+(2669, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 2, 3, NULL, 0, 'null', 1737539032, 'web', '127.0.0.1', NULL),
+(2670, '\\mod_quiz\\event\\report_viewed', 'mod_quiz', 'viewed', 'report', NULL, NULL, 'r', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\",\"reportname\":\"overview\"}', 1737539064, 'web', '127.0.0.1', NULL),
+(2671, '\\mod_quiz\\event\\attempt_deleted', 'mod_quiz', 'deleted', 'attempt', 'quiz_attempts', 16, 'd', 1, 31, 70, 4, 2, 3, 3, 0, '{\"quizid\":\"2\"}', 1737539073, 'web', '127.0.0.1', NULL),
+(2672, '\\core\\event\\user_graded', 'core', 'graded', 'user', 'grade_grades', 7, 'u', 1, 29, 50, 3, 2, 3, 3, 0, '{\"itemid\":\"4\",\"overridden\":false,\"finalgrade\":null}', 1737539073, 'web', '127.0.0.1', NULL),
+(2673, '\\core\\event\\user_graded', 'core', 'graded', 'user', 'grade_grades', 8, 'u', 1, 29, 50, 3, -1, 3, 3, 0, '{\"itemid\":\"3\",\"overridden\":false,\"finalgrade\":null}', 1737539073, 'web', '127.0.0.1', NULL),
+(2674, '\\mod_quiz\\event\\report_viewed', 'mod_quiz', 'viewed', 'report', NULL, NULL, 'r', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\",\"reportname\":\"overview\"}', 1737539074, 'web', '127.0.0.1', NULL),
+(2675, '\\mod_quiz\\event\\report_viewed', 'mod_quiz', 'viewed', 'report', NULL, NULL, 'r', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\",\"reportname\":\"overview\"}', 1737539233, 'web', '127.0.0.1', NULL),
+(2676, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, 'null', 1737539256, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2677, '\\quizaccess_seb\\event\\access_prevented', 'quizaccess_seb', 'prevented', 'access', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, '{\"reason\":\"Invalid SEB config key\",\"savedconfigkey\":\"09be7c58fd7b53107a638d5933444c0c9942fb035a8e19fca4916f54698bf022\",\"receivedconfigkey\":null,\"receivedbrowserexamkey\":null}', 1737539256, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2678, '\\quizaccess_seb\\event\\access_prevented', 'quizaccess_seb', 'prevented', 'access', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, '{\"reason\":\"Invalid SEB config key\",\"savedconfigkey\":\"09be7c58fd7b53107a638d5933444c0c9942fb035a8e19fca4916f54698bf022\",\"receivedconfigkey\":null,\"receivedbrowserexamkey\":null}', 1737539256, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2679, '\\core\\event\\user_loggedin', 'core', 'loggedin', 'user', 'user', 3, 'r', 0, 1, 10, 0, 3, 0, NULL, 0, '{\"username\":\"manikanta\",\"extrauserinfo\":[]}', 1737539289, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2680, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, 'null', 1737539298, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2681, '\\mod_quiz\\event\\attempt_started', 'mod_quiz', 'started', 'attempt', 'quiz_attempts', 17, 'c', 2, 31, 70, 4, 3, 3, 3, 0, 'null', 1737539301, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2682, '\\mod_quiz\\event\\attempt_viewed', 'mod_quiz', 'viewed', 'attempt', 'quiz_attempts', 17, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"0\"}', 1737539301, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2683, '\\mod_quiz\\event\\attempt_updated', 'mod_quiz', 'updated', 'attempt', 'quiz_attempts', 17, 'u', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"0\"}', 1737539308, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2684, '\\mod_quiz\\event\\attempt_viewed', 'mod_quiz', 'viewed', 'attempt', 'quiz_attempts', 17, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"0\"}', 1737539309, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2685, '\\mod_quiz\\event\\attempt_updated', 'mod_quiz', 'updated', 'attempt', 'quiz_attempts', 17, 'u', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"1\"}', 1737539312, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2686, '\\mod_quiz\\event\\attempt_summary_viewed', 'mod_quiz', 'viewed', 'attempt_summary', 'quiz_attempts', 17, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\"}', 1737539312, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2687, '\\mod_quiz\\event\\attempt_viewed', 'mod_quiz', 'viewed', 'attempt', 'quiz_attempts', 17, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"1\"}', 1737539314, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2688, '\\mod_quiz\\event\\attempt_updated', 'mod_quiz', 'updated', 'attempt', 'quiz_attempts', 17, 'u', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\",\"page\":\"1\"}', 1737539317, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2689, '\\mod_quiz\\event\\attempt_summary_viewed', 'mod_quiz', 'viewed', 'attempt_summary', 'quiz_attempts', 17, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\"}', 1737539318, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2690, '\\core\\event\\user_graded', 'core', 'graded', 'user', 'grade_grades', 7, 'u', 1, 29, 50, 3, 3, 3, 3, 0, '{\"itemid\":\"4\",\"overridden\":false,\"finalgrade\":0}', 1737539323, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2691, '\\core\\event\\user_graded', 'core', 'graded', 'user', 'grade_grades', 8, 'u', 1, 29, 50, 3, -1, 3, 3, 0, '{\"itemid\":\"3\",\"overridden\":false,\"finalgrade\":0}', 1737539323, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2692, '\\mod_quiz\\event\\attempt_submitted', 'mod_quiz', 'submitted', 'attempt', 'quiz_attempts', 17, 'u', 2, 31, 70, 4, 3, 3, 3, 0, '{\"submitterid\":\"3\",\"quizid\":\"2\",\"studentisonline\":true}', 1737539323, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2693, '\\mod_quiz\\event\\attempt_reviewed', 'mod_quiz', 'reviewed', 'attempt', 'quiz_attempts', 17, 'r', 2, 31, 70, 4, 3, 3, 3, 0, '{\"quizid\":\"2\"}', 1737539323, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2694, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 3, 3, NULL, 0, 'null', 1737539330, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2695, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 3, 3, NULL, 0, 'null', 1737539360, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2696, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 3, 3, NULL, 0, 'null', 1737539363, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2697, '\\mod_quiz\\event\\report_viewed', 'mod_quiz', 'viewed', 'report', NULL, NULL, 'r', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\",\"reportname\":\"overview\"}', 1737539371, 'web', '127.0.0.1', NULL),
+(2698, '\\mod_quiz\\event\\report_viewed', 'mod_quiz', 'viewed', 'report', NULL, NULL, 'r', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\",\"reportname\":\"overview\"}', 1737539388, 'web', '127.0.0.1', NULL),
+(2699, '\\mod_quiz\\event\\attempt_reviewed', 'mod_quiz', 'reviewed', 'attempt', 'quiz_attempts', 17, 'r', 2, 31, 70, 4, 2, 3, 3, 0, '{\"quizid\":\"2\"}', 1737539402, 'web', '127.0.0.1', NULL),
+(2700, '\\core\\event\\user_graded', 'core', 'graded', 'user', 'grade_grades', 7, 'u', 1, 29, 50, 3, 2, 3, 3, 0, '{\"itemid\":\"4\",\"overridden\":false,\"finalgrade\":10}', 1737539454, 'web', '127.0.0.1', NULL),
+(2701, '\\core\\event\\user_graded', 'core', 'graded', 'user', 'grade_grades', 8, 'u', 1, 29, 50, 3, -1, 3, 3, 0, '{\"itemid\":\"3\",\"overridden\":false,\"finalgrade\":10}', 1737539454, 'web', '127.0.0.1', NULL),
+(2702, '\\mod_quiz\\event\\question_manually_graded', 'mod_quiz', 'graded', 'question_manually', 'question', 20, 'u', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\",\"attemptid\":\"17\",\"slot\":1}', 1737539454, 'web', '127.0.0.1', NULL),
+(2703, '\\mod_quiz\\event\\attempt_reviewed', 'mod_quiz', 'reviewed', 'attempt', 'quiz_attempts', 17, 'r', 2, 31, 70, 4, 2, 3, 3, 0, '{\"quizid\":\"2\"}', 1737539455, 'web', '127.0.0.1', NULL),
+(2704, '\\mod_quiz\\event\\report_viewed', 'mod_quiz', 'viewed', 'report', NULL, NULL, 'r', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\",\"reportname\":\"overview\"}', 1737539465, 'web', '127.0.0.1', NULL),
+(2705, '\\mod_quiz\\event\\report_viewed', 'mod_quiz', 'viewed', 'report', NULL, NULL, 'r', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\",\"reportname\":\"overview\"}', 1737539499, 'web', '127.0.0.1', NULL),
+(2706, '\\mod_quiz\\event\\report_viewed', 'mod_quiz', 'viewed', 'report', NULL, NULL, 'r', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\",\"reportname\":\"overview\"}', 1737539637, 'web', '127.0.0.1', NULL),
+(2707, '\\mod_quiz\\event\\attempt_reviewed', 'mod_quiz', 'reviewed', 'attempt', 'quiz_attempts', 17, 'r', 2, 31, 70, 4, 2, 3, 3, 0, '{\"quizid\":\"2\"}', 1737539649, 'web', '127.0.0.1', NULL),
+(2708, '\\core\\event\\draft_file_added', 'core', 'added', 'draft_file', 'files', 655, 'c', 0, 5, 30, 2, 2, 0, 2, 0, '{\"itemid\":645730351,\"filename\":\"qtype_coderunner_moodle44_2024090500.zip\",\"filesize\":4251314,\"filepath\":\"\\/\",\"contenthash\":\"1983fa1e5c51843cc747828307162d8bace55517\"}', 1737539704, 'web', '127.0.0.1', NULL),
+(2709, '\\core\\event\\draft_file_added', 'core', 'added', 'draft_file', 'files', 657, 'c', 0, 5, 30, 2, 2, 0, 2, 0, '{\"itemid\":469797766,\"filename\":\"qtype_coderunner_moodle42_2022110900.zip\",\"filesize\":4114134,\"filepath\":\"\\/\",\"contenthash\":\"eab8dc2386e622d5cfd1e8493c7cdfdd2b56c611\"}', 1737540230, 'web', '127.0.0.1', NULL),
+(2710, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 2, 1, NULL, 0, 'null', 1737540345, 'web', '127.0.0.1', NULL),
+(2711, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 2, 1, NULL, 0, 'null', 1737546008, 'web', '127.0.0.1', NULL),
+(2712, '\\core\\event\\draft_file_added', 'core', 'added', 'draft_file', 'files', 659, 'c', 0, 5, 30, 2, 2, 0, 2, 0, '{\"itemid\":392903042,\"filename\":\"tool_bulkemail_moodle311_2021012701.zip\",\"filesize\":19583,\"filepath\":\"\\/\",\"contenthash\":\"a17ea668b0a3785d45b45634e76f651c7d19cb82\"}', 1737546070, 'web', '127.0.0.1', NULL),
+(2713, '\\core\\event\\capability_assigned', 'core', 'assigned', 'capability', 'role_capabilities', 1, 'u', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"capability\":\"tool\\/bulkemail:sendbulkemails\",\"oldpermission\":0,\"permission\":1}', 1737546095, 'web', '127.0.0.1', NULL),
+(2714, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 2, 0, NULL, 0, 'null', 1737546137, 'web', '127.0.0.1', NULL),
+(2715, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737546142, 'web', '127.0.0.1', NULL),
+(2716, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 2, 0, NULL, 0, 'null', 1737546179, 'web', '127.0.0.1', NULL),
+(2717, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737546183, 'web', '127.0.0.1', NULL),
+(2718, '\\core\\event\\draft_file_added', 'core', 'added', 'draft_file', 'files', 661, 'c', 0, 5, 30, 2, 2, 0, 2, 0, '{\"itemid\":817200010,\"filename\":\"block_quickmail_moodle45_2024101701.zip\",\"filesize\":491707,\"filepath\":\"\\/\",\"contenthash\":\"ca09b0dca3566513cd64c0ca40157142667c23ff\"}', 1737546268, 'web', '127.0.0.1', NULL),
+(2719, '\\core\\event\\capability_assigned', 'core', 'assigned', 'capability', 'role_capabilities', 1, 'u', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"capability\":\"block\\/quickmail:myaddinstance\",\"oldpermission\":0,\"permission\":1}', 1737546294, 'web', '127.0.0.1', NULL),
+(2720, '\\core\\event\\capability_assigned', 'core', 'assigned', 'capability', 'role_capabilities', 8, 'u', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"capability\":\"block\\/quickmail:myaddinstance\",\"oldpermission\":0,\"permission\":-1}', 1737546294, 'web', '127.0.0.1', NULL),
+(2721, '\\core\\event\\capability_assigned', 'core', 'assigned', 'capability', 'role_capabilities', 7, 'u', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"capability\":\"block\\/quickmail:myaddinstance\",\"oldpermission\":0,\"permission\":-1}', 1737546294, 'web', '127.0.0.1', NULL),
+(2722, '\\core\\event\\capability_assigned', 'core', 'assigned', 'capability', 'role_capabilities', 3, 'u', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"capability\":\"block\\/quickmail:addinstance\",\"oldpermission\":0,\"permission\":\"1\"}', 1737546294, 'web', '127.0.0.1', NULL),
+(2723, '\\core\\event\\capability_assigned', 'core', 'assigned', 'capability', 'role_capabilities', 1, 'u', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"capability\":\"block\\/quickmail:addinstance\",\"oldpermission\":0,\"permission\":\"1\"}', 1737546294, 'web', '127.0.0.1', NULL),
+(2724, '\\core\\event\\capability_assigned', 'core', 'assigned', 'capability', 'role_capabilities', 1, 'u', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"capability\":\"block\\/quickmail:cansend\",\"oldpermission\":0,\"permission\":1}', 1737546294, 'web', '127.0.0.1', NULL),
+(2725, '\\core\\event\\capability_assigned', 'core', 'assigned', 'capability', 'role_capabilities', 3, 'u', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"capability\":\"block\\/quickmail:cansend\",\"oldpermission\":0,\"permission\":1}', 1737546294, 'web', '127.0.0.1', NULL),
+(2726, '\\core\\event\\capability_assigned', 'core', 'assigned', 'capability', 'role_capabilities', 2, 'u', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"capability\":\"block\\/quickmail:cansend\",\"oldpermission\":0,\"permission\":1}', 1737546294, 'web', '127.0.0.1', NULL),
+(2727, '\\core\\event\\capability_assigned', 'core', 'assigned', 'capability', 'role_capabilities', 4, 'u', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"capability\":\"block\\/quickmail:cansend\",\"oldpermission\":0,\"permission\":1}', 1737546294, 'web', '127.0.0.1', NULL),
+(2728, '\\core\\event\\capability_assigned', 'core', 'assigned', 'capability', 'role_capabilities', 1, 'u', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"capability\":\"block\\/quickmail:canconfig\",\"oldpermission\":0,\"permission\":1}', 1737546294, 'web', '127.0.0.1', NULL),
+(2729, '\\core\\event\\capability_assigned', 'core', 'assigned', 'capability', 'role_capabilities', 3, 'u', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"capability\":\"block\\/quickmail:canconfig\",\"oldpermission\":0,\"permission\":1}', 1737546294, 'web', '127.0.0.1', NULL),
+(2730, '\\core\\event\\capability_assigned', 'core', 'assigned', 'capability', 'role_capabilities', 1, 'u', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"capability\":\"block\\/quickmail:allowalternate\",\"oldpermission\":0,\"permission\":1}', 1737546294, 'web', '127.0.0.1', NULL),
+(2731, '\\core\\event\\capability_assigned', 'core', 'assigned', 'capability', 'role_capabilities', 2, 'u', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"capability\":\"block\\/quickmail:allowalternate\",\"oldpermission\":0,\"permission\":1}', 1737546294, 'web', '127.0.0.1', NULL),
+(2732, '\\core\\event\\capability_assigned', 'core', 'assigned', 'capability', 'role_capabilities', 3, 'u', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"capability\":\"block\\/quickmail:allowalternate\",\"oldpermission\":0,\"permission\":1}', 1737546294, 'web', '127.0.0.1', NULL),
+(2733, '\\core\\event\\capability_assigned', 'core', 'assigned', 'capability', 'role_capabilities', 4, 'u', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"capability\":\"block\\/quickmail:allowalternate\",\"oldpermission\":0,\"permission\":1}', 1737546294, 'web', '127.0.0.1', NULL),
+(2734, '\\core\\event\\capability_assigned', 'core', 'assigned', 'capability', 'role_capabilities', 1, 'u', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"capability\":\"block\\/quickmail:allowcoursealternate\",\"oldpermission\":0,\"permission\":1}', 1737546294, 'web', '127.0.0.1', NULL),
+(2735, '\\core\\event\\capability_assigned', 'core', 'assigned', 'capability', 'role_capabilities', 2, 'u', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"capability\":\"block\\/quickmail:allowcoursealternate\",\"oldpermission\":0,\"permission\":1}', 1737546294, 'web', '127.0.0.1', NULL),
+(2736, '\\core\\event\\capability_assigned', 'core', 'assigned', 'capability', 'role_capabilities', 3, 'u', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"capability\":\"block\\/quickmail:allowcoursealternate\",\"oldpermission\":0,\"permission\":1}', 1737546294, 'web', '127.0.0.1', NULL),
+(2737, '\\core\\event\\capability_assigned', 'core', 'assigned', 'capability', 'role_capabilities', 1, 'u', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"capability\":\"block\\/quickmail:viewgroupusers\",\"oldpermission\":0,\"permission\":1}', 1737546294, 'web', '127.0.0.1', NULL),
+(2738, '\\core\\event\\capability_assigned', 'core', 'assigned', 'capability', 'role_capabilities', 2, 'u', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"capability\":\"block\\/quickmail:viewgroupusers\",\"oldpermission\":0,\"permission\":1}', 1737546294, 'web', '127.0.0.1', NULL),
+(2739, '\\core\\event\\capability_assigned', 'core', 'assigned', 'capability', 'role_capabilities', 3, 'u', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"capability\":\"block\\/quickmail:viewgroupusers\",\"oldpermission\":0,\"permission\":1}', 1737546294, 'web', '127.0.0.1', NULL),
+(2740, '\\core\\event\\capability_assigned', 'core', 'assigned', 'capability', 'role_capabilities', 3, 'u', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"capability\":\"block\\/quickmail:createnotifications\",\"oldpermission\":0,\"permission\":\"1\"}', 1737546294, 'web', '127.0.0.1', NULL),
+(2741, '\\core\\event\\capability_assigned', 'core', 'assigned', 'capability', 'role_capabilities', 1, 'u', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"capability\":\"block\\/quickmail:createnotifications\",\"oldpermission\":0,\"permission\":\"1\"}', 1737546294, 'web', '127.0.0.1', NULL),
+(2742, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1977, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"block_quickmail_allowstudents\",\"oldvalue\":null,\"value\":\"0\",\"plugin\":null}', 1737546324, 'web', '127.0.0.1', NULL),
+(2743, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1978, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"block_quickmail_roleselection\",\"oldvalue\":null,\"value\":\"3,4,5\",\"plugin\":null}', 1737546324, 'web', '127.0.0.1', NULL),
+(2744, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1979, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"block_quickmail_send_as_tasks\",\"oldvalue\":null,\"value\":\"1\",\"plugin\":null}', 1737546324, 'web', '127.0.0.1', NULL),
+(2745, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1980, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"block_quickmail_send_now_threshold\",\"oldvalue\":null,\"value\":\"50\",\"plugin\":null}', 1737546324, 'web', '127.0.0.1', NULL),
+(2746, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1981, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"block_quickmail_receipt\",\"oldvalue\":null,\"value\":\"0\",\"plugin\":null}', 1737546324, 'web', '127.0.0.1', NULL),
+(2747, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1982, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"block_quickmail_allow_mentor_copy\",\"oldvalue\":null,\"value\":\"0\",\"plugin\":null}', 1737546324, 'web', '127.0.0.1', NULL),
+(2748, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1983, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"block_quickmail_prepend_class\",\"oldvalue\":null,\"value\":\"0\",\"plugin\":null}', 1737546324, 'web', '127.0.0.1', NULL),
+(2749, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1984, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"block_quickmail_ferpa\",\"oldvalue\":null,\"value\":\"strictferpa\",\"plugin\":null}', 1737546324, 'web', '127.0.0.1', NULL),
+(2750, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1985, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"block_quickmail_downloads\",\"oldvalue\":null,\"value\":\"1\",\"plugin\":null}', 1737546324, 'web', '127.0.0.1', NULL),
+(2751, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1986, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"block_quickmail_additionalemail\",\"oldvalue\":null,\"value\":\"0\",\"plugin\":null}', 1737546324, 'web', '127.0.0.1', NULL),
+(2752, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1987, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"block_quickmail_message_types_available\",\"oldvalue\":null,\"value\":\"all\",\"plugin\":null}', 1737546324, 'web', '127.0.0.1', NULL),
+(2753, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1988, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"block_quickmail_notifications_enabled\",\"oldvalue\":null,\"value\":\"0\",\"plugin\":null}', 1737546324, 'web', '127.0.0.1', NULL),
+(2754, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1989, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"block_quickmail_migration_chunk_size\",\"oldvalue\":null,\"value\":\"1000\",\"plugin\":null}', 1737546324, 'web', '127.0.0.1', NULL),
+(2755, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1990, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"altsendfrom\",\"oldvalue\":null,\"value\":\"0\",\"plugin\":null}', 1737546324, 'web', '127.0.0.1', NULL),
+(2756, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1991, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"block_quickmail_frozen_readonly\",\"oldvalue\":null,\"value\":\"3,4,5\",\"plugin\":null}', 1737546324, 'web', '127.0.0.1', NULL),
+(2757, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1992, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"block_quickmail_frozen_readonly_pages\",\"oldvalue\":null,\"value\":\"qm,sent,notifications,signatures\",\"plugin\":null}', 1737546324, 'web', '127.0.0.1', NULL),
+(2758, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 2, 0, NULL, 0, 'null', 1737546338, 'web', '127.0.0.1', NULL),
+(2759, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737546342, 'web', '127.0.0.1', NULL),
+(2760, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 2, 1, NULL, 0, 'null', 1737546656, 'web', '127.0.0.1', NULL),
+(2761, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 2, 0, NULL, 0, 'null', 1737546660, 'web', '127.0.0.1', NULL),
+(2762, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 2, 0, NULL, 0, 'null', 1737546685, 'web', '127.0.0.1', NULL),
+(2763, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737546688, 'web', '127.0.0.1', NULL);
+INSERT INTO `mdl_logstore_standard_log` (`id`, `eventname`, `component`, `action`, `target`, `objecttable`, `objectid`, `crud`, `edulevel`, `contextid`, `contextlevel`, `contextinstanceid`, `userid`, `courseid`, `relateduserid`, `anonymous`, `other`, `timecreated`, `origin`, `ip`, `realuserid`) VALUES
+(2764, '\\core\\event\\course_section_created', 'core', 'created', 'course_section', 'course_sections', 13, 'c', 1, 29, 50, 3, 2, 3, NULL, 0, '{\"sectionnum\":1}', 1737546729, 'web', '127.0.0.1', NULL),
+(2765, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737546769, 'web', '127.0.0.1', NULL),
+(2766, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 2, 3, NULL, 0, 'null', 1737546795, 'web', '127.0.0.1', NULL),
+(2767, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 2, 3, NULL, 0, 'null', 1737546833, 'web', '127.0.0.1', NULL),
+(2768, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 2, 3, NULL, 0, 'null', 1737546842, 'web', '127.0.0.1', NULL),
+(2769, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 2, 3, NULL, 0, 'null', 1737546842, 'web', '127.0.0.1', NULL),
+(2770, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 2, 0, NULL, 0, 'null', 1737546848, 'web', '127.0.0.1', NULL),
+(2771, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737546851, 'web', '127.0.0.1', NULL),
+(2772, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737546864, 'web', '127.0.0.1', NULL),
+(2773, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737546898, 'web', '127.0.0.1', NULL),
+(2774, '\\core\\event\\user_loggedout', 'core', 'loggedout', 'user', 'user', 3, 'r', 0, 1, 10, 0, 3, 0, NULL, 0, '{\"sessionid\":\"ul9bf1gr3cmd0ofpn9h2v62ulj\"}', 1737546991, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2775, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737546991, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2776, '\\core\\event\\draft_file_added', 'core', 'added', 'draft_file', 'files', 691, 'c', 0, 5, 30, 2, 2, 0, 2, 0, '{\"itemid\":612591274,\"filename\":\"blobid0.dat\",\"filesize\":19583,\"filepath\":\"\\/\",\"contenthash\":\"a17ea668b0a3785d45b45634e76f651c7d19cb82\"}', 1737547054, 'web', '127.0.0.1', NULL),
+(2777, '\\core\\event\\email_failed', 'core', 'failed', 'email', NULL, NULL, 'c', 0, 1, 10, 0, 2, 0, 3, 0, '{\"subject\":\"please click the link to  start the exam\",\"message\":\"http:\\/\\/localhost\\/moodle\\/\",\"errorinfo\":\"Could not instantiate mail function.\"}', 1737547069, 'web', '127.0.0.1', NULL),
+(2778, '\\core\\event\\email_failed', 'core', 'failed', 'email', NULL, NULL, 'c', 0, 1, 10, 0, 2, 0, 4, 0, '{\"subject\":\"please click the link to  start the exam\",\"message\":\"http:\\/\\/localhost\\/moodle\\/\",\"errorinfo\":\"Could not instantiate mail function.\"}', 1737547071, 'web', '127.0.0.1', NULL),
+(2779, '\\core\\event\\email_failed', 'core', 'failed', 'email', NULL, NULL, 'c', 0, 1, 10, 0, 2, 0, 6, 0, '{\"subject\":\"please click the link to  start the exam\",\"message\":\"http:\\/\\/localhost\\/moodle\\/\",\"errorinfo\":\"Could not instantiate mail function.\"}', 1737547073, 'web', '127.0.0.1', NULL),
+(2780, '\\core\\event\\email_failed', 'core', 'failed', 'email', NULL, NULL, 'c', 0, 1, 10, 0, 2, 0, 5, 0, '{\"subject\":\"please click the link to  start the exam\",\"message\":\"http:\\/\\/localhost\\/moodle\\/\",\"errorinfo\":\"Could not instantiate mail function.\"}', 1737547075, 'web', '127.0.0.1', NULL),
+(2781, '\\core\\event\\email_failed', 'core', 'failed', 'email', NULL, NULL, 'c', 0, 1, 10, 0, 2, 0, 7, 0, '{\"subject\":\"please click the link to  start the exam\",\"message\":\"http:\\/\\/localhost\\/moodle\\/\",\"errorinfo\":\"Could not instantiate mail function.\"}', 1737547077, 'web', '127.0.0.1', NULL),
+(2782, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737547078, 'web', '127.0.0.1', NULL),
+(2783, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737547143, 'web', '127.0.0.1', NULL),
+(2784, '\\core\\event\\draft_file_added', 'core', 'added', 'draft_file', 'files', 695, 'c', 0, 5, 30, 2, 2, 0, 2, 0, '{\"itemid\":239101103,\"filename\":\"qtype_coderunner_moodle42_2022110900.zip\",\"filesize\":4114134,\"filepath\":\"\\/\",\"contenthash\":\"eab8dc2386e622d5cfd1e8493c7cdfdd2b56c611\"}', 1737547306, 'web', '127.0.0.1', NULL),
+(2785, '\\core\\event\\question_created', 'core', 'created', 'question', 'question', 22, 'c', 1, 1, 10, 0, 2, 0, NULL, 0, '{\"categoryid\":\"13\"}', 1737547362, 'web', '127.0.0.1', NULL),
+(2786, '\\core\\event\\question_created', 'core', 'created', 'question', 'question', 23, 'c', 1, 1, 10, 0, 2, 0, NULL, 0, '{\"categoryid\":\"13\"}', 1737547363, 'web', '127.0.0.1', NULL),
+(2787, '\\core\\event\\question_created', 'core', 'created', 'question', 'question', 24, 'c', 1, 1, 10, 0, 2, 0, NULL, 0, '{\"categoryid\":\"13\"}', 1737547363, 'web', '127.0.0.1', NULL),
+(2788, '\\core\\event\\question_created', 'core', 'created', 'question', 'question', 25, 'c', 1, 1, 10, 0, 2, 0, NULL, 0, '{\"categoryid\":\"13\"}', 1737547363, 'web', '127.0.0.1', NULL),
+(2789, '\\core\\event\\question_created', 'core', 'created', 'question', 'question', 26, 'c', 1, 1, 10, 0, 2, 0, NULL, 0, '{\"categoryid\":\"13\"}', 1737547363, 'web', '127.0.0.1', NULL),
+(2790, '\\core\\event\\question_created', 'core', 'created', 'question', 'question', 27, 'c', 1, 1, 10, 0, 2, 0, NULL, 0, '{\"categoryid\":\"13\"}', 1737547363, 'web', '127.0.0.1', NULL),
+(2791, '\\core\\event\\question_created', 'core', 'created', 'question', 'question', 28, 'c', 1, 1, 10, 0, 2, 0, NULL, 0, '{\"categoryid\":\"13\"}', 1737547363, 'web', '127.0.0.1', NULL),
+(2792, '\\core\\event\\question_created', 'core', 'created', 'question', 'question', 29, 'c', 1, 1, 10, 0, 2, 0, NULL, 0, '{\"categoryid\":\"13\"}', 1737547363, 'web', '127.0.0.1', NULL),
+(2793, '\\core\\event\\question_created', 'core', 'created', 'question', 'question', 30, 'c', 1, 1, 10, 0, 2, 0, NULL, 0, '{\"categoryid\":\"13\"}', 1737547363, 'web', '127.0.0.1', NULL),
+(2794, '\\core\\event\\question_created', 'core', 'created', 'question', 'question', 31, 'c', 1, 1, 10, 0, 2, 0, NULL, 0, '{\"categoryid\":\"13\"}', 1737547363, 'web', '127.0.0.1', NULL),
+(2795, '\\core\\event\\question_created', 'core', 'created', 'question', 'question', 32, 'c', 1, 1, 10, 0, 2, 0, NULL, 0, '{\"categoryid\":\"13\"}', 1737547363, 'web', '127.0.0.1', NULL),
+(2796, '\\core\\event\\question_created', 'core', 'created', 'question', 'question', 33, 'c', 1, 1, 10, 0, 2, 0, NULL, 0, '{\"categoryid\":\"13\"}', 1737547363, 'web', '127.0.0.1', NULL),
+(2797, '\\core\\event\\question_created', 'core', 'created', 'question', 'question', 34, 'c', 1, 1, 10, 0, 2, 0, NULL, 0, '{\"categoryid\":\"13\"}', 1737547363, 'web', '127.0.0.1', NULL),
+(2798, '\\core\\event\\question_created', 'core', 'created', 'question', 'question', 35, 'c', 1, 1, 10, 0, 2, 0, NULL, 0, '{\"categoryid\":\"13\"}', 1737547364, 'web', '127.0.0.1', NULL),
+(2799, '\\core\\event\\question_created', 'core', 'created', 'question', 'question', 36, 'c', 1, 1, 10, 0, 2, 0, NULL, 0, '{\"categoryid\":\"13\"}', 1737547364, 'web', '127.0.0.1', NULL),
+(2800, '\\core\\event\\question_created', 'core', 'created', 'question', 'question', 37, 'c', 1, 1, 10, 0, 2, 0, NULL, 0, '{\"categoryid\":\"13\"}', 1737547364, 'web', '127.0.0.1', NULL),
+(2801, '\\core\\event\\question_created', 'core', 'created', 'question', 'question', 38, 'c', 1, 1, 10, 0, 2, 0, NULL, 0, '{\"categoryid\":\"13\"}', 1737547364, 'web', '127.0.0.1', NULL),
+(2802, '\\core\\event\\question_created', 'core', 'created', 'question', 'question', 39, 'c', 1, 1, 10, 0, 2, 0, NULL, 0, '{\"categoryid\":\"13\"}', 1737547364, 'web', '127.0.0.1', NULL),
+(2803, '\\core\\event\\question_created', 'core', 'created', 'question', 'question', 40, 'c', 1, 1, 10, 0, 2, 0, NULL, 0, '{\"categoryid\":\"13\"}', 1737547364, 'web', '127.0.0.1', NULL),
+(2804, '\\core\\event\\capability_assigned', 'core', 'assigned', 'capability', 'role_capabilities', 4, 'u', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"capability\":\"qtype\\/coderunner:viewhiddentestcases\",\"oldpermission\":0,\"permission\":\"1\"}', 1737547364, 'web', '127.0.0.1', NULL),
+(2805, '\\core\\event\\capability_assigned', 'core', 'assigned', 'capability', 'role_capabilities', 3, 'u', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"capability\":\"qtype\\/coderunner:viewhiddentestcases\",\"oldpermission\":0,\"permission\":\"1\"}', 1737547364, 'web', '127.0.0.1', NULL),
+(2806, '\\core\\event\\capability_assigned', 'core', 'assigned', 'capability', 'role_capabilities', 1, 'u', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"capability\":\"qtype\\/coderunner:viewhiddentestcases\",\"oldpermission\":0,\"permission\":\"1\"}', 1737547364, 'web', '127.0.0.1', NULL),
+(2807, '\\core\\event\\capability_assigned', 'core', 'assigned', 'capability', 'role_capabilities', 5, 'u', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"capability\":\"qtype\\/coderunner:sandboxwsaccess\",\"oldpermission\":0,\"permission\":1}', 1737547364, 'web', '127.0.0.1', NULL),
+(2808, '\\core\\event\\capability_assigned', 'core', 'assigned', 'capability', 'role_capabilities', 4, 'u', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"capability\":\"qtype\\/coderunner:sandboxwsaccess\",\"oldpermission\":0,\"permission\":1}', 1737547364, 'web', '127.0.0.1', NULL),
+(2809, '\\core\\event\\capability_assigned', 'core', 'assigned', 'capability', 'role_capabilities', 3, 'u', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"capability\":\"qtype\\/coderunner:sandboxwsaccess\",\"oldpermission\":0,\"permission\":1}', 1737547364, 'web', '127.0.0.1', NULL),
+(2810, '\\core\\event\\capability_assigned', 'core', 'assigned', 'capability', 'role_capabilities', 1, 'u', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"capability\":\"qtype\\/coderunner:sandboxwsaccess\",\"oldpermission\":0,\"permission\":1}', 1737547364, 'web', '127.0.0.1', NULL),
+(2811, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1993, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"default_penalty_regime\",\"oldvalue\":null,\"value\":\"10, 20, ...\",\"plugin\":\"qtype_coderunner\"}', 1737547382, 'web', '127.0.0.1', NULL),
+(2812, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1994, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"jobesandbox_enabled\",\"oldvalue\":null,\"value\":\"1\",\"plugin\":\"qtype_coderunner\"}', 1737547382, 'web', '127.0.0.1', NULL),
+(2813, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1995, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"ideonesandbox_enabled\",\"oldvalue\":null,\"value\":\"0\",\"plugin\":\"qtype_coderunner\"}', 1737547382, 'web', '127.0.0.1', NULL),
+(2814, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1996, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"jobe_host\",\"oldvalue\":null,\"value\":\"jobe2.cosc.canterbury.ac.nz\",\"plugin\":\"qtype_coderunner\"}', 1737547382, 'web', '127.0.0.1', NULL),
+(2815, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1997, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"jobe_apikey\",\"oldvalue\":null,\"value\":\"2AAA7A5415B4A9B394B54BF1D2E9D\",\"plugin\":\"qtype_coderunner\"}', 1737547382, 'web', '127.0.0.1', NULL),
+(2816, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1998, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"ideone_user\",\"oldvalue\":null,\"value\":\"\",\"plugin\":\"qtype_coderunner\"}', 1737547382, 'web', '127.0.0.1', NULL),
+(2817, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 1999, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"ideone_password\",\"oldvalue\":null,\"value\":\"\",\"plugin\":\"qtype_coderunner\"}', 1737547382, 'web', '127.0.0.1', NULL),
+(2818, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 2000, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"wsenabled\",\"oldvalue\":null,\"value\":\"0\",\"plugin\":\"qtype_coderunner\"}', 1737547382, 'web', '127.0.0.1', NULL),
+(2819, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 2001, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"wsjobeserver\",\"oldvalue\":null,\"value\":\"\",\"plugin\":\"qtype_coderunner\"}', 1737547382, 'web', '127.0.0.1', NULL),
+(2820, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 2002, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"wsloggingenabled\",\"oldvalue\":null,\"value\":\"1\",\"plugin\":\"qtype_coderunner\"}', 1737547382, 'web', '127.0.0.1', NULL),
+(2821, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 2003, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"wsmaxhourlyrate\",\"oldvalue\":null,\"value\":\"200\",\"plugin\":\"qtype_coderunner\"}', 1737547382, 'web', '127.0.0.1', NULL),
+(2822, '\\core\\event\\config_log_created', 'core', 'created', 'config_log', 'config_log', 2004, 'c', 0, 1, 10, 0, 2, 0, NULL, 0, '{\"name\":\"wsmaxcputime\",\"oldvalue\":null,\"value\":\"5\",\"plugin\":\"qtype_coderunner\"}', 1737547382, 'web', '127.0.0.1', NULL),
+(2823, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 2, 0, NULL, 0, 'null', 1737547414, 'web', '127.0.0.1', NULL),
+(2824, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737547420, 'web', '127.0.0.1', NULL),
+(2825, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737547437, 'web', '127.0.0.1', NULL),
+(2826, '\\core\\event\\mycourses_viewed', 'core', 'viewed', 'mycourses', NULL, NULL, 'r', 0, 1, 10, 0, 2, 0, NULL, 0, 'null', 1737547517, 'web', '127.0.0.1', NULL),
+(2827, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737547520, 'web', '127.0.0.1', NULL),
+(2828, '\\mod_quiz\\event\\course_module_viewed', 'mod_quiz', 'viewed', 'course_module', 'quiz', 2, 'r', 2, 31, 70, 4, 2, 3, NULL, 0, 'null', 1737547523, 'web', '127.0.0.1', NULL),
+(2829, '\\core\\event\\question_category_viewed', 'core', 'viewed', 'question_category', 'question_categories', 12, 'r', 1, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737547530, 'web', '127.0.0.1', NULL),
+(2830, '\\mod_quiz\\event\\edit_page_viewed', 'mod_quiz', 'viewed', 'edit_page', NULL, NULL, 'r', 1, 31, 70, 4, 2, 3, NULL, 0, '{\"quizid\":\"2\"}', 1737547530, 'web', '127.0.0.1', NULL),
+(2831, '\\core\\event\\question_category_viewed', 'core', 'viewed', 'question_category', 'question_categories', 12, 'r', 1, 29, 50, 3, 2, 3, NULL, 0, 'null', 1737547536, 'web', '127.0.0.1', NULL),
+(2832, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737547892, 'web', '0:0:0:0:0:0:0:1', NULL),
+(2833, '\\core\\event\\course_viewed', 'core', 'viewed', 'course', NULL, NULL, 'r', 2, 2, 50, 1, 0, 1, NULL, 0, 'null', 1737547911, 'web', '0:0:0:0:0:0:0:1', NULL);
 
 -- --------------------------------------------------------
 
@@ -13699,7 +15967,8 @@ CREATE TABLE `mdl_message_conversations` (
 
 INSERT INTO `mdl_message_conversations` (`id`, `type`, `name`, `convhash`, `component`, `itemtype`, `itemid`, `contextid`, `enabled`, `timecreated`, `timemodified`) VALUES
 (1, 1, NULL, '287da0651bbe7af557b588ce0c9aeaa9a39487a6', NULL, NULL, NULL, NULL, 1, 1736765537, 1736765537),
-(2, 3, NULL, '77de68daecd823babbb58edb1c8e14d7106e83bb', NULL, NULL, NULL, NULL, 1, 1737358827, 1737358827);
+(2, 3, NULL, '77de68daecd823babbb58edb1c8e14d7106e83bb', NULL, NULL, NULL, NULL, 1, 1737358827, 1737358827),
+(3, 3, NULL, 'da4b9237bacccdf19c0760cab7aec4a8359010b0', NULL, NULL, NULL, NULL, 1, 1737529265, 1737529265);
 
 -- --------------------------------------------------------
 
@@ -13735,7 +16004,8 @@ CREATE TABLE `mdl_message_conversation_members` (
 INSERT INTO `mdl_message_conversation_members` (`id`, `conversationid`, `userid`, `timecreated`) VALUES
 (1, 1, 2, 1736765537),
 (2, 1, 3, 1736765537),
-(3, 2, 3, 1737358827);
+(3, 2, 3, 1737358827),
+(4, 3, 2, 1737529265);
 
 -- --------------------------------------------------------
 
@@ -13856,7 +16126,8 @@ INSERT INTO `mdl_message_providers` (`id`, `name`, `component`, `capability`) VA
 (42, 'invalidrecipienthandler', 'tool_messageinbound', NULL),
 (43, 'messageprocessingerror', 'tool_messageinbound', NULL),
 (44, 'messageprocessingsuccess', 'tool_messageinbound', NULL),
-(45, 'notification', 'tool_monitor', 'tool/monitor:subscribe');
+(45, 'notification', 'tool_monitor', 'tool/monitor:subscribe'),
+(46, 'quickmessage', 'block_quickmail', NULL);
 
 -- --------------------------------------------------------
 
@@ -13910,6 +16181,14 @@ CREATE TABLE `mdl_message_user_actions` (
   `action` bigint(10) NOT NULL,
   `timecreated` bigint(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Stores all per-user actions on individual messages' ROW_FORMAT=COMPRESSED;
+
+--
+-- Dumping data for table `mdl_message_user_actions`
+--
+
+INSERT INTO `mdl_message_user_actions` (`id`, `userid`, `messageid`, `action`, `timecreated`) VALUES
+(1, 3, 1, 1, 1737375289),
+(2, 3, 2, 1, 1737375290);
 
 -- --------------------------------------------------------
 
@@ -14858,13 +17137,13 @@ CREATE TABLE `mdl_qtype_multichoice_options` (
 INSERT INTO `mdl_qtype_multichoice_options` (`id`, `questionid`, `layout`, `single`, `shuffleanswers`, `correctfeedback`, `correctfeedbackformat`, `partiallycorrectfeedback`, `partiallycorrectfeedbackformat`, `incorrectfeedback`, `incorrectfeedbackformat`, `answernumbering`, `shownumcorrect`, `showstandardinstruction`) VALUES
 (1, 1, 0, 1, 1, '<p>Your answer is correct.</p>', 1, '<p>Your answer is partially correct.</p>', 1, '<p>Your answer is incorrect.</p>', 1, 'abc', 1, 0),
 (2, 2, 0, 1, 1, '<p>Your answer is correct.</p>', 1, '<p>Your answer is partially correct.</p>', 1, '<p>Your answer is incorrect.</p>', 1, 'abc', 1, 0),
-(3, 3, 0, 1, 0, '', 1, '', 1, '', 1, 'abc', 0, 1),
 (4, 4, 0, 1, 0, '', 1, '', 1, '', 1, 'abc', 0, 1),
-(5, 7, 0, 1, 0, '', 1, '', 1, '', 1, 'abc', 0, 1),
-(6, 9, 0, 1, 0, '', 1, '', 1, '', 1, 'abc', 0, 1),
 (7, 11, 0, 1, 0, '', 1, '', 1, '', 1, 'abc', 0, 1),
-(8, 13, 0, 1, 0, '', 1, '', 1, '', 1, 'abc', 0, 1),
-(9, 16, 0, 1, 0, '', 1, '', 1, '', 1, 'abc', 0, 1);
+(9, 16, 0, 1, 0, '', 1, '', 1, '', 1, 'abc', 0, 1),
+(10, 18, 0, 1, 0, '', 1, '', 1, '', 1, 'abc', 0, 1),
+(11, 19, 0, 1, 0, '', 1, '', 1, '', 1, 'abc', 0, 1),
+(12, 20, 0, 1, 0, '', 1, '', 1, '', 1, 'abc', 0, 1),
+(13, 21, 0, 1, 1, '<p>Your answer is correct.</p>', 1, '<p>Your answer is partially correct.</p>', 1, '<p>Your answer is incorrect.</p>', 1, 'abc', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -14904,7 +17183,6 @@ CREATE TABLE `mdl_qtype_shortanswer_options` (
 
 INSERT INTO `mdl_qtype_shortanswer_options` (`id`, `questionid`, `usecase`) VALUES
 (1, 6, 0),
-(2, 10, 0),
 (3, 14, 0);
 
 -- --------------------------------------------------------
@@ -14939,21 +17217,38 @@ CREATE TABLE `mdl_question` (
 INSERT INTO `mdl_question` (`id`, `parent`, `name`, `questiontext`, `questiontextformat`, `generalfeedback`, `generalfeedbackformat`, `defaultmark`, `penalty`, `qtype`, `length`, `stamp`, `timecreated`, `timemodified`, `createdby`, `modifiedby`) VALUES
 (1, 0, 'lol', '<p>aasd</p>', 1, '', 1, 1.0000000, 0.3333333, 'multichoice', 1, 'localhost+250113103457+alQfRg', 1736764497, 1736764497, 2, 2),
 (2, 0, 'sadsadad', '<p>sadsad</p>', 1, '', 1, 1.0000000, 0.3333333, 'multichoice', 1, 'localhost+250113104111+3sevYO', 1736764871, 1736764871, 2, 2),
-(3, 0, 'What is the time complexity of quicksort in the best case?', 'What is the time complexity of quicksort in the best case?', 1, '', 1, 1.0000000, 0.3333333, 'multichoice', 1, 'localhost+250120073202+QA8U4k', 1737358322, 1737358322, 2, 2),
 (4, 0, 'Which of the following is a feature of an object-oriented programming language?', 'Which of the following is a feature of an object-oriented programming language?', 1, '', 1, 1.0000000, 0.3333333, 'multichoice', 1, 'localhost+250120073202+jSNLiQ', 1737358322, 1737358322, 2, 2),
 (5, 0, 'In C++, memory is allocated dynamically using the \'new\' keyword.', 'In C++, memory is allocated dynamically using the \'new\' keyword.', 1, '', 1, 1.0000000, 0.3333333, 'truefalse', 1, 'localhost+250120073202+HudEmx', 1737358322, 1737358322, 2, 2),
 (6, 0, 'What is the primary function of an operating system?', 'What is the primary function of an operating system?', 1, '', 1, 1.0000000, 0.3333333, 'shortanswer', 1, 'localhost+250120073202+nv02fZ', 1737358322, 1737358322, 2, 2),
-(7, 0, 'Which data structure is used to implement a priority queue?', 'Which data structure is used to implement a priority queue?', 1, '', 1, 1.0000000, 0.3333333, 'multichoice', 1, 'localhost+250120073202+cUsOlY', 1737358322, 1737358322, 2, 2),
 (8, 0, 'What is the value of log2(16)?', 'What is the value of log2(16)?', 1, '', 1, 1.0000000, 0.3333333, 'numerical', 1, 'localhost+250120073202+1bvq3P', 1737358322, 1737358322, 2, 2),
-(9, 0, 'What is the role of DNS in computer networks?', 'What is the role of DNS in computer networks?', 1, '', 1, 1.0000000, 0.3333333, 'multichoice', 1, 'localhost+250120073202+rpQHke', 1737358322, 1737358322, 2, 2),
-(10, 0, 'What is the output of the following C++ code: cout', 'What is the output of the following C++ code: cout &lt;&lt; 5 / 2;', 1, '', 1, 1.0000000, 0.3333333, 'shortanswer', 1, 'localhost+250120073202+MxnsB1', 1737358322, 1737358322, 2, 2),
 (11, 0, 'Which of the following is not a type of loop in C?', 'Which of the following is not a type of loop in C?', 1, '', 1, 1.0000000, 0.3333333, 'multichoice', 1, 'localhost+250120073202+ZaqIrv', 1737358322, 1737358322, 2, 2),
 (12, 0, 'The term \'inheritance\' refers to the process by which one class acquires the properties of another class in object-oriented programming.', 'The term \'inheritance\' refers to the process by which one class acquires the properties of another class in object-oriented programming.', 1, '', 1, 1.0000000, 0.3333333, 'truefalse', 1, 'localhost+250120073202+E5M3nU', 1737358322, 1737358322, 2, 2),
-(13, 0, 'Which of the following is a commonly used sorting algorithm?', 'Which of the following is a commonly used sorting algorithm?', 1, '', 1, 1.0000000, 0.3333333, 'multichoice', 1, 'localhost+250120073202+FoChAn', 1737358322, 1737358322, 2, 2),
 (14, 0, 'What is the purpose of a constructor in C++?', 'What is the purpose of a constructor in C++?', 1, '', 1, 1.0000000, 0.3333333, 'shortanswer', 1, 'localhost+250120073202+scHp8F', 1737358322, 1737358322, 2, 2),
-(15, 0, 'What is the result of the bitwise AND operation 5 & 3?', 'What is the result of the bitwise AND operation 5 &amp; 3?', 1, '', 1, 1.0000000, 0.3333333, 'numerical', 1, 'localhost+250120073202+e9A3yA', 1737358322, 1737358322, 2, 2),
 (16, 0, 'Which protocol is used to assign IP addresses dynamically to hosts in a network?', 'Which protocol is used to assign IP addresses dynamically to hosts in a network?', 1, '', 1, 1.0000000, 0.3333333, 'multichoice', 1, 'localhost+250120073202+Dztf5V', 1737358322, 1737358322, 2, 2),
-(17, 0, 'In Python, the \'self\' keyword is used to refer to the instance of a class.', 'In Python, the \'self\' keyword is used to refer to the instance of a class.', 1, '', 1, 1.0000000, 0.3333333, 'truefalse', 1, 'localhost+250120073202+OaEjbU', 1737358322, 1737358322, 2, 2);
+(17, 0, 'In Python, the \'self\' keyword is used to refer to the instance of a class.', 'In Python, the \'self\' keyword is used to refer to the instance of a class.', 1, '', 1, 1.0000000, 0.3333333, 'truefalse', 1, 'localhost+250120073202+OaEjbU', 1737358322, 1737358322, 2, 2),
+(18, 0, 'What is the role of DNS in computer networks?', '<p>What is the role of DNS in computer networks?</p>', 1, '', 1, 1.0000000, 0.3333333, 'multichoice', 1, 'localhost+250121095509+oOaD7G', 1737453309, 1737453309, 2, 2),
+(19, 0, 'Which of the following is not a type of loop in C?', '<p>Which of the following is not a type of loop in C?</p>', 1, '', 1, 1.0000000, 0.3333333, 'multichoice', 1, 'localhost+250121100412+R8rPv3', 1737453852, 1737453852, 2, 2),
+(20, 0, 'Which of the following is not a type of loop in C?', '<p>Which of the following is not a type of loop in C?</p>', 1, '', 1, 1.0000000, 0.3333333, 'multichoice', 1, 'localhost+250121100416+XQndJf', 1737453856, 1737453856, 2, 2),
+(21, 0, 'adssad', '<p>dsad</p>', 1, '<p>sadsad</p>', 1, 1.0000000, 0.3333333, 'multichoice', 1, 'localhost+250121101532+IWflUm', 1737454532, 1737454532, 2, 2),
+(22, 0, 'BUILT_IN_PROTOTYPE_c_function', 'Built-in prototypes are documented in the language strings.', 1, '', 1, 1.0000000, 0.0000000, 'coderunner', 1, 'localhost+250122120242+v5JXyf', 1737547362, 1737547362, 2, 2),
+(23, 0, 'BUILT_IN_PROTOTYPE_c_program', 'Built-in prototypes are documented in the language strings.', 1, '', 1, 1.0000000, 0.0000000, 'coderunner', 1, 'localhost+250122120242+DP8CeV', 1737547362, 1737547362, 2, 2),
+(24, 0, 'BUILT_IN_PROTOTYPE_cpp_function', 'Built-in prototypes are documented in the language strings.', 1, '', 1, 1.0000000, 0.0000000, 'coderunner', 1, 'localhost+250122120243+xyet33', 1737547363, 1737547363, 2, 2),
+(25, 0, 'BUILT_IN_PROTOTYPE_cpp_program', 'Built-in prototypes are documented in the language strings.', 1, '', 1, 1.0000000, 0.0000000, 'coderunner', 1, 'localhost+250122120243+Zi16uB', 1737547363, 1737547363, 2, 2),
+(26, 0, 'BUILT_IN_PROTOTYPE_directed_graph', 'Built-in prototypes are documented in the language strings.', 1, '', 1, 1.0000000, 0.0000000, 'coderunner', 1, 'localhost+250122120243+bf6CDe', 1737547363, 1737547363, 2, 2),
+(27, 0, 'BUILT_IN_PROTOTYPE_java_class', 'Built-in prototypes are documented in the language strings.', 1, '', 1, 1.0000000, 0.0000000, 'coderunner', 1, 'localhost+250122120243+oUdFxc', 1737547363, 1737547363, 2, 2),
+(28, 0, 'BUILT_IN_PROTOTYPE_java_method', 'Built-in prototypes are documented in the language strings.', 1, '', 1, 1.0000000, 0.0000000, 'coderunner', 1, 'localhost+250122120243+a1w9kO', 1737547363, 1737547363, 2, 2),
+(29, 0, 'BUILT_IN_PROTOTYPE_java_program', 'Built-in prototypes are documented in the language strings.', 1, '', 1, 1.0000000, 0.0000000, 'coderunner', 1, 'localhost+250122120243+qL8ADu', 1737547363, 1737547363, 2, 2),
+(30, 0, 'BUILT_IN_PROTOTYPE_octave_function', 'Built-in prototypes are documented in the language strings.', 1, '', 1, 1.0000000, 0.0000000, 'coderunner', 1, 'localhost+250122120243+CY19Fz', 1737547363, 1737547363, 2, 2),
+(31, 0, 'BUILT_IN_PROTOTYPE_pascal_function', 'Built-in prototypes are documented in the language strings.', 1, '', 1, 1.0000000, 0.0000000, 'coderunner', 1, 'localhost+250122120243+6J90yT', 1737547363, 1737547363, 2, 2),
+(32, 0, 'BUILT_IN_PROTOTYPE_pascal_program', 'Built-in prototypes are documented in the language strings.', 1, '', 1, 1.0000000, 0.0000000, 'coderunner', 1, 'localhost+250122120243+wfmvp2', 1737547363, 1737547363, 2, 2),
+(33, 0, 'BUILT_IN_PROTOTYPE_php', 'Built-in prototypes are documented in the language strings.', 1, '', 1, 1.0000000, 0.0000000, 'coderunner', 1, 'localhost+250122120243+TxZKW0', 1737547363, 1737547363, 2, 2),
+(34, 0, 'BUILT_IN_PROTOTYPE_python2', 'Built-in prototypes are documented in the language strings.', 1, '', 1, 1.0000000, 0.0000000, 'coderunner', 1, 'localhost+250122120243+Kae3WI', 1737547363, 1737547363, 2, 2),
+(35, 0, 'BUILT_IN_PROTOTYPE_python3', 'Built-in prototypes are documented in the language strings.', 1, '', 1, 1.0000000, 0.0000000, 'coderunner', 1, 'localhost+250122120243+gPW56D', 1737547363, 1737547363, 2, 2),
+(36, 0, 'BUILT_IN_PROTOTYPE_sql', 'Built-in prototypes are documented in the language strings.', 1, '', 1, 1.0000000, 0.0000000, 'coderunner', 1, 'localhost+250122120244+9A2BVI', 1737547364, 1737547364, 2, 2),
+(37, 0, 'BUILT_IN_PROTOTYPE_undirected_graph', '<p>Built-in prototypes are documented in the language strings.</p>', 1, '', 1, 1.0000000, 0.0000000, 'coderunner', 1, 'localhost+250122120244+fnSO7E', 1737547364, 1737547364, 2, 2),
+(38, 0, 'BUILTIN_PROTOTYPE_nodejs', '<p>Built-in prototypes are documented in the language strings.</p>', 1, '', 1, 1.0000000, 0.0000000, 'coderunner', 1, 'localhost+250122120244+MmtNsG', 1737547364, 1737547364, 2, 2),
+(39, 0, 'BUILTIN_PROTOTYPE_python3_w_input', '<p>Built-in prototypes are documented in the language strings.</p>', 1, '', 1, 1.0000000, 0.0000000, 'coderunner', 1, 'localhost+250122120244+AHZoUR', 1737547364, 1737547364, 2, 2),
+(40, 0, 'BUILT_IN_PROTOTYPE_multilanguage', '<p>Built-in prototypes are documented in the language strings.<br></p>', 1, '', 1, 1.0000000, 0.0000000, 'coderunner', 1, 'localhost+250122120244+tTGffI', 1737547364, 1737547364, 2, 2);
 
 -- --------------------------------------------------------
 
@@ -14984,10 +17279,6 @@ INSERT INTO `mdl_question_answers` (`id`, `question`, `answer`, `answerformat`, 
 (6, 2, '<p>2</p>', 1, 0.0000000, '', 1),
 (7, 2, '<p>3</p>', 1, 0.0000000, '', 1),
 (8, 2, '<p>4</p>', 1, 0.0000000, '', 1),
-(9, 3, 'O(n log n)', 1, 1.0000000, '', 1),
-(10, 3, 'O(n^2)', 1, 0.0000000, '', 1),
-(11, 3, 'O(n)', 1, 0.0000000, '', 1),
-(12, 3, 'O(log n)', 1, 0.0000000, '', 1),
 (13, 4, 'Encapsulation', 1, 1.0000000, '', 1),
 (14, 4, 'Global variables', 1, 0.0000000, '', 1),
 (15, 4, 'Use of goto statements', 1, 0.0000000, '', 1),
@@ -14995,34 +17286,34 @@ INSERT INTO `mdl_question_answers` (`id`, `question`, `answer`, `answerformat`, 
 (17, 5, 'True', 0, 1.0000000, '', 1),
 (18, 5, 'False', 0, 0.0000000, '', 1),
 (19, 6, 'Manage hardware and software resources', 0, 1.0000000, '', 1),
-(20, 7, 'Heap', 1, 1.0000000, '', 1),
-(21, 7, 'Stack', 1, 0.0000000, '', 1),
-(22, 7, 'Queue', 1, 0.0000000, '', 1),
-(23, 7, 'Linked List', 1, 0.0000000, '', 1),
 (24, 8, '4', 0, 1.0000000, '', 1),
-(25, 9, 'It translates domain names to IP addresses', 1, 1.0000000, '', 1),
-(26, 9, 'It transfers data between network devices', 1, 0.0000000, '', 1),
-(27, 9, 'It encrypts data for secure communication', 1, 0.0000000, '', 1),
-(28, 9, 'It provides routing information', 1, 0.0000000, '', 1),
-(29, 10, '2', 0, 1.0000000, '', 1),
 (30, 11, 'for', 1, 0.0000000, '', 1),
 (31, 11, 'while', 1, 0.0000000, '', 1),
 (32, 11, 'do-while', 1, 0.0000000, '', 1),
 (33, 11, 'repeat-until', 1, 1.0000000, '', 1),
 (34, 12, 'True', 0, 1.0000000, '', 1),
 (35, 12, 'False', 0, 0.0000000, '', 1),
-(36, 13, 'Merge Sort', 1, 1.0000000, '', 1),
-(37, 13, 'Bubble Sort', 1, 0.0000000, '', 1),
-(38, 13, 'Insertion Sort', 1, 0.0000000, '', 1),
-(39, 13, 'All of the above', 1, 0.0000000, '', 1),
 (40, 14, 'To initialize objects of a class', 0, 1.0000000, '', 1),
-(41, 15, '1', 0, 1.0000000, '', 1),
 (42, 16, 'DHCP', 1, 1.0000000, '', 1),
 (43, 16, 'FTP', 1, 0.0000000, '', 1),
 (44, 16, 'HTTP', 1, 0.0000000, '', 1),
 (45, 16, 'SNMP', 1, 0.0000000, '', 1),
 (46, 17, 'True', 0, 1.0000000, '', 1),
-(47, 17, 'False', 0, 0.0000000, '', 1);
+(47, 17, 'False', 0, 0.0000000, '', 1),
+(48, 18, '<p>It translates domain names to IP addresses</p>', 1, 1.0000000, '', 1),
+(49, 18, '<p>It transfers data between network devices</p>', 1, -1.0000000, '', 1),
+(50, 18, '<p>It encrypts data for secure communication</p>', 1, 0.0000000, '', 1),
+(51, 18, '<p>It provides routing information</p>', 1, 0.0000000, '', 1),
+(52, 19, '<p>for</p>', 1, -1.0000000, '', 1),
+(53, 19, '<p>while</p>', 1, -1.0000000, '', 1),
+(54, 19, '<p>do-while</p>', 1, -1.0000000, '', 1),
+(55, 19, '<p>repeat-until</p>', 1, 1.0000000, '', 1),
+(56, 20, '<p>for</p>', 1, -1.0000000, '', 1),
+(57, 20, '<p>while</p>', 1, -1.0000000, '', 1),
+(58, 20, '<p>do-while</p>', 1, -1.0000000, '', 1),
+(59, 20, '<p>repeat-until</p>', 1, 1.0000000, '', 1),
+(60, 21, '<p>1</p>', 1, 1.0000000, '', 1),
+(61, 21, '<p>2</p>', 1, 0.0000000, '', 1);
 
 -- --------------------------------------------------------
 
@@ -15056,36 +17347,9 @@ INSERT INTO `mdl_question_attempts` (`id`, `questionusageid`, `slot`, `behaviour
 (3, 2, 2, 'deferredfeedback', 2, 1, 1.0000000, 0.0000000, 1.0000000, 0, 'sadsad\n: 1\n; 3\n; 2\n; 4\n', '1\n', NULL, 1736764969),
 (4, 3, 1, 'deferredfeedback', 1, 1, 1.0000000, 0.0000000, 1.0000000, 0, 'aasd\n: 1\n; 4\n; 2\n; 3\n', '1\n', '1\n', 1736766207),
 (5, 3, 2, 'deferredfeedback', 2, 1, 1.0000000, 0.0000000, 1.0000000, 0, 'sadsad\n: 2\n; 1\n; 4\n; 3\n', '1\n', '2\n', 1736766207),
-(10, 5, 1, 'deferredfeedback', 14, 1, 1.0000000, 0.0000000, 1.0000000, 0, 'What is the purpose of a constructor in C++?', 'To initialize objects of a class', NULL, 1737358735),
-(11, 5, 2, 'deferredfeedback', 5, 1, 1.0000000, 0.0000000, 1.0000000, 0, 'In C++, memory is allocated dynamically using the \'new\' keyword.', 'True', NULL, 1737358754),
-(12, 5, 3, 'deferredfeedback', 17, 1, 1.0000000, 0.0000000, 1.0000000, 0, 'In Python, the \'self\' keyword is used to refer to the instance of a class.', 'True', NULL, 1737358737),
-(13, 5, 4, 'deferredfeedback', 12, 1, 1.0000000, 0.0000000, 1.0000000, 0, 'The term \'inheritance\' refers to the process by which one class acquires the properties of another class in object-oriented programming.', 'True', NULL, 1737358739),
-(14, 5, 5, 'deferredfeedback', 9, 1, 1.0000000, 0.0000000, 1.0000000, 0, 'What is the role of DNS in computer networks?: It translates domain names to IP addresses; It transfers data between network devices; It encrypts data for secure communication; It provides routing information', 'It translates domain names to IP addresses', NULL, 1737358740),
-(15, 5, 6, 'deferredfeedback', 4, 1, 1.0000000, 0.0000000, 1.0000000, 0, 'Which of the following is a feature of an object-oriented programming language?: Encapsulation; Global variables; Use of goto statements; None of the above', 'Encapsulation', NULL, 1737358741),
-(16, 5, 7, 'deferredfeedback', 11, 1, 1.0000000, 0.0000000, 1.0000000, 0, 'Which of the following is not a type of loop in C?: for; while; do-while; repeat-until', 'repeat-until', NULL, 1737358743),
-(17, 5, 8, 'deferredfeedback', 16, 1, 1.0000000, 0.0000000, 1.0000000, 0, 'Which protocol is used to assign IP addresses dynamically to hosts in a network?: DHCP; FTP; HTTP; SNMP', 'DHCP', NULL, 1737358744),
-(18, 5, 9, 'deferredfeedback', 8, 1, 1.0000000, 0.0000000, 1.0000000, 0, 'What is the value of log2(16)?', '4', NULL, 1737358745),
-(19, 5, 10, 'deferredfeedback', 6, 1, 1.0000000, 0.0000000, 1.0000000, 0, 'What is the primary function of an operating system?', 'Manage hardware and software resources', NULL, 1737358731),
-(20, 6, 1, 'deferredfeedback', 14, 1, 1.0000000, 0.0000000, 1.0000000, 0, 'What is the purpose of a constructor in C++?', 'To initialize objects of a class', NULL, 1737359138),
-(21, 6, 2, 'deferredfeedback', 5, 1, 1.0000000, 0.0000000, 1.0000000, 0, 'In C++, memory is allocated dynamically using the \'new\' keyword.', 'True', NULL, 1737359138),
-(22, 6, 3, 'deferredfeedback', 17, 1, 1.0000000, 0.0000000, 1.0000000, 0, 'In Python, the \'self\' keyword is used to refer to the instance of a class.', 'True', 'True', 1737359138),
-(23, 6, 4, 'deferredfeedback', 12, 1, 1.0000000, 0.0000000, 1.0000000, 0, 'The term \'inheritance\' refers to the process by which one class acquires the properties of another class in object-oriented programming.', 'True', NULL, 1737359138),
-(24, 6, 5, 'deferredfeedback', 9, 1, 1.0000000, 0.0000000, 1.0000000, 0, 'What is the role of DNS in computer networks?: It translates domain names to IP addresses; It transfers data between network devices; It encrypts data for secure communication; It provides routing information', 'It translates domain names to IP addresses', NULL, 1737359138),
-(25, 6, 6, 'deferredfeedback', 4, 1, 1.0000000, 0.0000000, 1.0000000, 0, 'Which of the following is a feature of an object-oriented programming language?: Encapsulation; Global variables; Use of goto statements; None of the above', 'Encapsulation', NULL, 1737359138),
-(26, 6, 7, 'deferredfeedback', 11, 1, 1.0000000, 0.0000000, 1.0000000, 0, 'Which of the following is not a type of loop in C?: for; while; do-while; repeat-until', 'repeat-until', NULL, 1737359138),
-(27, 6, 8, 'deferredfeedback', 16, 1, 1.0000000, 0.0000000, 1.0000000, 0, 'Which protocol is used to assign IP addresses dynamically to hosts in a network?: DHCP; FTP; HTTP; SNMP', 'DHCP', NULL, 1737359138),
-(28, 6, 9, 'deferredfeedback', 8, 1, 1.0000000, 0.0000000, 1.0000000, 0, 'What is the value of log2(16)?', '4', NULL, 1737359138),
-(29, 6, 10, 'deferredfeedback', 6, 1, 1.0000000, 0.0000000, 1.0000000, 0, 'What is the primary function of an operating system?', 'Manage hardware and software resources', NULL, 1737359138),
-(30, 7, 1, 'deferredfeedback', 14, 1, 1.0000000, 0.0000000, 1.0000000, 0, 'What is the purpose of a constructor in C++?', 'To initialize objects of a class', 'sadasdsad', 1737364545),
-(31, 7, 2, 'deferredfeedback', 5, 1, 1.0000000, 0.0000000, 1.0000000, 0, 'In C++, memory is allocated dynamically using the \'new\' keyword.', 'True', NULL, 1737364545),
-(32, 7, 3, 'deferredfeedback', 17, 1, 1.0000000, 0.0000000, 1.0000000, 0, 'In Python, the \'self\' keyword is used to refer to the instance of a class.', 'True', NULL, 1737364545),
-(33, 7, 4, 'deferredfeedback', 12, 1, 1.0000000, 0.0000000, 1.0000000, 0, 'The term \'inheritance\' refers to the process by which one class acquires the properties of another class in object-oriented programming.', 'True', 'True', 1737364545),
-(34, 7, 5, 'deferredfeedback', 9, 1, 1.0000000, 0.0000000, 1.0000000, 0, 'What is the role of DNS in computer networks?: It translates domain names to IP addresses; It transfers data between network devices; It encrypts data for secure communication; It provides routing information', 'It translates domain names to IP addresses', NULL, 1737364545),
-(35, 7, 6, 'deferredfeedback', 4, 1, 1.0000000, 0.0000000, 1.0000000, 0, 'Which of the following is a feature of an object-oriented programming language?: Encapsulation; Global variables; Use of goto statements; None of the above', 'Encapsulation', NULL, 1737364545),
-(36, 7, 7, 'deferredfeedback', 11, 1, 1.0000000, 0.0000000, 1.0000000, 0, 'Which of the following is not a type of loop in C?: for; while; do-while; repeat-until', 'repeat-until', NULL, 1737364545),
-(37, 7, 8, 'deferredfeedback', 16, 1, 1.0000000, 0.0000000, 1.0000000, 0, 'Which protocol is used to assign IP addresses dynamically to hosts in a network?: DHCP; FTP; HTTP; SNMP', 'DHCP', NULL, 1737364545),
-(38, 7, 9, 'deferredfeedback', 8, 1, 1.0000000, 0.0000000, 1.0000000, 0, 'What is the value of log2(16)?', '4', NULL, 1737364545),
-(39, 7, 10, 'deferredfeedback', 6, 1, 1.0000000, 0.0000000, 1.0000000, 0, 'What is the primary function of an operating system?', 'Manage hardware and software resources', NULL, 1737364545);
+(88, 16, 1, 'deferredfeedback', 21, 1, 1.0000000, 0.0000000, 1.0000000, 0, 'dsad\n: 2\n; 1\n', '1\n', NULL, 1737454571),
+(91, 18, 1, 'deferredfeedback', 20, 1, 1.0000000, -1.0000000, 1.0000000, 0, 'Which of the following is not a type of loop in C?\n: for\n; while\n; do-while\n; repeat-until\n', 'repeat-until\n', 'do-while\n', 1737539454),
+(92, 18, 2, 'deferredfeedback', 16, 1, 1.0000000, 0.0000000, 1.0000000, 0, 'Which protocol is used to assign IP addresses dynamically to hosts in a network?: DHCP; FTP; HTTP; SNMP', 'DHCP', 'DHCP', 1737539323);
 
 -- --------------------------------------------------------
 
@@ -15116,59 +17380,14 @@ INSERT INTO `mdl_question_attempt_steps` (`id`, `questionattemptid`, `sequencenu
 (7, 5, 1, 'complete', NULL, 1736766199, 3),
 (8, 4, 2, 'gradedright', 1.0000000, 1736766207, 3),
 (9, 5, 2, 'gradedwrong', 0.0000000, 1736766207, 3),
-(14, 10, 0, 'todo', NULL, 1737358731, 2),
-(15, 11, 0, 'todo', NULL, 1737358731, 2),
-(16, 12, 0, 'todo', NULL, 1737358731, 2),
-(17, 13, 0, 'todo', NULL, 1737358731, 2),
-(18, 14, 0, 'todo', NULL, 1737358731, 2),
-(19, 15, 0, 'todo', NULL, 1737358731, 2),
-(20, 16, 0, 'todo', NULL, 1737358731, 2),
-(21, 17, 0, 'todo', NULL, 1737358731, 2),
-(22, 18, 0, 'todo', NULL, 1737358731, 2),
-(23, 19, 0, 'todo', NULL, 1737358731, 2),
-(24, 20, 0, 'todo', NULL, 1737359078, 3),
-(25, 21, 0, 'todo', NULL, 1737359078, 3),
-(26, 22, 0, 'todo', NULL, 1737359078, 3),
-(27, 23, 0, 'todo', NULL, 1737359078, 3),
-(28, 24, 0, 'todo', NULL, 1737359078, 3),
-(29, 25, 0, 'todo', NULL, 1737359078, 3),
-(30, 26, 0, 'todo', NULL, 1737359078, 3),
-(31, 27, 0, 'todo', NULL, 1737359078, 3),
-(32, 28, 0, 'todo', NULL, 1737359078, 3),
-(33, 29, 0, 'todo', NULL, 1737359078, 3),
-(34, 22, 1, 'complete', NULL, 1737359094, 3),
-(35, 20, 1, 'gaveup', NULL, 1737359138, 3),
-(36, 21, 1, 'gaveup', NULL, 1737359138, 3),
-(37, 22, 2, 'gradedright', 1.0000000, 1737359138, 3),
-(38, 23, 1, 'gaveup', NULL, 1737359138, 3),
-(39, 24, 1, 'gaveup', NULL, 1737359138, 3),
-(40, 25, 1, 'gaveup', NULL, 1737359138, 3),
-(41, 26, 1, 'gaveup', NULL, 1737359138, 3),
-(42, 27, 1, 'gaveup', NULL, 1737359138, 3),
-(43, 28, 1, 'gaveup', NULL, 1737359138, 3),
-(44, 29, 1, 'gaveup', NULL, 1737359138, 3),
-(45, 30, 0, 'todo', NULL, 1737359159, 3),
-(46, 31, 0, 'todo', NULL, 1737359159, 3),
-(47, 32, 0, 'todo', NULL, 1737359159, 3),
-(48, 33, 0, 'todo', NULL, 1737359159, 3),
-(49, 34, 0, 'todo', NULL, 1737359159, 3),
-(50, 35, 0, 'todo', NULL, 1737359159, 3),
-(51, 36, 0, 'todo', NULL, 1737359159, 3),
-(52, 37, 0, 'todo', NULL, 1737359159, 3),
-(53, 38, 0, 'todo', NULL, 1737359159, 3),
-(54, 39, 0, 'todo', NULL, 1737359159, 3),
-(55, 30, 1, 'complete', NULL, 1737364537, 3),
-(56, 33, 1, 'complete', NULL, 1737364541, 3),
-(57, 30, 2, 'gradedwrong', 0.0000000, 1737364545, 3),
-(58, 31, 1, 'gaveup', NULL, 1737364545, 3),
-(59, 32, 1, 'gaveup', NULL, 1737364545, 3),
-(60, 33, 2, 'gradedright', 1.0000000, 1737364545, 3),
-(61, 34, 1, 'gaveup', NULL, 1737364545, 3),
-(62, 35, 1, 'gaveup', NULL, 1737364545, 3),
-(63, 36, 1, 'gaveup', NULL, 1737364545, 3),
-(64, 37, 1, 'gaveup', NULL, 1737364545, 3),
-(65, 38, 1, 'gaveup', NULL, 1737364545, 3),
-(66, 39, 1, 'gaveup', NULL, 1737364545, 3);
+(163, 88, 0, 'todo', NULL, 1737454571, 2),
+(170, 91, 0, 'todo', NULL, 1737539301, 3),
+(171, 92, 0, 'todo', NULL, 1737539301, 3),
+(172, 91, 1, 'complete', NULL, 1737539308, 3),
+(173, 92, 1, 'complete', NULL, 1737539312, 3),
+(174, 91, 2, 'gradedwrong', -1.0000000, 1737539322, 3),
+(175, 92, 2, 'gradedright', 1.0000000, 1737539322, 3),
+(176, 91, 3, 'mangrright', 1.0000000, 1737539454, 2);
 
 -- --------------------------------------------------------
 
@@ -15196,44 +17415,17 @@ INSERT INTO `mdl_question_attempt_step_data` (`id`, `attemptstepid`, `name`, `va
 (7, 7, 'answer', '0'),
 (8, 8, '-finish', '1'),
 (9, 9, '-finish', '1'),
-(10, 18, '_order', '25,26,27,28'),
-(11, 19, '_order', '13,14,15,16'),
-(12, 20, '_order', '30,31,32,33'),
-(13, 21, '_order', '42,43,44,45'),
-(14, 22, '_separators', '.$,'),
-(15, 28, '_order', '25,26,27,28'),
-(16, 29, '_order', '13,14,15,16'),
-(17, 30, '_order', '30,31,32,33'),
-(18, 31, '_order', '42,43,44,45'),
-(19, 32, '_separators', '.$,'),
-(20, 34, 'answer', '1'),
-(21, 35, '-finish', '1'),
-(22, 36, '-finish', '1'),
-(23, 37, '-finish', '1'),
-(24, 38, '-finish', '1'),
-(25, 39, '-finish', '1'),
-(26, 40, '-finish', '1'),
-(27, 41, '-finish', '1'),
-(28, 42, '-finish', '1'),
-(29, 43, '-finish', '1'),
-(30, 44, '-finish', '1'),
-(31, 49, '_order', '25,26,27,28'),
-(32, 50, '_order', '13,14,15,16'),
-(33, 51, '_order', '30,31,32,33'),
-(34, 52, '_order', '42,43,44,45'),
-(35, 53, '_separators', '.$,'),
-(36, 55, 'answer', 'sadasdsad'),
-(37, 56, 'answer', '1'),
-(38, 57, '-finish', '1'),
-(39, 58, '-finish', '1'),
-(40, 59, '-finish', '1'),
-(41, 60, '-finish', '1'),
-(42, 61, '-finish', '1'),
-(43, 62, '-finish', '1'),
-(44, 63, '-finish', '1'),
-(45, 64, '-finish', '1'),
-(46, 65, '-finish', '1'),
-(47, 66, '-finish', '1');
+(125, 163, '_order', '61,60'),
+(138, 170, '_order', '56,57,58,59'),
+(139, 171, '_order', '42,43,44,45'),
+(140, 172, 'answer', '2'),
+(141, 173, 'answer', '0'),
+(142, 174, '-finish', '1'),
+(143, 175, '-finish', '1'),
+(144, 176, '-comment', ''),
+(145, 176, '-commentformat', '1'),
+(146, 176, '-mark', '1'),
+(147, 176, '-maxmark', '1');
 
 -- --------------------------------------------------------
 
@@ -15255,21 +17447,36 @@ CREATE TABLE `mdl_question_bank_entries` (
 INSERT INTO `mdl_question_bank_entries` (`id`, `questioncategoryid`, `idnumber`, `ownerid`) VALUES
 (1, 4, '1', 2),
 (2, 4, '2', 2),
-(3, 12, NULL, 2),
 (4, 12, NULL, 2),
 (5, 12, NULL, 2),
 (6, 12, NULL, 2),
-(7, 12, NULL, 2),
 (8, 12, NULL, 2),
 (9, 12, NULL, 2),
-(10, 12, NULL, 2),
 (11, 12, NULL, 2),
 (12, 12, NULL, 2),
-(13, 12, NULL, 2),
 (14, 12, NULL, 2),
-(15, 12, NULL, 2),
 (16, 12, NULL, 2),
-(17, 12, NULL, 2);
+(17, 12, NULL, 2),
+(18, 12, NULL, 2),
+(19, 13, NULL, 2),
+(20, 13, NULL, 2),
+(21, 13, NULL, 2),
+(22, 13, NULL, 2),
+(23, 13, NULL, 2),
+(24, 13, NULL, 2),
+(25, 13, NULL, 2),
+(26, 13, NULL, 2),
+(27, 13, NULL, 2),
+(28, 13, NULL, 2),
+(29, 13, NULL, 2),
+(30, 13, NULL, 2),
+(31, 13, NULL, 2),
+(32, 13, NULL, 2),
+(33, 13, NULL, 2),
+(34, 13, NULL, 2),
+(35, 13, NULL, 2),
+(36, 13, NULL, 2),
+(37, 13, NULL, 2);
 
 -- --------------------------------------------------------
 
@@ -15343,7 +17550,109 @@ INSERT INTO `mdl_question_categories` (`id`, `name`, `contextid`, `info`, `infof
 (9, 'top', 31, '', 0, 'localhost+250120072507+9YBft7', 0, 0, NULL),
 (10, 'Default for IIT D Recruitment 2025', 31, 'The default category for questions shared in context \'IIT D Recruitment 2025\'.', 0, 'localhost+250120072507+rNRjzE', 9, 999, NULL),
 (11, 'top', 29, '', 0, 'localhost+250120072507+OJVnbV', 0, 0, NULL),
-(12, 'Default for IDR', 29, 'The default category for questions shared in context \'IDR\'.', 0, 'localhost+250120072507+xCNmVP', 11, 999, NULL);
+(12, 'Default for IDR', 29, 'The default category for questions shared in context \'IDR\'.', 0, 'localhost+250120072507+xCNmVP', 11, 999, NULL),
+(13, 'CR_PROTOTYPES', 1, 'Category for CodeRunner question built-in prototypes. FOR SYSTEM USE ONLY.', 0, 'localhost+250122120242+cRvVxk', 7, 999, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `mdl_question_coderunner_options`
+--
+
+CREATE TABLE `mdl_question_coderunner_options` (
+  `id` bigint(10) NOT NULL,
+  `questionid` bigint(10) NOT NULL,
+  `coderunnertype` varchar(255) NOT NULL DEFAULT '',
+  `prototypetype` tinyint(1) NOT NULL DEFAULT 0,
+  `allornothing` tinyint(1) NOT NULL DEFAULT 1,
+  `showsource` tinyint(1) NOT NULL DEFAULT 0,
+  `precheck` int(8) DEFAULT 0,
+  `hidecheck` tinyint(1) NOT NULL DEFAULT 0,
+  `answerboxlines` mediumint(5) NOT NULL DEFAULT 18,
+  `answerboxcolumns` mediumint(5) NOT NULL DEFAULT 100,
+  `answerpreload` longtext DEFAULT NULL,
+  `globalextra` longtext DEFAULT NULL,
+  `useace` tinyint(1) DEFAULT 1,
+  `penaltyregime` varchar(255) NOT NULL DEFAULT '',
+  `answer` longtext DEFAULT NULL,
+  `validateonsave` tinyint(1) NOT NULL DEFAULT 1,
+  `enablecombinator` tinyint(1) DEFAULT NULL,
+  `resultcolumns` varchar(255) DEFAULT NULL,
+  `template` longtext DEFAULT NULL,
+  `iscombinatortemplate` tinyint(1) DEFAULT NULL,
+  `combinatortemplate` longtext DEFAULT NULL,
+  `allowmultiplestdins` tinyint(1) DEFAULT NULL,
+  `testsplitterre` varchar(255) DEFAULT NULL,
+  `pertesttemplate` longtext DEFAULT NULL,
+  `templateparams` longtext DEFAULT NULL,
+  `templateparamslang` varchar(50) DEFAULT 'twig',
+  `templateparamsevalpertry` tinyint(1) DEFAULT 0,
+  `templateparamsevald` longtext DEFAULT NULL,
+  `hoisttemplateparams` tinyint(1) NOT NULL DEFAULT 0,
+  `twigall` tinyint(1) NOT NULL DEFAULT 0,
+  `uiparameters` longtext DEFAULT NULL,
+  `language` varchar(255) DEFAULT NULL,
+  `acelang` varchar(255) DEFAULT NULL,
+  `sandbox` varchar(255) DEFAULT NULL,
+  `sandboxparams` varchar(255) DEFAULT NULL,
+  `grader` varchar(255) DEFAULT NULL,
+  `cputimelimitsecs` bigint(10) DEFAULT NULL,
+  `memlimitmb` bigint(10) DEFAULT NULL,
+  `uiplugin` longtext DEFAULT NULL,
+  `attachments` smallint(4) NOT NULL DEFAULT 0,
+  `attachmentsrequired` smallint(4) NOT NULL DEFAULT 0,
+  `maxfilesize` bigint(11) NOT NULL DEFAULT 0,
+  `filenamesregex` longtext DEFAULT NULL,
+  `filenamesexplain` longtext DEFAULT NULL,
+  `displayfeedback` tinyint(1) NOT NULL DEFAULT 1,
+  `giveupallowed` smallint(4) NOT NULL DEFAULT 0,
+  `prototypeextra` longtext DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Extension of the coderunner question table' ROW_FORMAT=COMPRESSED;
+
+--
+-- Dumping data for table `mdl_question_coderunner_options`
+--
+
+INSERT INTO `mdl_question_coderunner_options` (`id`, `questionid`, `coderunnertype`, `prototypetype`, `allornothing`, `showsource`, `precheck`, `hidecheck`, `answerboxlines`, `answerboxcolumns`, `answerpreload`, `globalextra`, `useace`, `penaltyregime`, `answer`, `validateonsave`, `enablecombinator`, `resultcolumns`, `template`, `iscombinatortemplate`, `combinatortemplate`, `allowmultiplestdins`, `testsplitterre`, `pertesttemplate`, `templateparams`, `templateparamslang`, `templateparamsevalpertry`, `templateparamsevald`, `hoisttemplateparams`, `twigall`, `uiparameters`, `language`, `acelang`, `sandbox`, `sandboxparams`, `grader`, `cputimelimitsecs`, `memlimitmb`, `uiplugin`, `attachments`, `attachmentsrequired`, `maxfilesize`, `filenamesregex`, `filenamesexplain`, `displayfeedback`, `giveupallowed`, `prototypeextra`) VALUES
+(1, 22, 'c_function', 1, 1, 0, 0, 0, 18, 100, '', '', 1, '33.3, 66.7, ...', '', 0, NULL, NULL, '#include <stdio.h>\n#include <stdlib.h>\n#include <ctype.h>\n#include <string.h>\n#include <stdbool.h>\n#include <math.h>\n#define SEPARATOR \"#<ab@17943918#@>#\"\n\n{{ STUDENT_ANSWER }}\n\nint main() {\n{% for TEST in TESTCASES %}\n   {\n    {{ TEST.testcode }};\n   }\n    {% if not loop.last %}printf(\"%s\\n\", SEPARATOR);{% endif %}\n{% endfor %}\n    return 0;\n}', 1, NULL, 0, '|#<ab@17943918#@>#\\n|ms', NULL, '', 'twig', 0, NULL, 0, 0, NULL, 'C', NULL, NULL, '{\"linkargs\": [\"-lm\"]}', 'EqualityGrader', NULL, NULL, 'ace', 0, 0, 0, '', '', 0, 0, NULL),
+(2, 23, 'c_program', 1, 1, 0, 0, 0, 18, 100, '', '', 1, '33.3, 66.7, ...', '', 0, NULL, NULL, '{{ STUDENT_ANSWER }}', 0, NULL, 0, NULL, NULL, '', 'twig', 0, NULL, 0, 0, NULL, 'C', NULL, NULL, '{\"linkargs\": [\"-lm\"]}', 'EqualityGrader', NULL, NULL, 'ace', 0, 0, 0, '', '', 0, 0, NULL),
+(3, 24, 'cpp_function', 1, 1, 0, 0, 0, 18, 100, '', '', 1, '33.3, 66.7, ...', '', 0, NULL, NULL, '#include <iostream>\n#include <fstream>\n#include <string>\n#include <cmath>\n#include <vector>\n#include <algorithm>\n\nusing namespace std;\n#define SEPARATOR \"#<ab@17943918#@>#\"\n\n{{ STUDENT_ANSWER }}\n\nint main() {\n{% for TEST in TESTCASES %}\n   {\n    {{ TEST.extra }};\n    {{ TEST.testcode }};\n   }\n    {% if not loop.last %}cout << SEPARATOR << endl;{% endif %}\n{% endfor %}\n    return 0;\n}', 1, NULL, 0, '|#<ab@17943918#@>#\\n|ms', NULL, '', 'twig', 0, NULL, 0, 0, NULL, 'cpp', NULL, NULL, '{\"linkargs\": [\"-lm\"]}', 'EqualityGrader', NULL, NULL, 'ace', 0, 0, 0, '', '', 0, 0, NULL),
+(4, 25, 'cpp_program', 1, 1, 0, 0, 0, 18, 100, '', '', 1, '33.3, 66.7, ...', '', 0, NULL, NULL, '{{ STUDENT_ANSWER }}', 0, NULL, 0, NULL, NULL, '', 'twig', 0, NULL, 0, 0, NULL, 'cpp', NULL, NULL, '{\"linkargs\": [\"-lm\"]}', 'EqualityGrader', NULL, NULL, 'ace', 0, 0, 0, '', '', 0, 0, NULL),
+(5, 26, 'directed_graph', 1, 1, 0, 0, 0, 18, 100, '', '', 1, '10, 20, ...', '', 0, NULL, NULL, 'import json\n\nstudent_answer = \"\"\"{{ STUDENT_ANSWER | e(\'py\') }}\"\"\"\nSEPARATOR = \"#<ab@17943918#@>#\"\n\nerror_count = 0\ndef error(s):\n    global error_count\n    print(s)\n    error_count += 1\n\ntry:\n    graph_rep = json.loads(student_answer)\n    node_id_to_name_map = {}\n    for i, node in enumerate(graph_rep[\'nodes\']):\n        node_id_to_name_map[i] = node[0] if node[0] != \'\' else (\'#\' + str(i))\n    #print(\"Nodes:\", nodes)\n    edges = graph_rep[\'edges\']\n    #print(\"Edges:\", edges)\n    graph = {}\n    for node_id, node_name in sorted(node_id_to_name_map.items()):\n        edges = []\n        for id0, id1, edge_label, *loc in graph_rep[\'edges\']:\n            if id0 == node_id:\n                edges.append((node_id_to_name_map[id1], edge_label))\n        edges.sort()\n        graph[node_name] = edges\n\nexcept json.JSONDecodeError as e:\n    raise Exception(\"Oops. Illegal graph received (exception {}). Please report (unless you did something silly yourself)\".format(e))\n\n{% for TEST in TESTCASES %}\n{{ TEST.testcode }}\n{{ TEST.extra }}\n{% if not loop.last %}\nprint(SEPARATOR)\n{% endif %}\n{% endfor %}', 1, NULL, 0, '|#<ab@17943918#@>#\\n|ms', NULL, '{\"isdirected\": true, \"isfsm\": false}', 'twig', 0, NULL, 0, 0, NULL, 'python3', NULL, NULL, NULL, 'EqualityGrader', NULL, NULL, 'graph', 0, 0, 0, '', '', 0, 0, NULL),
+(6, 27, 'java_class', 1, 1, 0, 0, 0, 18, 100, '', '', 1, '33.3, 66.7, ...', '', 0, NULL, NULL, '{{ STUDENT_ANSWER | replace({\'public class \': \'class \'}) }}\n\npublic class __tester__ {\n\n    public static void main(String[] args) {\n        __tester__ main = new __tester__();\n        main.runTests();\n    }\n\n    public void runTests() {\n        {{ TEST.testcode }};\n    }\n}\n', 0, NULL, 0, NULL, NULL, '', 'twig', 0, NULL, 0, 0, NULL, 'Java', NULL, NULL, NULL, 'EqualityGrader', NULL, 2000, 'ace', 0, 0, 0, '', '', 0, 0, NULL),
+(7, 28, 'java_method', 1, 1, 0, 0, 0, 18, 100, '', '', 1, '33.3, 66.7, ...', '', 0, NULL, NULL, 'public class __tester__ {\n    static String SEPARATOR = \"#<ab@17943918#@>#\";\n    {{ STUDENT_ANSWER }}\n\n    public static void main(String[] args) {\n        __tester__ main = new __tester__();\n        main.runTests();\n    }\n\n    public void runTests() {\n{% for testCase in TESTCASES %}\n    {\n    {{ testCase.testcode }};\n    {% if not loop.last %}\n    System.out.println(SEPARATOR);\n    {% endif %}\n    }\n{% endfor %}\n    }\n}', 1, NULL, 0, '|#<ab@17943918#@>#\\n|ms', NULL, '', 'twig', 0, NULL, 0, 0, NULL, 'Java', NULL, NULL, NULL, 'EqualityGrader', NULL, 2000, 'ace', 0, 0, 0, '', '', 0, 0, NULL),
+(8, 29, 'java_program', 1, 1, 0, 0, 0, 18, 100, '', '', 1, '33.3, 66.7, ...', '', 0, NULL, NULL, '{{ STUDENT_ANSWER }}', 0, NULL, 0, NULL, NULL, '', 'twig', 0, NULL, 0, 0, NULL, 'Java', NULL, NULL, NULL, 'EqualityGrader', NULL, 2000, 'ace', 0, 0, 0, '', '', 0, 0, NULL),
+(9, 30, 'octave_function', 1, 1, 0, 0, 0, 18, 100, '', '', 1, '33.3, 66.7, ...', '', 0, NULL, NULL, '1; % Dummy statement to make a script\n{{ STUDENT_ANSWER }}\n\nformat free\n\n{% for TEST in TESTCASES %}\n{{ TEST.testcode }};\n{% if not loop.last %}\ndisp(\'#<ab@17943918#@>#\');\n{% endif %}\n{% endfor %}\n', 1, NULL, 0, '|#<ab@17943918#@>#\\n|ms', NULL, '', 'twig', 0, NULL, 0, 0, NULL, 'octave', NULL, NULL, '{\"sourcefilename\": \"prog\"}', 'EqualityGrader', 3, 1000, 'ace', 0, 0, 0, '', '', 0, 0, NULL),
+(10, 31, 'pascal_function', 1, 1, 0, 0, 0, 18, 100, '', '', 1, '33.3, 66.7, ...', '', 0, NULL, NULL, '{{ STUDENT_ANSWER }}\n\nbegin\n    {{ TEST.testcode }};\nend.\n', 0, NULL, 0, '|#<ab@17943918#@>#\\n|ms', NULL, '', 'twig', 0, NULL, 0, 0, NULL, 'pascal', NULL, NULL, NULL, 'EqualityGrader', NULL, NULL, 'ace', 0, 0, 0, '', '', 0, 0, NULL),
+(11, 32, 'pascal_program', 1, 1, 0, 0, 0, 18, 100, '', '', 1, '33.3, 66.7, ...', '', 0, NULL, NULL, '{{ STUDENT_ANSWER }}', 0, NULL, 0, NULL, NULL, '', 'twig', 0, NULL, 0, 0, NULL, 'pascal', NULL, NULL, NULL, 'EqualityGrader', NULL, NULL, 'ace', 0, 0, 0, '', '', 0, 0, NULL),
+(12, 33, 'php', 1, 1, 0, 0, 0, 18, 100, '', '', 1, '33.3, 66.7, ...', '', 0, NULL, NULL, '{{ STUDENT_ANSWER }}\n\ndefine(\'SEPARATOR\', \"#<ab@17943918#@>#\\n\");\n\n{% for TEST in TESTCASES %}\n{{ TEST.testcode }};\n{% if not loop.last %}\necho SEPARATOR;\n{% endif %}\n{% endfor %}', 1, NULL, 0, '|#<ab@17943918#@>#\\n|ms', NULL, '', 'twig', 0, NULL, 0, 0, NULL, 'php', NULL, NULL, NULL, 'EqualityGrader', NULL, 500000, 'ace', 0, 0, 0, '', '', 0, 0, NULL),
+(13, 34, 'python2', 1, 1, 0, 0, 0, 18, 100, '', '', 1, '33.3, 66.7, ...', '', 0, NULL, NULL, '{{ STUDENT_ANSWER }}\n\n__student_answer__ = \"\"\"{{ STUDENT_ANSWER | e(\'py\') }}\"\"\"\n\nSEPARATOR = \"#<ab@17943918#@>#\"\n\n{% for TEST in TESTCASES %}\n{{ TEST.testcode }}\n{% if not loop.last %}\nprint(SEPARATOR)\n{% endif %}\n{% endfor %}', 1, NULL, 0, '|#<ab@17943918#@>#\\n|ms', NULL, '', 'twig', 0, NULL, 0, 0, NULL, 'python2', NULL, NULL, NULL, 'EqualityGrader', NULL, NULL, 'ace', 0, 0, 0, '', '', 0, 0, NULL),
+(14, 35, 'python3', 1, 1, 0, 0, 0, 18, 100, '', '', 1, '33.3, 66.7, ...', '', 0, NULL, NULL, '{{ STUDENT_ANSWER }}\n\n__student_answer__ = \"\"\"{{ STUDENT_ANSWER | e(\'py\') }}\"\"\"\n\nSEPARATOR = \"#<ab@17943918#@>#\"\n\n{% for TEST in TESTCASES %}\n{{ TEST.testcode }}\n{% if not loop.last %}\nprint(SEPARATOR)\n{% endif %}\n{% endfor %}', 1, NULL, 0, '|#<ab@17943918#@>#\\n|ms', NULL, '', 'twig', 0, NULL, 0, 0, NULL, 'python3', NULL, NULL, NULL, 'EqualityGrader', NULL, NULL, 'ace', 0, 0, 0, '', '', 0, 0, NULL),
+(15, 36, 'sql', 1, 1, 0, 0, 0, 18, 100, '', '', 1, '10, 20, ...', '', 0, NULL, NULL, 'import subprocess, os, shutil\n\n# Use Twig to get students answer and the columnwidth template parameter\nstudent_answer = \"\"\"{{ STUDENT_ANSWER | e(\'py\') }}\"\"\".rstrip()\ncolumn_widths = []\n{% for width in QUESTION.parameters.columnwidths %}\ncolumn_widths.append({{width}})\n{% endfor %}\n\nif not student_answer.endswith(\';\'):\n    student_answer = student_answer + \';\'\ndb_files = [fname for fname in os.listdir() if fname.endswith(\'.db\')]\nif len(db_files) == 0:\n    raise Exception(\"No DB files found!\")\nelif len(db_files) == 1:\n    db_working = db_files[0][:-3]  # Strip .db extension\nelse:\n    raise Exception(\"Multiple DB files not implemented yet, sorry!\")\n\nSEPARATOR = \"#<ab@17943918#@>#\"\ncontrols = [\".mode column\", \".headers on\"]\nif column_widths: # Add column width specifiers if given\n    controls.append(\".width \" + \' \'.join(str(width) for width in column_widths))\nprelude = \'\\n\'.join(controls) + \'\\n\'\n\n{% for TEST in TESTCASES %}\nshutil.copyfile(db_files[0], db_working)  # Copy clean writeable db file\ntestcode = \"\"\"{{ TEST.testcode | e(\'py\') }}\"\"\"\nextra = \"\"\"{{ TEST.extra | e(\'py\') }}\"\"\"\ncode_to_run = \'\\n\'.join([prelude, extra, student_answer, testcode])\nwith open(\'commands\', \'w\') as sqlite_commands:\n    sqlite_commands.write(code_to_run)\n\nwith open(\'commands\') as cmd_input:\n    text_input = cmd_input.read()\n    try:\n        output = subprocess.check_output([\'sqlite3\', db_working], input=text_input,\n                 universal_newlines=True)\n        print(output)\n    except Exception as e:\n        raise Exception(\"sqlite3 error: \" + str(e))\n\n{% if not loop.last %}\nprint(SEPARATOR)\n{% endif %}\n{% endfor %}', 1, NULL, 0, '|#<ab@17943918#@>#\\n|ms', NULL, '', 'twig', 0, NULL, 0, 0, NULL, 'python3', 'sql', NULL, NULL, 'EqualityGrader', NULL, 500, 'ace', 0, 0, 0, '', '', 0, 0, NULL),
+(16, 37, 'undirected_graph', 1, 1, 0, 0, 0, 18, 100, '', '', 1, '10, 20, ...', '', 0, NULL, NULL, 'import json\n\nstudent_answer = \"\"\"{{ STUDENT_ANSWER | e(\'py\') }}\"\"\"\nSEPARATOR = \"#<ab@17943918#@>#\"\n\nerror_count = 0\ndef error(s):\n    global error_count\n    print(s)\n    error_count += 1\n\ntry:\n    graph_rep = json.loads(student_answer)\n    node_id_to_name_map = {}\n    for i, node in enumerate(graph_rep[\'nodes\']):\n        node_id_to_name_map[i] = node[0] if node[0] != \'\' else (\'#\' + str(i))\n    #print(\"Nodes:\", nodes)\n    edges = graph_rep[\'edges\']\n    #print(\"Edges:\", edges)\n    graph = {}\n    for node_id, node_name in sorted(node_id_to_name_map.items()):\n        edges = []\n        for id0, id1, edge_label, *loc in graph_rep[\'edges\']:\n            if id0 == node_id:\n                edges.append((node_id_to_name_map[id1], edge_label))\n            elif id1 == node_id:\n                edges.append((node_id_to_name_map[id0], edge_label))\n        edges.sort()\n        graph[node_name] = edges\n\nexcept json.JSONDecodeError as e:\n    raise Exception(\"Oops. Illegal graph received (exception {}). Please report (unless you did something silly yourself)\".format(e))\n\n{% for TEST in TESTCASES %}\n{{ TEST.testcode }}\n{{ TEST.extra }}\n{% if not loop.last %}\nprint(SEPARATOR)\n{% endif %}\n{% endfor %}', 1, NULL, 0, '|#<ab@17943918#@>#\\n|ms', NULL, '{\"isdirected\": false, \"isfsm\": false}', 'twig', 0, NULL, 0, 0, NULL, 'python3', NULL, NULL, NULL, 'EqualityGrader', NULL, NULL, 'graph', 0, 0, 0, '', '', 0, 0, NULL),
+(17, 38, 'nodejs', 1, 1, 0, 0, 0, 18, 100, '', '', 1, '33.3, 66.7, ...', '', 0, NULL, NULL, '{{ STUDENT_ANSWER }}\n\nvar SEPARATOR = \"#<ab@17943918#@>#\";\n\n{% for TEST in TESTCASES %}\n{{ TEST.testcode }}\n{% if not loop.last %}\nconsole.log(SEPARATOR);\n{% endif %}\n{% endfor %}', 1, NULL, 0, '|#<ab@17943918#@>#\\n|ms', NULL, '', 'twig', 0, NULL, 0, 0, NULL, 'nodejs', NULL, NULL, '{\"sourcefilename\": \"__tester__.js\"}', 'EqualityGrader', NULL, 1000, 'ace', 0, 0, 0, '', '', 0, 0, NULL),
+(18, 39, 'python3_w_input', 1, 1, 0, 0, 0, 18, 100, '', '', 1, '33.3, 66.7, ...', '', 0, NULL, NULL, '__saved_input__ = input\ndef input(prompt=\'\'):\n    s = __saved_input__(prompt)\n    print(s)\n    return s\n\n{{ STUDENT_ANSWER }}\nSEPARATOR = \"#<ab@17943918#@>#\"\n\n{% for TEST in TESTCASES %}\n{{ TEST.testcode }}\n{% if not loop.last %}\nprint(SEPARATOR)\n{% endif %}\n{% endfor %}', 1, NULL, 0, '|#<ab@17943918#@>#\\n|ms', NULL, '', 'twig', 0, NULL, 0, 0, NULL, 'python3', NULL, NULL, NULL, 'EqualityGrader', NULL, NULL, 'ace', 0, 0, 0, '', '', 0, 0, NULL),
+(19, 40, 'multilanguage', 2, 1, 0, 0, 0, 18, 100, '', '', 1, '10, 20, ...', '', 0, NULL, NULL, '\"\"\"The template for a \"write a program\" question type that accepts answers\n    in C, C++, Java or Python3 according to the value in the language select\n    dropdown menu.\n\"\"\"\n\nimport subprocess\nimport re\nstudent_answer = \"\"\"{{ STUDENT_ANSWER | e(\'py\') }}\"\"\"\nlanguage = \"\"\"{{ ANSWER_LANGUAGE | e(\'py\') }}\"\"\".lower()\nlanguage_extension_map = {\'c\':\'c\', \'cpp\':\'cpp\', \'java\':\'java\', \'python3\':\'py\'}\n\nif language not in language_extension_map.keys():\n    raise Exception(\'Error in question. Unknown/unexpected language ({})\'.format(language))\n\nif language == \'java\':\n    # Need to determine public class name in order to name output file. Sigh.\n    # The best I can be bothered to do is to use a regular expression match.\n    match = re.search(r\'public\\s+class\\s+([_a-zA-Z][_a-zA-Z0-9]*)\', student_answer, re.DOTALL | re.MULTILINE)\n    if match is None:\n        raise Exception(\"Unable to determine class name. Does the file include \'public class name\'?\")\n    classname = match.group(1)\n    filename = classname + \'.java\'\nelse:\n    filename = \'__tester__.\' + language_extension_map[language]\n\n# Write the student code to a file\n\nwith open(filename, \"w\") as src:\n    print(student_answer, file=src)\n\n# Compile C, C++ and Java\nif language == \'c\':\n    cflags = \"-std=c99 -Wall -Werror\"\n    return_code = subprocess.call(\"gcc {0} -o __tester__ __tester__.c\".format(cflags).split())\n    if return_code != 0:\n        raise Exception(\"** Compilation failed. Testing aborted **\")\n    exec_command = [\"./__tester__\"]\nelif language == \'cpp\':\n    cppflags = \"-Wall -Werror\"\n    return_code = subprocess.call(\"g++ {0} -o __tester__ __tester__.cpp\".format(cppflags).split())\n    if return_code != 0:\n        raise Exception(\"** Compilation failed. Testing aborted **\")\n    exec_command = [\"./__tester__\"]\nelif language == \'java\':\n    return_code = subprocess.call([\'javac\', \"-J-Xss64m\", \"-J-Xmx4g\", filename])\n    if return_code != 0:\n        raise Exception(\"** Compilation failed. Testing aborted **\")\n    exec_command = [\"java\", \"-Xss16m\", \"-Xmx500m\", classname]\nelse: # Python doesn\'t need a compile phase\n    exec_command = [\"python3\", \"./__tester__.py\"]\n\n# Now run the code. Since this is a per-test template,\n# stdin is already set up for the stdin text specified in the test case,\n# so we can run the compiled program directly.\n\ntry:\n    output = subprocess.check_output(exec_command, universal_newlines=True)\n    print(output)\nexcept subprocess.CalledProcessError as e:\n    if e.returncode > 0:\n        # Ignore non-zero positive return codes\n        if e.output:\n            print(e.output)\n    else:\n        # But negative return codes are signals - abort\n        if e.output:\n            print(e.output, file=sys.stderr)\n        if e.returncode < 0:\n            print(\"Task failed with signal\", -e.returncode, file=sys.stderr)\n        print(\"** Further testing aborted **\", file=sys.stderr)', 0, NULL, 0, NULL, NULL, '', 'twig', 0, NULL, 0, 0, NULL, 'python3', 'c,cpp,java,python3', NULL, '{\"numprocs\": 50}', 'EqualityGrader', NULL, 16000, 'ace', 0, 0, 0, '', '', 0, 0, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `mdl_question_coderunner_tests`
+--
+
+CREATE TABLE `mdl_question_coderunner_tests` (
+  `id` bigint(10) NOT NULL,
+  `questionid` bigint(10) NOT NULL,
+  `testtype` int(8) DEFAULT NULL,
+  `testcode` longtext DEFAULT NULL,
+  `stdin` longtext DEFAULT NULL,
+  `expected` longtext DEFAULT NULL,
+  `extra` longtext DEFAULT NULL,
+  `useasexample` tinyint(1) NOT NULL DEFAULT 0,
+  `display` varchar(30) NOT NULL DEFAULT 'SHOW',
+  `hiderestiffail` tinyint(1) NOT NULL DEFAULT 0,
+  `mark` decimal(8,3) NOT NULL DEFAULT 1.000
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Contains tests (usually called ''testcases'') to perform on a ' ROW_FORMAT=COMPRESSED;
 
 -- --------------------------------------------------------
 
@@ -15469,8 +17778,7 @@ CREATE TABLE `mdl_question_numerical` (
 --
 
 INSERT INTO `mdl_question_numerical` (`id`, `question`, `answer`, `tolerance`) VALUES
-(1, 8, 24, '0.1'),
-(2, 15, 41, '0.1');
+(1, 8, 24, '0.1');
 
 -- --------------------------------------------------------
 
@@ -15492,8 +17800,7 @@ CREATE TABLE `mdl_question_numerical_options` (
 --
 
 INSERT INTO `mdl_question_numerical_options` (`id`, `question`, `showunits`, `unitsleft`, `unitgradingtype`, `unitpenalty`) VALUES
-(1, 8, 3, 0, 0, 0.1000000),
-(2, 15, 3, 0, 0, 0.1000000);
+(1, 8, 3, 0, 0, 0.1000000);
 
 -- --------------------------------------------------------
 
@@ -15531,16 +17838,8 @@ CREATE TABLE `mdl_question_references` (
 INSERT INTO `mdl_question_references` (`id`, `usingcontextid`, `component`, `questionarea`, `itemid`, `questionbankentryid`, `version`) VALUES
 (1, 18, 'mod_quiz', 'slot', 1, 1, NULL),
 (2, 18, 'mod_quiz', 'slot', 2, 2, NULL),
-(3, 31, 'mod_quiz', 'slot', 3, 14, NULL),
-(4, 31, 'mod_quiz', 'slot', 4, 5, NULL),
-(5, 31, 'mod_quiz', 'slot', 5, 17, NULL),
-(6, 31, 'mod_quiz', 'slot', 6, 12, NULL),
-(7, 31, 'mod_quiz', 'slot', 7, 9, NULL),
-(8, 31, 'mod_quiz', 'slot', 8, 4, NULL),
-(9, 31, 'mod_quiz', 'slot', 9, 11, NULL),
-(10, 31, 'mod_quiz', 'slot', 10, 16, NULL),
-(11, 31, 'mod_quiz', 'slot', 11, 8, NULL),
-(12, 31, 'mod_quiz', 'slot', 12, 6, NULL);
+(13, 31, 'mod_quiz', 'slot', 13, 11, NULL),
+(14, 31, 'mod_quiz', 'slot', 14, 16, NULL);
 
 -- --------------------------------------------------------
 
@@ -15660,9 +17959,8 @@ CREATE TABLE `mdl_question_usages` (
 INSERT INTO `mdl_question_usages` (`id`, `contextid`, `component`, `preferredbehaviour`) VALUES
 (2, 18, 'mod_quiz', 'deferredfeedback'),
 (3, 18, 'mod_quiz', 'deferredfeedback'),
-(5, 31, 'mod_quiz', 'deferredfeedback'),
-(6, 31, 'mod_quiz', 'deferredfeedback'),
-(7, 31, 'mod_quiz', 'deferredfeedback');
+(16, 5, 'core_question_preview', 'deferredfeedback'),
+(18, 31, 'mod_quiz', 'deferredfeedback');
 
 -- --------------------------------------------------------
 
@@ -15685,21 +17983,38 @@ CREATE TABLE `mdl_question_versions` (
 INSERT INTO `mdl_question_versions` (`id`, `questionbankentryid`, `version`, `questionid`, `status`) VALUES
 (1, 1, 1, 1, 'ready'),
 (2, 2, 1, 2, 'ready'),
-(3, 3, 1, 3, 'ready'),
-(4, 4, 1, 4, 'ready'),
-(5, 5, 1, 5, 'ready'),
-(6, 6, 1, 6, 'ready'),
-(7, 7, 1, 7, 'ready'),
-(8, 8, 1, 8, 'ready'),
-(9, 9, 1, 9, 'ready'),
-(10, 10, 1, 10, 'ready'),
+(4, 4, 1, 4, 'hidden'),
+(5, 5, 1, 5, 'hidden'),
+(6, 6, 1, 6, 'hidden'),
+(8, 8, 1, 8, 'hidden'),
 (11, 11, 1, 11, 'ready'),
-(12, 12, 1, 12, 'ready'),
-(13, 13, 1, 13, 'ready'),
-(14, 14, 1, 14, 'ready'),
-(15, 15, 1, 15, 'ready'),
+(12, 12, 1, 12, 'hidden'),
+(14, 14, 1, 14, 'hidden'),
 (16, 16, 1, 16, 'ready'),
-(17, 17, 1, 17, 'ready');
+(17, 17, 1, 17, 'hidden'),
+(18, 9, 2, 18, 'hidden'),
+(19, 11, 2, 19, 'ready'),
+(20, 11, 3, 20, 'ready'),
+(21, 18, 1, 21, 'ready'),
+(22, 19, 1, 22, 'ready'),
+(23, 20, 1, 23, 'ready'),
+(24, 21, 1, 24, 'ready'),
+(25, 22, 1, 25, 'ready'),
+(26, 23, 1, 26, 'ready'),
+(27, 24, 1, 27, 'ready'),
+(28, 25, 1, 28, 'ready'),
+(29, 26, 1, 29, 'ready'),
+(30, 27, 1, 30, 'ready'),
+(31, 28, 1, 31, 'ready'),
+(32, 29, 1, 32, 'ready'),
+(33, 30, 1, 33, 'ready'),
+(34, 31, 1, 34, 'ready'),
+(35, 32, 1, 35, 'ready'),
+(36, 33, 1, 36, 'ready'),
+(37, 34, 1, 37, 'ready'),
+(38, 35, 1, 38, 'ready'),
+(39, 36, 1, 39, 'ready'),
+(40, 37, 1, 40, 'ready');
 
 -- --------------------------------------------------------
 
@@ -15757,7 +18072,7 @@ CREATE TABLE `mdl_quiz` (
 
 INSERT INTO `mdl_quiz` (`id`, `course`, `name`, `intro`, `introformat`, `timeopen`, `timeclose`, `timelimit`, `overduehandling`, `graceperiod`, `preferredbehaviour`, `canredoquestions`, `attempts`, `attemptonlast`, `grademethod`, `decimalpoints`, `questiondecimalpoints`, `reviewattempt`, `reviewcorrectness`, `reviewmarks`, `reviewspecificfeedback`, `reviewgeneralfeedback`, `reviewrightanswer`, `reviewoverallfeedback`, `questionsperpage`, `navmethod`, `shuffleanswers`, `sumgrades`, `grade`, `timecreated`, `timemodified`, `password`, `subnet`, `browsersecurity`, `delay1`, `delay2`, `showuserpicture`, `showblocks`, `completionattemptsexhausted`, `completionminattempts`, `allowofflineattempts`) VALUES
 (1, 2, 'quiz1', '', 1, 0, 0, 0, 'autosubmit', 0, 'deferredfeedback', 0, 0, 0, 1, 2, -1, 69888, 4352, 4352, 4352, 4352, 4352, 4352, 1, 'free', 1, 2.00000, 10.00000, 1736764428, 1736764428, '', '', '-', 0, 0, 0, 0, 0, 0, 0),
-(2, 3, 'IIT D Recruitment 2025', '', 1, 0, 0, 0, 'autosubmit', 0, 'deferredfeedback', 0, 0, 0, 1, 2, -1, 69632, 0, 0, 4096, 4096, 0, 0, 1, 'free', 1, 10.00000, 10.00000, 1737357879, 1737357879, '', '', 'securewindow', 0, 0, 1, 0, 0, 0, 0);
+(2, 3, 'IIT D Recruitment 2025', '', 1, 0, 0, 0, 'autosubmit', 0, 'deferredfeedback', 0, 0, 0, 1, 2, -1, 69632, 0, 0, 4096, 4096, 0, 0, 1, 'free', 1, 2.00000, 10.00000, 1737357879, 1737454095, '', '', 'securewindow', 0, 0, 1, 0, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -15802,7 +18117,7 @@ CREATE TABLE `mdl_quizaccess_seb_quizsettings` (
 --
 
 INSERT INTO `mdl_quizaccess_seb_quizsettings` (`id`, `quizid`, `cmid`, `templateid`, `requiresafeexambrowser`, `showsebtaskbar`, `showwificontrol`, `showreloadbutton`, `showtime`, `showkeyboardlayout`, `allowuserquitseb`, `quitpassword`, `linkquitseb`, `userconfirmquit`, `enableaudiocontrol`, `muteonstartup`, `allowspellchecking`, `allowreloadinexam`, `activateurlfiltering`, `filterembeddedcontent`, `expressionsallowed`, `regexallowed`, `expressionsblocked`, `regexblocked`, `allowedbrowserexamkeys`, `showsebdownloadlink`, `usermodified`, `timecreated`, `timemodified`) VALUES
-(1, 2, 4, 0, 1, 1, 0, 1, 1, 1, 1, '', '', 1, 0, 0, 0, 1, 0, 0, '', '', '', '', NULL, 1, 2, 1737357880, 1737357880);
+(1, 2, 4, 0, 1, 1, 0, 1, 1, 1, 1, '', '', 1, 0, 0, 0, 1, 0, 0, '', '', '', '', NULL, 1, 2, 1737357880, 1737454095);
 
 -- --------------------------------------------------------
 
@@ -15854,9 +18169,7 @@ CREATE TABLE `mdl_quiz_attempts` (
 INSERT INTO `mdl_quiz_attempts` (`id`, `quiz`, `userid`, `attempt`, `uniqueid`, `layout`, `currentpage`, `preview`, `state`, `timestart`, `timefinish`, `timemodified`, `timemodifiedoffline`, `timecheckstate`, `sumgrades`, `gradednotificationsenttime`) VALUES
 (2, 1, 2, 1, 2, '1,0,2,0', 0, 1, 'inprogress', 1736764969, 0, 1736764969, 0, NULL, NULL, NULL),
 (3, 1, 3, 1, 3, '1,0,2,0', 1, 0, 'finished', 1736766144, 1736766207, 1736766207, 0, NULL, 1.00000, 1736766207),
-(5, 2, 2, 1, 5, '1,0,2,0,3,0,4,0,5,0,6,0,7,0,8,0,9,0,10,0', 0, 1, 'inprogress', 1737358731, 0, 1737358754, 0, NULL, NULL, NULL),
-(6, 2, 3, 1, 6, '1,0,2,0,3,0,4,0,5,0,6,0,7,0,8,0,9,0,10,0', 3, 0, 'finished', 1737359078, 1737359138, 1737359138, 0, NULL, 1.00000, 1737359138),
-(7, 2, 3, 2, 7, '1,0,2,0,3,0,4,0,5,0,6,0,7,0,8,0,9,0,10,0', 3, 0, 'finished', 1737359159, 1737364545, 1737364545, 0, NULL, 1.00000, 1737364545);
+(17, 2, 3, 1, 18, '1,0,2,0', 1, 0, 'finished', 1737539301, 1737539322, 1737539454, 0, NULL, 2.00000, 1737539322);
 
 -- --------------------------------------------------------
 
@@ -15879,7 +18192,7 @@ CREATE TABLE `mdl_quiz_feedback` (
 
 INSERT INTO `mdl_quiz_feedback` (`id`, `quizid`, `feedbacktext`, `feedbacktextformat`, `mingrade`, `maxgrade`) VALUES
 (1, 1, '', 1, 0.00000, 11.00000),
-(2, 2, '', 1, 0.00000, 11.00000);
+(3, 2, '', 1, 0.00000, 11.00000);
 
 -- --------------------------------------------------------
 
@@ -15901,7 +18214,7 @@ CREATE TABLE `mdl_quiz_grades` (
 
 INSERT INTO `mdl_quiz_grades` (`id`, `quiz`, `userid`, `grade`, `timemodified`) VALUES
 (1, 1, 3, 5.00000, 1736766207),
-(2, 2, 3, 1.00000, 1737364545);
+(6, 2, 3, 10.00000, 1737539454);
 
 -- --------------------------------------------------------
 
@@ -16005,16 +18318,8 @@ CREATE TABLE `mdl_quiz_slots` (
 INSERT INTO `mdl_quiz_slots` (`id`, `slot`, `quizid`, `page`, `displaynumber`, `requireprevious`, `maxmark`) VALUES
 (1, 1, 1, 1, NULL, 0, 1.0000000),
 (2, 2, 1, 2, NULL, 0, 1.0000000),
-(3, 1, 2, 1, NULL, 0, 1.0000000),
-(4, 2, 2, 2, NULL, 0, 1.0000000),
-(5, 3, 2, 3, NULL, 0, 1.0000000),
-(6, 4, 2, 4, NULL, 0, 1.0000000),
-(7, 5, 2, 5, NULL, 0, 1.0000000),
-(8, 6, 2, 6, NULL, 0, 1.0000000),
-(9, 7, 2, 7, NULL, 0, 1.0000000),
-(10, 8, 2, 8, NULL, 0, 1.0000000),
-(11, 9, 2, 9, NULL, 0, 1.0000000),
-(12, 10, 2, 10, NULL, 0, 1.0000000);
+(13, 1, 2, 1, NULL, 0, 1.0000000),
+(14, 2, 2, 2, NULL, 0, 1.0000000);
 
 -- --------------------------------------------------------
 
@@ -18047,7 +20352,38 @@ INSERT INTO `mdl_role_capabilities` (`id`, `contextid`, `roleid`, `capability`, 
 (1509, 1, 5, 'moodle/course:view', -1000, 1737367034, 2),
 (1510, 10, 5, 'moodle/block:edit', -1000, 1737367268, 2),
 (1511, 10, 5, 'moodle/block:view', -1000, 1737367268, 2),
-(1512, 10, 6, 'moodle/block:view', -1000, 1737367388, 2);
+(1512, 10, 6, 'moodle/block:view', -1000, 1737367388, 2),
+(1513, 1, 1, 'tool/bulkemail:sendbulkemails', 1, 1737546095, 2),
+(1514, 1, 1, 'block/quickmail:myaddinstance', 1, 1737546294, 2),
+(1515, 1, 8, 'block/quickmail:myaddinstance', -1, 1737546294, 2),
+(1516, 1, 7, 'block/quickmail:myaddinstance', -1, 1737546294, 2),
+(1517, 1, 3, 'block/quickmail:addinstance', 1, 1737546294, 2),
+(1518, 1, 1, 'block/quickmail:addinstance', 1, 1737546294, 2),
+(1519, 1, 1, 'block/quickmail:cansend', 1, 1737546294, 2),
+(1520, 1, 3, 'block/quickmail:cansend', 1, 1737546294, 2),
+(1521, 1, 2, 'block/quickmail:cansend', 1, 1737546294, 2),
+(1522, 1, 4, 'block/quickmail:cansend', 1, 1737546294, 2),
+(1523, 1, 1, 'block/quickmail:canconfig', 1, 1737546294, 2),
+(1524, 1, 3, 'block/quickmail:canconfig', 1, 1737546294, 2),
+(1525, 1, 1, 'block/quickmail:allowalternate', 1, 1737546294, 2),
+(1526, 1, 2, 'block/quickmail:allowalternate', 1, 1737546294, 2),
+(1527, 1, 3, 'block/quickmail:allowalternate', 1, 1737546294, 2),
+(1528, 1, 4, 'block/quickmail:allowalternate', 1, 1737546294, 2),
+(1529, 1, 1, 'block/quickmail:allowcoursealternate', 1, 1737546294, 2),
+(1530, 1, 2, 'block/quickmail:allowcoursealternate', 1, 1737546294, 2),
+(1531, 1, 3, 'block/quickmail:allowcoursealternate', 1, 1737546294, 2),
+(1532, 1, 1, 'block/quickmail:viewgroupusers', 1, 1737546294, 2),
+(1533, 1, 2, 'block/quickmail:viewgroupusers', 1, 1737546294, 2),
+(1534, 1, 3, 'block/quickmail:viewgroupusers', 1, 1737546294, 2),
+(1535, 1, 3, 'block/quickmail:createnotifications', 1, 1737546294, 2),
+(1536, 1, 1, 'block/quickmail:createnotifications', 1, 1737546294, 2),
+(1537, 1, 4, 'qtype/coderunner:viewhiddentestcases', 1, 1737547364, 2),
+(1538, 1, 3, 'qtype/coderunner:viewhiddentestcases', 1, 1737547364, 2),
+(1539, 1, 1, 'qtype/coderunner:viewhiddentestcases', 1, 1737547364, 2),
+(1540, 1, 5, 'qtype/coderunner:sandboxwsaccess', 1, 1737547364, 2),
+(1541, 1, 4, 'qtype/coderunner:sandboxwsaccess', 1, 1737547364, 2),
+(1542, 1, 3, 'qtype/coderunner:sandboxwsaccess', 1, 1737547364, 2),
+(1543, 1, 1, 'qtype/coderunner:sandboxwsaccess', 1, 1737547364, 2);
 
 -- --------------------------------------------------------
 
@@ -18412,13 +20748,43 @@ INSERT INTO `mdl_sessions` (`id`, `state`, `sid`, `userid`, `sessdata`, `timecre
 (21, 0, 'qsp0nuge7uvrirem45dpqtetd5', 0, NULL, 1737359022, 1737359022, '0:0:0:0:0:0:0:1', '0:0:0:0:0:0:0:1'),
 (22, 0, 'acll2gutkrqu81omfk3bhitif4', 0, NULL, 1737359028, 1737359028, '0:0:0:0:0:0:0:1', '0:0:0:0:0:0:0:1'),
 (24, 0, 'kkraet1qr3tk6c5qhp0gqpr4oa', 3, NULL, 1737359054, 1737359153, '0:0:0:0:0:0:0:1', '0:0:0:0:0:0:0:1'),
-(76, 0, 'memh90vmmaeh8v5m493hv38dj6', 2, NULL, 1737364111, 1737368535, '127.0.0.1', '127.0.0.1'),
 (79, 0, 'rspkkcirn5ueoiku5t74bluhvp', 0, NULL, 1737364464, 1737364464, '0:0:0:0:0:0:0:1', '0:0:0:0:0:0:0:1'),
 (80, 0, '3ultn8greqdenlv4a13lde8bju', 0, NULL, 1737364464, 1737364464, '0:0:0:0:0:0:0:1', '0:0:0:0:0:0:0:1'),
 (82, 0, '2bh0ut95f832rsug6rppbb1jd4', 3, NULL, 1737364494, 1737364545, '0:0:0:0:0:0:0:1', '0:0:0:0:0:0:0:1'),
-(86, 0, 'avh4kk5ja61q0l2nuo5hplfvb2', 3, NULL, 1737367411, 1737367458, '0:0:0:0:0:0:0:1', '0:0:0:0:0:0:0:1'),
 (87, 0, '2a62r8cg8frbbaj1577qgj4ide', 0, NULL, 1737368702, 1737368702, '127.0.0.1', '127.0.0.1'),
-(88, 0, 'gohbjbgtd3alhijmre8lhv0thv', 0, NULL, 1737368702, 1737368702, '127.0.0.1', '127.0.0.1');
+(88, 0, 'gohbjbgtd3alhijmre8lhv0thv', 0, NULL, 1737368702, 1737368702, '127.0.0.1', '127.0.0.1'),
+(89, 0, '1gg3rfbe5ojql0m5saodelr4a6', 0, NULL, 1737375067, 1737375067, '0:0:0:0:0:0:0:1', '0:0:0:0:0:0:0:1'),
+(90, 0, 'drc78feoa2dnp0ujgofdii6ukf', 0, NULL, 1737375067, 1737375067, '0:0:0:0:0:0:0:1', '0:0:0:0:0:0:0:1'),
+(92, 0, 'l0o9e69s69dsdu3nnevgf7q2pv', 3, NULL, 1737375180, 1737375228, '0:0:0:0:0:0:0:1', '0:0:0:0:0:0:0:1'),
+(93, 0, 'gibjplqs64onlt0css72utmtmc', 0, NULL, 1737375308, 1737375312, '0:0:0:0:0:0:0:1', '0:0:0:0:0:0:0:1'),
+(95, 0, 'akstkfa9p8iudbde1geg5rmfmv', 2, NULL, 1737375364, 1737375366, '127.0.0.1', '127.0.0.1'),
+(99, 0, '5qfl7iln5446m3qdn92km44akt', 0, NULL, 1737450603, 1737450603, '127.0.0.1', '127.0.0.1'),
+(100, 0, '6gnbp27c9u4m3hr08bmc2jd5pa', 0, NULL, 1737450603, 1737450603, '127.0.0.1', '127.0.0.1'),
+(101, 0, 'q1quqtt9llp16fagn40uolat1l', 0, NULL, 1737450606, 1737450606, '127.0.0.1', '127.0.0.1'),
+(103, 0, 'j5i16h0hh5ihk6u07arjde5mp2', 0, NULL, 1737453418, 1737453418, '0:0:0:0:0:0:0:1', '0:0:0:0:0:0:0:1'),
+(104, 0, '9jfsl9lem9aarqc3enkkjbaq0n', 0, NULL, 1737453419, 1737453419, '0:0:0:0:0:0:0:1', '0:0:0:0:0:0:0:1'),
+(106, 0, 'gj7sfbcffshu25p4voom991v97', 3, NULL, 1737453445, 1737453535, '0:0:0:0:0:0:0:1', '0:0:0:0:0:0:0:1'),
+(107, 0, '0pqhk7ccsnnabafaoak2urlfaf', 0, NULL, 1737453895, 1737453895, '0:0:0:0:0:0:0:1', '0:0:0:0:0:0:0:1'),
+(108, 0, '13vsdubs8hjv78mf6jcalo5kk0', 0, NULL, 1737453895, 1737453896, '0:0:0:0:0:0:0:1', '0:0:0:0:0:0:0:1'),
+(110, 0, 'bniqbi067mf8ntud80fht98vl7', 3, NULL, 1737453929, 1737453935, '0:0:0:0:0:0:0:1', '0:0:0:0:0:0:0:1'),
+(113, 0, 'prodl44pvl1qgtsqql62jp7b0m', 0, NULL, 1737453988, 1737453988, '0:0:0:0:0:0:0:1', '0:0:0:0:0:0:0:1'),
+(114, 0, 'dvedji4m16qp3qn6vc0ojg8ufu', 0, NULL, 1737453988, 1737453988, '0:0:0:0:0:0:0:1', '0:0:0:0:0:0:0:1'),
+(116, 0, 'r48qthfjtu34lae39ncetq9dtj', 3, NULL, 1737454015, 1737454021, '0:0:0:0:0:0:0:1', '0:0:0:0:0:0:0:1'),
+(117, 0, '88pgaj0tokou56pmqqdtfu4u77', 0, NULL, 1737454164, 1737454165, '0:0:0:0:0:0:0:1', '0:0:0:0:0:0:0:1'),
+(118, 0, 'et6qt3rgal4b434kv04rmsudmb', 0, NULL, 1737454165, 1737454165, '0:0:0:0:0:0:0:1', '0:0:0:0:0:0:0:1'),
+(120, 0, 'enacuk1j8qi84gkssg09i4611h', 3, NULL, 1737454181, 1737454265, '0:0:0:0:0:0:0:1', '0:0:0:0:0:0:0:1'),
+(121, 0, 'g08kfgh3pogjsabf40vqfs5ddr', 0, NULL, 1737454596, 1737457125, '0:0:0:0:0:0:0:1', '0:0:0:0:0:0:0:1'),
+(122, 0, 'ikthn14jh6tj6h113cu8cb8knd', 0, NULL, 1737455916, 1737455916, '127.0.0.1', '127.0.0.1'),
+(127, 0, '0sihg236oc1peov9peih3642pb', 0, NULL, 1737457220, 1737457220, '127.0.0.1', '127.0.0.1'),
+(129, 0, 'h4hlul5m0cil49mqgq71nra7at', 2, NULL, 1737529235, 1737548417, '127.0.0.1', '127.0.0.1'),
+(132, 0, '9pvo1mcoue3b35gers0efb26fm', 0, NULL, 1737530183, 1737530183, '127.0.0.1', '127.0.0.1'),
+(137, 0, 'drd2f5locsq2l151trdqsg2egm', 0, NULL, 1737538166, 1737538170, '0:0:0:0:0:0:0:1', '0:0:0:0:0:0:0:1'),
+(138, 0, 'ugm7s36t8vtsv8em1lo37u1akk', 0, NULL, 1737538171, 1737538171, '0:0:0:0:0:0:0:1', '0:0:0:0:0:0:0:1'),
+(140, 0, '02ss9mk3vqhq68f567oe5ml6rs', 3, NULL, 1737538191, 1737538221, '0:0:0:0:0:0:0:1', '0:0:0:0:0:0:0:1'),
+(141, 0, 'stmq5ss8cp8c729e2lhq3chh7i', 0, NULL, 1737539266, 1737539266, '0:0:0:0:0:0:0:1', '0:0:0:0:0:0:0:1'),
+(142, 0, '1q2c4nu0qlhmf4h0noq88u20de', 0, NULL, 1737539266, 1737539267, '0:0:0:0:0:0:0:1', '0:0:0:0:0:0:0:1'),
+(144, 0, 'eo78n5r6ugkbt1alvnecp4e4gt', 3, NULL, 1737539289, 1737539322, '0:0:0:0:0:0:0:1', '0:0:0:0:0:0:0:1'),
+(145, 0, 'auaagggkk6u9kkvvqb6hq88ro2', 0, NULL, 1737546991, 1737547892, '0:0:0:0:0:0:0:1', '0:0:0:0:0:0:0:1');
 
 -- --------------------------------------------------------
 
@@ -18820,7 +21186,8 @@ INSERT INTO `mdl_task_adhoc` (`id`, `component`, `classname`, `nextruntime`, `fa
 (10, 'quiz_statistics', '\\quiz_statistics\\task\\recalculate', 1737362739, 0, '{\"quizid\":2}', NULL, 0, 1737359139, NULL, NULL, NULL),
 (11, 'core', '\\core\\task\\send_login_notifications', 1737364096, 0, '{\"ismoodleapp\":false,\"useragent\":\"Mozilla\\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\\/537.36 (KHTML, like Gecko) Chrome\\/132.0.0.0 Safari\\/537.36\",\"loginip\":\"0:0:0:0:0:0:0:1\",\"logintime\":1737364097}', 3, 0, 1737364097, NULL, NULL, NULL),
 (12, '', '\\core_course\\task\\course_delete_modules', 1737364594, 0, '{\"cms\":[{\"id\":\"3\",\"course\":\"3\",\"module\":\"9\",\"instance\":\"2\",\"section\":\"7\",\"idnumber\":null,\"added\":\"1737357355\",\"score\":\"0\",\"indent\":\"0\",\"visible\":\"1\",\"visibleoncoursepage\":\"1\",\"visibleold\":\"1\",\"groupmode\":\"0\",\"groupingid\":\"0\",\"completion\":\"0\",\"completiongradeitemnumber\":null,\"completionview\":\"0\",\"completionexpected\":\"0\",\"completionpassgrade\":\"0\",\"showdescription\":\"0\",\"availability\":null,\"deletioninprogress\":\"1\",\"downloadcontent\":\"1\",\"lang\":null}],\"userid\":\"2\",\"realuserid\":\"2\"}', NULL, 0, 1737364595, NULL, NULL, NULL),
-(13, '', '\\core_course\\task\\course_delete_modules', 1737364618, 0, '{\"cms\":[],\"userid\":\"2\",\"realuserid\":\"2\"}', NULL, 0, 1737364619, NULL, NULL, NULL);
+(13, '', '\\core_course\\task\\course_delete_modules', 1737364618, 0, '{\"cms\":[],\"userid\":\"2\",\"realuserid\":\"2\"}', NULL, 0, 1737364619, NULL, NULL, NULL),
+(14, 'core', '\\core\\task\\send_login_notifications', 1737529489, 0, '{\"ismoodleapp\":false,\"useragent\":\"Mozilla\\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\\/537.36 (KHTML, like Gecko) Chrome\\/132.0.0.0 Safari\\/537.36\",\"loginip\":\"0:0:0:0:0:0:0:1\",\"logintime\":1737529490}', 3, 0, 1737529490, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -18985,7 +21352,10 @@ INSERT INTO `mdl_task_scheduled` (`id`, `component`, `classname`, `lastruntime`,
 (108, 'cachestore_redis', '\\cachestore_redis\\task\\ttl', 0, 1736764080, 0, '28', '*', '*', '*', '*', 0, 0, 0, NULL, NULL, NULL),
 (109, 'ltiservice_gradebookservices', '\\ltiservice_gradebookservices\\task\\cleanup_task', 0, 1736797800, 0, '50', '20', '*', '*', '*', 0, 0, 0, NULL, NULL, NULL),
 (110, 'workshopallocation_scheduled', '\\workshopallocation_scheduled\\task\\cron_task', 0, 1736763600, 0, '*', '*', '*', '*', '*', 0, 0, 0, NULL, NULL, NULL),
-(111, 'logstore_standard', '\\logstore_standard\\task\\cleanup_task', 0, 1736826660, 0, '51', '4', '*', '*', '*', 0, 0, 0, NULL, NULL, NULL);
+(111, 'logstore_standard', '\\logstore_standard\\task\\cleanup_task', 0, 1736826660, 0, '51', '4', '*', '*', '*', 0, 0, 0, NULL, NULL, NULL),
+(112, 'block_quickmail', '\\block_quickmail\\tasks\\send_all_ready_messages_task', 0, 1737546300, 0, '*/1', '*', '*', '*', '*', 0, 0, 0, NULL, NULL, NULL),
+(113, 'block_quickmail', '\\block_quickmail\\tasks\\queue_scheduled_notifications_task', 0, 1737546300, 0, '*/1', '*', '*', '*', '*', 0, 0, 0, NULL, NULL, NULL),
+(114, 'block_quickmail', '\\block_quickmail\\tasks\\migrate_legacy_data_task', 0, 1737546300, 0, '*/15', '*', '*', '*', '*', 0, 0, 1, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -19033,8 +21403,6 @@ INSERT INTO `mdl_tiny_autosave` (`id`, `elementid`, `contextid`, `pagehash`, `us
 (90, 'id_feedback_4', 29, '04e0a3289340919c22a8ac5a8dfba3324041d2d2', 2, '', 767916418, 'e0816bbc6de2b9ee921a9af51138a224', 1737358092),
 (91, 'id_hint_1', 29, '04e0a3289340919c22a8ac5a8dfba3324041d2d2', 2, '', 315142462, 'd253878de74a104867d05b7bda7875df', 1737358092),
 (92, 'id_hint_0', 29, '04e0a3289340919c22a8ac5a8dfba3324041d2d2', 2, '', 590143369, '07e036fb976959c0252c3550c24ae316', 1737358092),
-(94, 'id_introeditor', 31, 'bff8a13d52730042b82ec832b4610746cbcc698d', 2, '', 156478254, 'fcb90b078bb8b950c23a6a50d3d66f8a', 1737364788),
-(95, 'id_feedbacktext_0', 31, 'bff8a13d52730042b82ec832b4610746cbcc698d', 2, '', 619177631, 'd59e919f41ad3b99821613f3d5b04d1b', 1737364788),
 (96, 'id_generalfeedback', 29, '4305bf3bf57408faea241bebd27fd3be9e68deff', 2, '', 881034374, '22da546ecdd823c2d8e44070141ae5f1', 1737358680),
 (97, 'id_feedbacktrue', 29, '4305bf3bf57408faea241bebd27fd3be9e68deff', 2, '', 744996747, '1d027855da5b229ff4205a8603c8d9a9', 1737358680),
 (98, 'id_feedbackfalse', 29, '4305bf3bf57408faea241bebd27fd3be9e68deff', 2, '', 377552105, '66c4a52ef632fb035c3a87906e61de6d', 1737358680),
@@ -19044,8 +21412,50 @@ INSERT INTO `mdl_tiny_autosave` (`id`, `elementid`, `contextid`, `pagehash`, `us
 (106, 'id_description_editor', 3, '54f5264ec62764b3d303ab3d97937bd9dd416956', 2, '', 37126778, 'd41653501cde0deda3fad3509b668e51', 1737363292),
 (111, 'id_message', 30, 'b6c8fe8aff892d9baa08a4e58c90f8d608c26ad8', 2, '', 988535073, '646902cb6d4c7a577fb0bd68fe737093', 1737364134),
 (112, 'id_message', 32, 'aebe23bf93209580fcf6d1933a784d4b30bc0a54', 2, '', 699610747, 'fdb5db5d6753e204e524d1f8548d3a4b', 1737364295),
-(113, 'id_message', 2, 'ba4728aab356f7f992d7f44db4e869fe3c356acf', 2, '', 825091431, '640ad1808a2596c12c0915aa6c1af2fc', 1737368489),
-(117, 'id_s__summary', 2, '', 2, '', NULL, '', 1737367177);
+(113, 'id_message', 2, 'ba4728aab356f7f992d7f44db4e869fe3c356acf', 2, '', 747446341, '3aa62281c36a9a6fdb5d75b17ce75e18', 1737456856),
+(117, 'id_s__summary', 2, '', 2, '', NULL, '', 1737367177),
+(184, 'id_generalfeedback', 29, '9fd218a4baacd8c45f6f5c1b9d19cf8a303622a8', 2, '', 54952507, 'a5429dd5ee27c2a78d32a12949bc1ecc', 1737453862),
+(185, 'id_feedback_0', 29, '9fd218a4baacd8c45f6f5c1b9d19cf8a303622a8', 2, '', 931716121, '3852a7b0c7c530ab4d1fb2a015504ed8', 1737453862),
+(186, 'id_feedback_1', 29, '9fd218a4baacd8c45f6f5c1b9d19cf8a303622a8', 2, '', 267325041, 'f9941413b12db176a4956b2c3fb7bb93', 1737453862),
+(187, 'id_feedback_2', 29, '9fd218a4baacd8c45f6f5c1b9d19cf8a303622a8', 2, '', 187868860, 'aaf6812d6b9009247ddd1cfce3af1ea0', 1737453862),
+(188, 'id_feedback_3', 29, '9fd218a4baacd8c45f6f5c1b9d19cf8a303622a8', 2, '', 43851565, '8941d3592ae582b2077115ed11cc1439', 1737453862),
+(189, 'id_correctfeedback', 29, '9fd218a4baacd8c45f6f5c1b9d19cf8a303622a8', 2, '', 221649991, '1c95d3b3742fd934130fc18e81e32185', 1737453862),
+(190, 'id_partiallycorrectfeedback', 29, '9fd218a4baacd8c45f6f5c1b9d19cf8a303622a8', 2, '', 572344283, 'fd0d7151332378b8988668ba7d722fa8', 1737453862),
+(191, 'id_incorrectfeedback', 29, '9fd218a4baacd8c45f6f5c1b9d19cf8a303622a8', 2, '', 732163401, 'eb68ce7a32a6dbd2ac1b037cc8398aa5', 1737453862),
+(192, 'id_hint_0', 29, '9fd218a4baacd8c45f6f5c1b9d19cf8a303622a8', 2, '', 378245701, '960aca78bd42d319c60556719432913f', 1737453862),
+(193, 'id_hint_1', 29, '9fd218a4baacd8c45f6f5c1b9d19cf8a303622a8', 2, '', 933084424, '88c03904be61d7b0f62f2f8549f897d2', 1737453862),
+(194, 'id_questiontext', 29, '45fc2b248e7cec1efd13ec0f9124d5a41f713a03', 2, '<p>asd</p>', 946877469, '5dd5715c21ba84b79b0c672a13bcf701', 1737454418),
+(195, 'id_generalfeedback', 29, '45fc2b248e7cec1efd13ec0f9124d5a41f713a03', 2, '', 616708945, '4d0d4b5d9c13a338b9d168c78a3ae2bb', 1737454409),
+(196, 'id_graderinfo', 29, '45fc2b248e7cec1efd13ec0f9124d5a41f713a03', 2, '', 579495620, 'fada09bf905f3509355b2a4ce7cf1523', 1737454409),
+(197, 'id_responsetemplate', 29, '45fc2b248e7cec1efd13ec0f9124d5a41f713a03', 2, '', NULL, '270280d1938be4b407d7ce0f724a11f6', 1737454409),
+(198, 'id_questiontext', 29, 'e57cccb057da990bcb0156db5333b78fba362099', 2, '', 386387596, '215dafe7d55b97a4807a25efcd096d02', 1737454481),
+(199, 'id_generalfeedback', 29, 'e57cccb057da990bcb0156db5333b78fba362099', 2, '', 912512870, '6f32a9150b61bb10591c2a875e834d79', 1737454481),
+(200, 'id_feedbacktrue', 29, 'e57cccb057da990bcb0156db5333b78fba362099', 2, '', 586534824, '09566128d208df377298b75c9bd32042', 1737454481),
+(201, 'id_feedbackfalse', 29, 'e57cccb057da990bcb0156db5333b78fba362099', 2, '', 804922403, 'cca49df84666fa96fdbc766d5a332e4e', 1737454481),
+(257, 'id_s_theme_moove_marketing1content', 1, '', 2, '', NULL, '', 1737530101),
+(258, 'id_s_theme_moove_marketingcontent', 1, '', 2, '<p><em>\"The only way to do great work is to love what you do.\"</em></p>', NULL, '', 1737530100),
+(259, 'id_s_theme_moove_marketing4content', 1, '', 2, '<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.</p>', NULL, '', 1737530102),
+(260, 'id_s_theme_moove_marketing2content', 1, '', 2, '<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.</p>', NULL, '', 1737530101),
+(261, 'id_s_theme_moove_numbersfrontpagecontent', 1, '', 2, '<h2>SRI Recruitment Portal</h2>\n<p>\"The only way to do great work is to love what you do.\"</p>', NULL, '', 1737530102),
+(262, 'id_s_theme_moove_marketing3content', 1, '', 2, '<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.</p>', NULL, '', 1737530102),
+(272, 'id_s_theme_degrade_frontpage_about_description', 1, '', 2, '', NULL, '', 1737457000),
+(276, 'id_s_theme_trema_defaultfrontpagebody', 1, '', 2, '', NULL, '', 1737530064),
+(280, 'id_s_theme_degrade_login_forgot_description', 1, '', 2, '', NULL, '', 1737547858),
+(281, 'id_s_theme_degrade_login_login_description', 1, '', 2, '', NULL, '', 1737547857),
+(282, 'id_s_theme_degrade_login_signup_description', 1, '', 2, '', NULL, '', 1737547859),
+(290, 'id_generalfeedback', 29, '1fb525db20054bc25fe1449d9c32543383db83ec', 2, '', 566763347, '0bfda5a1f181ccd235c509f4d08788c5', 1737538593),
+(291, 'id_hint_0', 29, '1fb525db20054bc25fe1449d9c32543383db83ec', 2, '', 28388679, '162c8ebeb94941cf9c1a020fb48be0ea', 1737538593),
+(292, 'id_hint_1', 29, '1fb525db20054bc25fe1449d9c32543383db83ec', 2, '', 612444458, '7a35be4bacd513a1ebb43230a21992b0', 1737538593),
+(293, 'id_questiontext', 29, '1fb525db20054bc25fe1449d9c32543383db83ec', 2, '', 776840995, '23eb0d430b72414197d0a11f49afcca7', 1737538593),
+(294, 'id_introeditor', 31, 'bff8a13d52730042b82ec832b4610746cbcc698d', 2, '', 415248284, 'ac52454d3fb15a6a09e9d25ab6ee85e1', 1737546820),
+(295, 'id_feedbacktext_0', 31, 'bff8a13d52730042b82ec832b4610746cbcc698d', 2, '', 604440946, 'a810ee5c57488c109b4d37ae4baf929e', 1737546820),
+(296, 'id_introeditor', 31, 'efdbaabe9483bc00004a651bbe12d86c5145b5a5', 2, '', 693166419, 'c89cf916770b69ab32d99b23fcc988c2', 1737539050),
+(297, 'id_feedbacktext_0', 31, 'efdbaabe9483bc00004a651bbe12d86c5145b5a5', 2, '', 281112126, '69e7cfbe2f755316feb46c978cf72635', 1737539050),
+(298, 'q18:2_-comment_id', 31, '', 2, '', 701885596, '', 1737539414),
+(300, 'id_introeditor', 29, '1a70313eec22fe2a9466fcccae67b7a9e08f3309', 2, '', 475748329, '82a60bfa8cec8d0b8d24730ade04322b', 1737546175),
+(301, 'id_introeditor', 29, 'a0ad3e0bd109fa87f5637091c6721ffabb0aab38', 2, '', 161371726, 'f5b51d18308aebd4f7f625f70e44bb3b', 1737546750),
+(310, 'id_generalfeedback', 29, '6bd3661cf9f407287c15d919913cc8248fb1c91f', 2, '', 94079014, 'c93180f9d62d37522e1d467b70229b0d', 1737548423),
+(311, 'id_questiontext', 29, 'e0e266dfa57a779f0c19586cd14154bb803d655e', 2, '<p>write a function  to add two numbers</p>', NULL, '4e9c6d414e0efb0ea5a19bca95239cc8', 1737548423);
 
 -- --------------------------------------------------------
 
@@ -19648,10 +22058,10 @@ CREATE TABLE `mdl_tool_usertours_tours` (
 --
 
 INSERT INTO `mdl_tool_usertours_tours` (`id`, `name`, `description`, `pathmatch`, `enabled`, `sortorder`, `endtourlabel`, `configdata`, `displaystepnumbers`) VALUES
-(1, 'tour_navigation_course_student_tour_name,tool_usertours', 'tour_navigation_course_student_tour_des,tool_usertours', '/course/view.php%', 1, 3, '', '{\"placement\":\"right\",\"orphan\":\"0\",\"backdrop\":\"1\",\"reflex\":\"0\",\"filtervalues\":{\"accessdate\":{\"filter_accessdate\":\"tool_usertours_accountcreation\",\"filter_accessdate_range\":0,\"filter_accessdate_enabled\":\"0\"},\"category\":[],\"course\":[],\"courseformat\":[],\"role\":[\"student\"],\"theme\":[\"boost\",\"moove\"],\"cssselector\":[]},\"majorupdatetime\":1641972472,\"shipped_tour\":true,\"shipped_filename\":\"40_tour_navigation_course_student.json\",\"shipped_version\":3}', 1),
-(2, 'tour_navigation_course_teacher_tour_name,tool_usertours', 'tour_navigation_course_teacher_tour_des,tool_usertours', '/course/view.php%', 1, 2, '', '{\"placement\":\"bottom\",\"orphan\":\"0\",\"backdrop\":\"1\",\"reflex\":\"0\",\"filtervalues\":{\"accessdate\":{\"filter_accessdate\":\"tool_usertours_accountcreation\",\"filter_accessdate_range\":0,\"filter_accessdate_enabled\":\"0\"},\"category\":[],\"course\":[],\"courseformat\":[],\"role\":[\"-1\",\"coursecreator\",\"manager\",\"teacher\",\"editingteacher\"],\"theme\":[\"boost\",\"moove\"],\"cssselector\":[]},\"majorupdatetime\":1641972470,\"shipped_tour\":true,\"shipped_filename\":\"40_tour_navigation_course_teacher.json\",\"shipped_version\":3}', 1),
-(3, 'tour_navigation_mycourses_tour_name,tool_usertours', 'tour_navigation_mycourses_tour_des,tool_usertours', '/my/courses.php', 1, 1, 'tour_navigation_mycourses_endtourlabel,tool_usertours', '{\"placement\":\"bottom\",\"orphan\":\"0\",\"backdrop\":\"1\",\"reflex\":\"0\",\"filtervalues\":{\"accessdate\":{\"filter_accessdate\":\"tool_usertours_accountcreation\",\"filter_accessdate_range\":0,\"filter_accessdate_enabled\":\"0\"},\"category\":[],\"course\":[],\"courseformat\":[],\"role\":[],\"theme\":[\"boost\",\"moove\"],\"cssselector\":[]},\"majorupdatetime\":1641972468,\"shipped_tour\":true,\"shipped_filename\":\"40_tour_navigation_mycourse.json\",\"shipped_version\":5}', 1),
-(4, 'tour_navigation_dashboard_tour_name,tool_usertours', 'tour_navigation_dashboard_tour_des,tool_usertours', 'FRONTPAGE_MY', 1, 0, '', '{\"placement\":\"left\",\"orphan\":\"0\",\"backdrop\":\"1\",\"reflex\":\"0\",\"filtervalues\":{\"accessdate\":{\"filter_accessdate\":\"tool_usertours_accountcreation\",\"filter_accessdate_range\":0,\"filter_accessdate_enabled\":\"0\"},\"category\":[],\"course\":[],\"courseformat\":[],\"role\":[],\"theme\":[\"boost\",\"moove\"],\"cssselector\":[]},\"majorupdatetime\":1641972465,\"shipped_tour\":true,\"shipped_filename\":\"40_tour_navigation_dashboard.json\",\"shipped_version\":4}', 1);
+(1, 'tour_navigation_course_student_tour_name,tool_usertours', 'tour_navigation_course_student_tour_des,tool_usertours', '/course/view.php%', 1, 3, '', '{\"placement\":\"right\",\"orphan\":\"0\",\"backdrop\":\"1\",\"reflex\":\"0\",\"filtervalues\":{\"accessdate\":{\"filter_accessdate\":\"tool_usertours_accountcreation\",\"filter_accessdate_range\":0,\"filter_accessdate_enabled\":\"0\"},\"category\":[],\"course\":[],\"courseformat\":[],\"role\":[\"student\"],\"theme\":[\"boost\",\"moove\",\"trema\"],\"cssselector\":[]},\"majorupdatetime\":1641972472,\"shipped_tour\":true,\"shipped_filename\":\"40_tour_navigation_course_student.json\",\"shipped_version\":3}', 1),
+(2, 'tour_navigation_course_teacher_tour_name,tool_usertours', 'tour_navigation_course_teacher_tour_des,tool_usertours', '/course/view.php%', 1, 2, '', '{\"placement\":\"bottom\",\"orphan\":\"0\",\"backdrop\":\"1\",\"reflex\":\"0\",\"filtervalues\":{\"accessdate\":{\"filter_accessdate\":\"tool_usertours_accountcreation\",\"filter_accessdate_range\":0,\"filter_accessdate_enabled\":\"0\"},\"category\":[],\"course\":[],\"courseformat\":[],\"role\":[\"-1\",\"coursecreator\",\"manager\",\"teacher\",\"editingteacher\"],\"theme\":[\"boost\",\"moove\",\"trema\"],\"cssselector\":[]},\"majorupdatetime\":1641972470,\"shipped_tour\":true,\"shipped_filename\":\"40_tour_navigation_course_teacher.json\",\"shipped_version\":3}', 1),
+(3, 'tour_navigation_mycourses_tour_name,tool_usertours', 'tour_navigation_mycourses_tour_des,tool_usertours', '/my/courses.php', 1, 1, 'tour_navigation_mycourses_endtourlabel,tool_usertours', '{\"placement\":\"bottom\",\"orphan\":\"0\",\"backdrop\":\"1\",\"reflex\":\"0\",\"filtervalues\":{\"accessdate\":{\"filter_accessdate\":\"tool_usertours_accountcreation\",\"filter_accessdate_range\":0,\"filter_accessdate_enabled\":\"0\"},\"category\":[],\"course\":[],\"courseformat\":[],\"role\":[],\"theme\":[\"boost\",\"moove\",\"trema\"],\"cssselector\":[]},\"majorupdatetime\":1641972468,\"shipped_tour\":true,\"shipped_filename\":\"40_tour_navigation_mycourse.json\",\"shipped_version\":5}', 1),
+(4, 'tour_navigation_dashboard_tour_name,tool_usertours', 'tour_navigation_dashboard_tour_des,tool_usertours', 'FRONTPAGE_MY', 1, 0, '', '{\"placement\":\"left\",\"orphan\":\"0\",\"backdrop\":\"1\",\"reflex\":\"0\",\"filtervalues\":{\"accessdate\":{\"filter_accessdate\":\"tool_usertours_accountcreation\",\"filter_accessdate_range\":0,\"filter_accessdate_enabled\":\"0\"},\"category\":[],\"course\":[],\"courseformat\":[],\"role\":[],\"theme\":[\"boost\",\"moove\",\"trema\"],\"cssselector\":[]},\"majorupdatetime\":1641972465,\"shipped_tour\":true,\"shipped_filename\":\"40_tour_navigation_dashboard.json\",\"shipped_version\":4}', 1);
 
 -- --------------------------------------------------------
 
@@ -20943,7 +23353,25 @@ INSERT INTO `mdl_upgrade_log` (`id`, `type`, `plugin`, `version`, `targetversion
 (1262, 0, 'logstore_standard', '2023042400', '2023042400', 'Plugin installed', NULL, '', 0, 1736763598),
 (1263, 0, 'theme_moove', NULL, '2023051000', 'Starting plugin installation', NULL, '', 2, 1737356764),
 (1264, 0, 'theme_moove', '2023051000', '2023051000', 'Upgrade savepoint reached', NULL, '', 2, 1737356764),
-(1265, 0, 'theme_moove', '2023051000', '2023051000', 'Plugin installed', NULL, '', 2, 1737356765);
+(1265, 0, 'theme_moove', '2023051000', '2023051000', 'Plugin installed', NULL, '', 2, 1737356765),
+(1266, 0, 'theme_trema', NULL, '2024111400', 'Starting plugin installation', NULL, '', 2, 1737456437),
+(1267, 0, 'theme_trema', '2024111400', '2024111400', 'Upgrade savepoint reached', NULL, '', 2, 1737456437),
+(1268, 0, 'theme_trema', '2024111400', '2024111400', 'Plugin installed', NULL, '', 2, 1737456437),
+(1269, 0, 'theme_degrade', NULL, '2025011900', 'Starting plugin installation', NULL, '', 2, 1737456694),
+(1270, 0, 'theme_degrade', '2025011900', '2025011900', 'Upgrade savepoint reached', NULL, '', 2, 1737456694),
+(1271, 0, 'theme_degrade', '2025011900', '2025011900', 'Plugin installed', NULL, '', 2, 1737456698),
+(1272, 0, 'tool_bulkemail', NULL, '2021012701', 'Starting plugin installation', NULL, '', 2, 1737546095),
+(1273, 0, 'tool_bulkemail', '2021012701', '2021012701', 'Upgrade savepoint reached', NULL, '', 2, 1737546095),
+(1274, 0, 'tool_bulkemail', '2021012701', '2021012701', 'Plugin installed', NULL, '', 2, 1737546096),
+(1275, 0, 'block_quickmail', NULL, '2024101701', 'Starting plugin installation', NULL, '', 2, 1737546294),
+(1276, 0, 'block_quickmail', '2024101701', '2024101701', 'Upgrade savepoint reached', NULL, '', 2, 1737546294),
+(1277, 0, 'block_quickmail', '2024101701', '2024101701', 'Plugin installed', NULL, '', 2, 1737546295),
+(1278, 0, 'qtype_coderunner', NULL, '2022110900', 'Starting plugin installation', NULL, '', 2, 1737547362),
+(1279, 0, 'qtype_coderunner', '2022110900', '2022110900', 'Upgrade savepoint reached', NULL, '', 2, 1737547362),
+(1280, 0, 'qtype_coderunner', '2022110900', '2022110900', 'Plugin installed', NULL, '', 2, 1737547364),
+(1281, 0, 'qbehaviour_adaptive_adapted_for_coderunner', NULL, '2024041800', 'Starting plugin installation', NULL, '', 2, 1737547365),
+(1282, 0, 'qbehaviour_adaptive_adapted_for_coderunner', '2024041800', '2024041800', 'Upgrade savepoint reached', NULL, '', 2, 1737547365),
+(1283, 0, 'qbehaviour_adaptive_adapted_for_coderunner', '2024041800', '2024041800', 'Plugin installed', NULL, '', 2, 1737547365);
 
 -- --------------------------------------------------------
 
@@ -21027,8 +23455,8 @@ CREATE TABLE `mdl_user` (
 
 INSERT INTO `mdl_user` (`id`, `auth`, `confirmed`, `policyagreed`, `deleted`, `suspended`, `mnethostid`, `username`, `password`, `idnumber`, `firstname`, `lastname`, `email`, `emailstop`, `phone1`, `phone2`, `institution`, `department`, `address`, `city`, `country`, `lang`, `calendartype`, `theme`, `timezone`, `firstaccess`, `lastaccess`, `lastlogin`, `currentlogin`, `lastip`, `secret`, `picture`, `description`, `descriptionformat`, `mailformat`, `maildigest`, `maildisplay`, `autosubscribe`, `trackforums`, `timecreated`, `timemodified`, `trustbitmask`, `imagealt`, `lastnamephonetic`, `firstnamephonetic`, `middlename`, `alternatename`, `moodlenetprofile`) VALUES
 (1, 'manual', 1, 0, 0, 0, 1, 'guest', '$2y$10$IrgMx4p9kWYYgCsAUQRi6.Xq12OmI5UWRIKjkJrCbCrNYhy5soVSW', '', 'Guest user', ' ', 'root@localhost', 0, '', '', '', '', '', '', '', 'en', 'gregorian', '', '99', 0, 0, 0, 0, '', '', 0, 'This user is a special user that allows read-only access to some courses.', 1, 1, 0, 2, 1, 0, 0, 1736763450, 0, NULL, NULL, NULL, NULL, NULL, NULL),
-(2, 'manual', 1, 0, 0, 0, 1, 'admin', '$2y$10$1867adq/8Xfd7iALzpljzuoI.02TlpvpS5kKl39pmd4gBSKw0fmKC', '', 'sri', 'portal', 'souravgope765@gmail.com', 0, '', '', '', '', '', '', 'IN', 'en', 'gregorian', '', 'Asia/Kolkata', 1736763616, 1737368502, 1737364024, 1737364111, '127.0.0.1', '', 0, '', 1, 1, 0, 1, 1, 0, 0, 1736763690, 0, NULL, '', '', '', '', NULL),
-(3, 'manual', 1, 0, 0, 0, 1, 'manikanta', '$2y$10$yCyEd8N6eGr84SK6hXc1puV4JJha3debpOKXNkm6tOheWB6.Aaqgy', '', 'Mani', 'Kanta', 'mallajosyulamanikanta@gmail.com', 0, '', '', '', '', '', '', 'IN', 'en', 'gregorian', '', 'Asia/Kolkata', 1736765585, 1737367411, 1737365248, 1737367411, '0:0:0:0:0:0:0:1', '', 0, '', 1, 1, 0, 2, 1, 0, 1736763972, 1736764761, 0, '', '', '', '', '', ''),
+(2, 'manual', 1, 0, 0, 0, 1, 'admin', '$2y$10$1867adq/8Xfd7iALzpljzuoI.02TlpvpS5kKl39pmd4gBSKw0fmKC', '', 'sri', 'portal', 'souravgope765@gmail.com', 0, '', '', '', '', '', '', 'IN', 'en', 'gregorian', '', 'Asia/Kolkata', 1736763616, 1737548387, 1737457150, 1737529235, '127.0.0.1', '', 0, '', 1, 1, 0, 1, 1, 0, 0, 1736763690, 0, NULL, '', '', '', '', NULL),
+(3, 'manual', 1, 0, 0, 0, 1, 'manikanta', '$2y$10$yCyEd8N6eGr84SK6hXc1puV4JJha3debpOKXNkm6tOheWB6.Aaqgy', '', 'Mani', 'Kanta', 'mallajosyulamanikanta@gmail.com', 0, '', '', '', '', '', '', 'IN', 'en', 'gregorian', '', 'Asia/Kolkata', 1736765585, 1737539359, 1737538191, 1737539289, '0:0:0:0:0:0:0:1', '', 0, '', 1, 1, 0, 2, 1, 0, 1736763972, 1736764761, 0, '', '', '', '', '', ''),
 (4, 'manual', 1, 0, 0, 0, 1, 'student1', 'to be generated', '', 'Student', 'One', 's1@example.com', 0, '', '', '', '', '', '', '', 'en', 'gregorian', '', 'Europe/Berlin', 0, 0, 0, 0, '', '', 0, '', 1, 1, 0, 2, 1, 0, 1736765220, 1736765220, 0, NULL, NULL, NULL, NULL, NULL, NULL),
 (5, 'manual', 1, 0, 0, 0, 1, 'student2', 'to be generated', '', 'Student', 'Two', 's2@example.com', 0, '', '', '', '', '', '', '', 'en', 'gregorian', '', 'Europe/Berlin', 0, 0, 0, 0, '', '', 0, '', 1, 1, 0, 2, 1, 0, 1736765221, 1736765221, 0, NULL, NULL, NULL, NULL, NULL, NULL),
 (6, 'manual', 1, 0, 0, 0, 1, 'student3', 'to be generated', '', 'Student', 'Three', 's3@example.com', 0, '', '', '', '', '', '', '', 'en', 'gregorian', '', 'Europe/Berlin', 0, 0, 0, 0, '', '', 0, '', 1, 1, 0, 2, 1, 0, 1736765221, 1736765221, 0, NULL, NULL, NULL, NULL, NULL, NULL),
@@ -21161,8 +23589,8 @@ CREATE TABLE `mdl_user_lastaccess` (
 
 INSERT INTO `mdl_user_lastaccess` (`id`, `userid`, `courseid`, `timeaccess`) VALUES
 (1, 2, 2, 1737363979),
-(3, 2, 3, 1737368509),
-(4, 3, 3, 1737367466);
+(3, 2, 3, 1737548387),
+(4, 3, 3, 1737539317);
 
 -- --------------------------------------------------------
 
@@ -21220,7 +23648,7 @@ INSERT INTO `mdl_user_preferences` (`id`, `userid`, `name`, `value`) VALUES
 (9, 3, 'auth_forcepasswordchange', '0'),
 (10, 3, 'email_bounce_count', '0'),
 (11, 3, 'email_send_count', '0'),
-(12, 2, 'drawer-open-index', '1'),
+(12, 2, 'drawer-open-index', '0'),
 (13, 2, 'tool_usertours_tour_completion_time_2', '1736764399'),
 (14, 2, 'coursesectionspreferences_2', '{\"indexcollapsed\":[]}'),
 (15, 2, 'qtype_multichoice_defaultmark', '1'),
@@ -21238,7 +23666,7 @@ INSERT INTO `mdl_user_preferences` (`id`, `userid`, `name`, `value`) VALUES
 (27, 5, 'create_password', '1'),
 (28, 6, 'create_password', '1'),
 (29, 3, 'core_message_migrate_data', '1'),
-(30, 3, 'login_failed_count_since_success', '0'),
+(30, 3, 'login_failed_count_since_success', '1'),
 (31, 3, 'core_user_welcome', '1736765617'),
 (32, 3, 'tool_usertours_tour_completion_time_3', '1736765620'),
 (33, 7, 'auth_forcepasswordchange', '0'),
@@ -21264,7 +23692,10 @@ INSERT INTO `mdl_user_preferences` (`id`, `userid`, `name`, `value`) VALUES
 (53, 3, 'coursesectionspreferences_3', '{\"contentcollapsed\":[]}'),
 (54, 3, 'block_myoverview_user_view_preference', 'list'),
 (55, 3, 'block_myoverview_user_sort_preference', 'title'),
-(56, 3, 'block_myoverview_user_grouping_preference', 'all');
+(56, 3, 'block_myoverview_user_grouping_preference', 'all'),
+(57, 2, 'filemanager_recentviewmode', '1'),
+(58, 2, 'darkmode', 'light'),
+(59, 2, 'last_time_enrolments_synced', '1737547113');
 
 -- --------------------------------------------------------
 
@@ -21288,7 +23719,8 @@ CREATE TABLE `mdl_user_private_key` (
 --
 
 INSERT INTO `mdl_user_private_key` (`id`, `script`, `value`, `userid`, `instance`, `iprestriction`, `validuntil`, `timecreated`) VALUES
-(1, 'core_files', 'bb4ea06b6ba3aaa15ffc532e59441d18', 3, NULL, NULL, NULL, 1736765537);
+(1, 'core_files', 'bb4ea06b6ba3aaa15ffc532e59441d18', 3, NULL, NULL, NULL, 1736765537),
+(2, 'core_files', 'ee9efcbcf9f52fbe3a7f71324983906d', 2, NULL, NULL, NULL, 1737547067);
 
 -- --------------------------------------------------------
 
@@ -22159,6 +24591,119 @@ ALTER TABLE `mdl_block_positions`
   ADD UNIQUE KEY `mdl_blocposi_bloconpagsub_uix` (`blockinstanceid`,`contextid`,`pagetype`,`subpage`),
   ADD KEY `mdl_blocposi_blo_ix` (`blockinstanceid`),
   ADD KEY `mdl_blocposi_con_ix` (`contextid`);
+
+--
+-- Indexes for table `mdl_block_quickmail_alt_emails`
+--
+ALTER TABLE `mdl_block_quickmail_alt_emails`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `mdl_blocquicaltemai_cou_ix` (`course_id`),
+  ADD KEY `mdl_blocquicaltemai_set_ix` (`setup_user_id`),
+  ADD KEY `mdl_blocquicaltemai_use_ix` (`user_id`);
+
+--
+-- Indexes for table `mdl_block_quickmail_config`
+--
+ALTER TABLE `mdl_block_quickmail_config`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `mdl_block_quickmail_draft_recips`
+--
+ALTER TABLE `mdl_block_quickmail_draft_recips`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `mdl_blocquicdrafreci_mes_ix` (`message_id`);
+
+--
+-- Indexes for table `mdl_block_quickmail_event_notifs`
+--
+ALTER TABLE `mdl_block_quickmail_event_notifs`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `mdl_blocquicevennoti_not_ix` (`notification_id`),
+  ADD KEY `mdl_blocquicevennoti_use_ix` (`usermodified`);
+
+--
+-- Indexes for table `mdl_block_quickmail_event_recips`
+--
+ALTER TABLE `mdl_block_quickmail_event_recips`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `mdl_blocquicevenreci_eve_ix` (`event_notification_id`),
+  ADD KEY `mdl_blocquicevenreci_use_ix` (`user_id`);
+
+--
+-- Indexes for table `mdl_block_quickmail_messages`
+--
+ALTER TABLE `mdl_block_quickmail_messages`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `mdl_blocquicmess_cou_ix` (`course_id`),
+  ADD KEY `mdl_blocquicmess_use_ix` (`user_id`),
+  ADD KEY `mdl_blocquicmess_not_ix` (`notification_id`),
+  ADD KEY `mdl_blocquicmess_alt_ix` (`alternate_email_id`),
+  ADD KEY `mdl_blocquicmess_sig_ix` (`signature_id`);
+
+--
+-- Indexes for table `mdl_block_quickmail_msg_ad_email`
+--
+ALTER TABLE `mdl_block_quickmail_msg_ad_email`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `mdl_blocquicmsgademai_mes_ix` (`message_id`);
+
+--
+-- Indexes for table `mdl_block_quickmail_msg_attach`
+--
+ALTER TABLE `mdl_block_quickmail_msg_attach`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `mdl_blocquicmsgatta_mes_ix` (`message_id`);
+
+--
+-- Indexes for table `mdl_block_quickmail_msg_course`
+--
+ALTER TABLE `mdl_block_quickmail_msg_course`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `mdl_blocquicmsgcour_sen_ix` (`sent_at`),
+  ADD KEY `mdl_blocquicmsgcour_mes_ix` (`message_id`),
+  ADD KEY `mdl_blocquicmsgcour_cou_ix` (`course_id`);
+
+--
+-- Indexes for table `mdl_block_quickmail_msg_recips`
+--
+ALTER TABLE `mdl_block_quickmail_msg_recips`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `mdl_blocquicmsgreci_sen_ix` (`sent_at`),
+  ADD KEY `mdl_blocquicmsgreci_mes_ix` (`message_id`),
+  ADD KEY `mdl_blocquicmsgreci_use_ix` (`user_id`);
+
+--
+-- Indexes for table `mdl_block_quickmail_notifs`
+--
+ALTER TABLE `mdl_block_quickmail_notifs`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `mdl_blocquicnoti_cou_ix` (`course_id`),
+  ADD KEY `mdl_blocquicnoti_use_ix` (`user_id`),
+  ADD KEY `mdl_blocquicnoti_alt_ix` (`alternate_email_id`),
+  ADD KEY `mdl_blocquicnoti_sig_ix` (`signature_id`);
+
+--
+-- Indexes for table `mdl_block_quickmail_rem_notifs`
+--
+ALTER TABLE `mdl_block_quickmail_rem_notifs`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `mdl_blocquicremnoti_not_ix` (`notification_id`),
+  ADD KEY `mdl_blocquicremnoti_sch_ix` (`schedule_id`),
+  ADD KEY `mdl_blocquicremnoti_use_ix` (`usermodified`);
+
+--
+-- Indexes for table `mdl_block_quickmail_schedules`
+--
+ALTER TABLE `mdl_block_quickmail_schedules`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `mdl_block_quickmail_signatures`
+--
+ALTER TABLE `mdl_block_quickmail_signatures`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `mdl_blocquicsign_use_ix` (`user_id`);
 
 --
 -- Indexes for table `mdl_block_recentlyaccesseditems`
@@ -24312,6 +26857,22 @@ ALTER TABLE `mdl_question_categories`
   ADD KEY `mdl_quescate_par_ix` (`parent`);
 
 --
+-- Indexes for table `mdl_question_coderunner_options`
+--
+ALTER TABLE `mdl_question_coderunner_options`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `mdl_quescodeopti_cod_ix` (`coderunnertype`),
+  ADD KEY `mdl_quescodeopti_pro_ix` (`prototypetype`),
+  ADD KEY `mdl_quescodeopti_que_ix` (`questionid`);
+
+--
+-- Indexes for table `mdl_question_coderunner_tests`
+--
+ALTER TABLE `mdl_question_coderunner_tests`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `mdl_quescodetest_que_ix` (`questionid`);
+
+--
 -- Indexes for table `mdl_question_datasets`
 --
 ALTER TABLE `mdl_question_datasets`
@@ -25897,18 +28458,102 @@ ALTER TABLE `mdl_bigbluebuttonbn_recordings`
 -- AUTO_INCREMENT for table `mdl_block`
 --
 ALTER TABLE `mdl_block`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- AUTO_INCREMENT for table `mdl_block_instances`
 --
 ALTER TABLE `mdl_block_instances`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `mdl_block_positions`
 --
 ALTER TABLE `mdl_block_positions`
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `mdl_block_quickmail_alt_emails`
+--
+ALTER TABLE `mdl_block_quickmail_alt_emails`
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `mdl_block_quickmail_config`
+--
+ALTER TABLE `mdl_block_quickmail_config`
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `mdl_block_quickmail_draft_recips`
+--
+ALTER TABLE `mdl_block_quickmail_draft_recips`
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `mdl_block_quickmail_event_notifs`
+--
+ALTER TABLE `mdl_block_quickmail_event_notifs`
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `mdl_block_quickmail_event_recips`
+--
+ALTER TABLE `mdl_block_quickmail_event_recips`
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `mdl_block_quickmail_messages`
+--
+ALTER TABLE `mdl_block_quickmail_messages`
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `mdl_block_quickmail_msg_ad_email`
+--
+ALTER TABLE `mdl_block_quickmail_msg_ad_email`
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `mdl_block_quickmail_msg_attach`
+--
+ALTER TABLE `mdl_block_quickmail_msg_attach`
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `mdl_block_quickmail_msg_course`
+--
+ALTER TABLE `mdl_block_quickmail_msg_course`
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `mdl_block_quickmail_msg_recips`
+--
+ALTER TABLE `mdl_block_quickmail_msg_recips`
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `mdl_block_quickmail_notifs`
+--
+ALTER TABLE `mdl_block_quickmail_notifs`
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `mdl_block_quickmail_rem_notifs`
+--
+ALTER TABLE `mdl_block_quickmail_rem_notifs`
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `mdl_block_quickmail_schedules`
+--
+ALTER TABLE `mdl_block_quickmail_schedules`
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `mdl_block_quickmail_signatures`
+--
+ALTER TABLE `mdl_block_quickmail_signatures`
   MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT;
 
 --
@@ -25921,7 +28566,7 @@ ALTER TABLE `mdl_block_recentlyaccesseditems`
 -- AUTO_INCREMENT for table `mdl_block_recent_activity`
 --
 ALTER TABLE `mdl_block_recent_activity`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `mdl_block_rss_client`
@@ -25969,7 +28614,7 @@ ALTER TABLE `mdl_cache_flags`
 -- AUTO_INCREMENT for table `mdl_capabilities`
 --
 ALTER TABLE `mdl_capabilities`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=714;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=725;
 
 --
 -- AUTO_INCREMENT for table `mdl_chat`
@@ -26137,19 +28782,19 @@ ALTER TABLE `mdl_competency_userevidencecomp`
 -- AUTO_INCREMENT for table `mdl_config`
 --
 ALTER TABLE `mdl_config`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=581;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=610;
 
 --
 -- AUTO_INCREMENT for table `mdl_config_log`
 --
 ALTER TABLE `mdl_config_log`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1803;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2005;
 
 --
 -- AUTO_INCREMENT for table `mdl_config_plugins`
 --
 ALTER TABLE `mdl_config_plugins`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1956;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2237;
 
 --
 -- AUTO_INCREMENT for table `mdl_contentbank_content`
@@ -26161,7 +28806,7 @@ ALTER TABLE `mdl_contentbank_content`
 -- AUTO_INCREMENT for table `mdl_context`
 --
 ALTER TABLE `mdl_context`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT for table `mdl_course`
@@ -26245,7 +28890,7 @@ ALTER TABLE `mdl_course_request`
 -- AUTO_INCREMENT for table `mdl_course_sections`
 --
 ALTER TABLE `mdl_course_sections`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `mdl_customfield_category`
@@ -26437,19 +29082,19 @@ ALTER TABLE `mdl_event_subscriptions`
 -- AUTO_INCREMENT for table `mdl_external_functions`
 --
 ALTER TABLE `mdl_external_functions`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=701;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=705;
 
 --
 -- AUTO_INCREMENT for table `mdl_external_services`
 --
 ALTER TABLE `mdl_external_services`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `mdl_external_services_functions`
 --
 ALTER TABLE `mdl_external_services_functions`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=405;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=408;
 
 --
 -- AUTO_INCREMENT for table `mdl_external_services_users`
@@ -26467,7 +29112,7 @@ ALTER TABLE `mdl_external_tokens`
 -- AUTO_INCREMENT for table `mdl_favourite`
 --
 ALTER TABLE `mdl_favourite`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `mdl_feedback`
@@ -26521,7 +29166,7 @@ ALTER TABLE `mdl_feedback_valuetmp`
 -- AUTO_INCREMENT for table `mdl_files`
 --
 ALTER TABLE `mdl_files`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=697;
 
 --
 -- AUTO_INCREMENT for table `mdl_files_reference`
@@ -26671,7 +29316,7 @@ ALTER TABLE `mdl_grade_grades`
 -- AUTO_INCREMENT for table `mdl_grade_grades_history`
 --
 ALTER TABLE `mdl_grade_grades_history`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- AUTO_INCREMENT for table `mdl_grade_import_newitem`
@@ -26695,7 +29340,7 @@ ALTER TABLE `mdl_grade_items`
 -- AUTO_INCREMENT for table `mdl_grade_items_history`
 --
 ALTER TABLE `mdl_grade_items_history`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `mdl_grade_letters`
@@ -26941,7 +29586,7 @@ ALTER TABLE `mdl_log`
 -- AUTO_INCREMENT for table `mdl_logstore_standard_log`
 --
 ALTER TABLE `mdl_logstore_standard_log`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2077;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2834;
 
 --
 -- AUTO_INCREMENT for table `mdl_log_display`
@@ -27055,7 +29700,7 @@ ALTER TABLE `mdl_message_contact_requests`
 -- AUTO_INCREMENT for table `mdl_message_conversations`
 --
 ALTER TABLE `mdl_message_conversations`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `mdl_message_conversation_actions`
@@ -27067,7 +29712,7 @@ ALTER TABLE `mdl_message_conversation_actions`
 -- AUTO_INCREMENT for table `mdl_message_conversation_members`
 --
 ALTER TABLE `mdl_message_conversation_members`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `mdl_message_email_messages`
@@ -27097,7 +29742,7 @@ ALTER TABLE `mdl_message_processors`
 -- AUTO_INCREMENT for table `mdl_message_providers`
 --
 ALTER TABLE `mdl_message_providers`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT for table `mdl_message_read`
@@ -27115,7 +29760,7 @@ ALTER TABLE `mdl_message_users_blocked`
 -- AUTO_INCREMENT for table `mdl_message_user_actions`
 --
 ALTER TABLE `mdl_message_user_actions`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `mdl_mnetservice_enrol_courses`
@@ -27385,7 +30030,7 @@ ALTER TABLE `mdl_qtype_match_subquestions`
 -- AUTO_INCREMENT for table `mdl_qtype_multichoice_options`
 --
 ALTER TABLE `mdl_qtype_multichoice_options`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `mdl_qtype_randomsamatch_options`
@@ -27403,37 +30048,37 @@ ALTER TABLE `mdl_qtype_shortanswer_options`
 -- AUTO_INCREMENT for table `mdl_question`
 --
 ALTER TABLE `mdl_question`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT for table `mdl_question_answers`
 --
 ALTER TABLE `mdl_question_answers`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
 
 --
 -- AUTO_INCREMENT for table `mdl_question_attempts`
 --
 ALTER TABLE `mdl_question_attempts`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=93;
 
 --
 -- AUTO_INCREMENT for table `mdl_question_attempt_steps`
 --
 ALTER TABLE `mdl_question_attempt_steps`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=177;
 
 --
 -- AUTO_INCREMENT for table `mdl_question_attempt_step_data`
 --
 ALTER TABLE `mdl_question_attempt_step_data`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=148;
 
 --
 -- AUTO_INCREMENT for table `mdl_question_bank_entries`
 --
 ALTER TABLE `mdl_question_bank_entries`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT for table `mdl_question_calculated`
@@ -27451,7 +30096,19 @@ ALTER TABLE `mdl_question_calculated_options`
 -- AUTO_INCREMENT for table `mdl_question_categories`
 --
 ALTER TABLE `mdl_question_categories`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
+-- AUTO_INCREMENT for table `mdl_question_coderunner_options`
+--
+ALTER TABLE `mdl_question_coderunner_options`
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+
+--
+-- AUTO_INCREMENT for table `mdl_question_coderunner_tests`
+--
+ALTER TABLE `mdl_question_coderunner_tests`
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `mdl_question_datasets`
@@ -27517,7 +30174,7 @@ ALTER TABLE `mdl_question_numerical_units`
 -- AUTO_INCREMENT for table `mdl_question_references`
 --
 ALTER TABLE `mdl_question_references`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `mdl_question_response_analysis`
@@ -27553,13 +30210,13 @@ ALTER TABLE `mdl_question_truefalse`
 -- AUTO_INCREMENT for table `mdl_question_usages`
 --
 ALTER TABLE `mdl_question_usages`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `mdl_question_versions`
 --
 ALTER TABLE `mdl_question_versions`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT for table `mdl_quiz`
@@ -27583,19 +30240,19 @@ ALTER TABLE `mdl_quizaccess_seb_template`
 -- AUTO_INCREMENT for table `mdl_quiz_attempts`
 --
 ALTER TABLE `mdl_quiz_attempts`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `mdl_quiz_feedback`
 --
 ALTER TABLE `mdl_quiz_feedback`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `mdl_quiz_grades`
 --
 ALTER TABLE `mdl_quiz_grades`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `mdl_quiz_overrides`
@@ -27625,7 +30282,7 @@ ALTER TABLE `mdl_quiz_sections`
 -- AUTO_INCREMENT for table `mdl_quiz_slots`
 --
 ALTER TABLE `mdl_quiz_slots`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `mdl_quiz_statistics`
@@ -27751,7 +30408,7 @@ ALTER TABLE `mdl_role_assignments`
 -- AUTO_INCREMENT for table `mdl_role_capabilities`
 --
 ALTER TABLE `mdl_role_capabilities`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1513;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1544;
 
 --
 -- AUTO_INCREMENT for table `mdl_role_context_levels`
@@ -27859,7 +30516,7 @@ ALTER TABLE `mdl_search_simpledb_index`
 -- AUTO_INCREMENT for table `mdl_sessions`
 --
 ALTER TABLE `mdl_sessions`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=89;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=146;
 
 --
 -- AUTO_INCREMENT for table `mdl_stats_daily`
@@ -27955,7 +30612,7 @@ ALTER TABLE `mdl_tag_instance`
 -- AUTO_INCREMENT for table `mdl_task_adhoc`
 --
 ALTER TABLE `mdl_task_adhoc`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `mdl_task_log`
@@ -27967,13 +30624,13 @@ ALTER TABLE `mdl_task_log`
 -- AUTO_INCREMENT for table `mdl_task_scheduled`
 --
 ALTER TABLE `mdl_task_scheduled`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=112;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=115;
 
 --
 -- AUTO_INCREMENT for table `mdl_tiny_autosave`
 --
 ALTER TABLE `mdl_tiny_autosave`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=118;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=312;
 
 --
 -- AUTO_INCREMENT for table `mdl_tool_brickfield_areas`
@@ -28165,7 +30822,7 @@ ALTER TABLE `mdl_tool_usertours_tours`
 -- AUTO_INCREMENT for table `mdl_upgrade_log`
 --
 ALTER TABLE `mdl_upgrade_log`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1266;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1284;
 
 --
 -- AUTO_INCREMENT for table `mdl_url`
@@ -28231,13 +30888,13 @@ ALTER TABLE `mdl_user_password_resets`
 -- AUTO_INCREMENT for table `mdl_user_preferences`
 --
 ALTER TABLE `mdl_user_preferences`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
 
 --
 -- AUTO_INCREMENT for table `mdl_user_private_key`
 --
 ALTER TABLE `mdl_user_private_key`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `mdl_wiki`
